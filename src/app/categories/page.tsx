@@ -3,6 +3,8 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Utensils, Coffee, ShoppingBag, Car, Scissors, Stethoscope, Briefcase, Wrench, Folder, Bed, Activity } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 
+export const dynamic = 'force-dynamic'
+
 const iconMap: Record<string, any> = {
     "restaurants": Utensils,
     "food": Utensils,

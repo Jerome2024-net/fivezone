@@ -5,6 +5,8 @@ import { MapPin, Utensils, ShoppingBag, Bed } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const featuredBusinesses = await prisma.business.findMany({
     take: 4,

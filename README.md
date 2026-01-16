@@ -1,23 +1,29 @@
 # FiveZone - Plateforme de référencement de restaurants et commerces
 
-Une plateforme moderne pour découvrir des restaurants et des commerces, construite avec Next.js 14+, TypeScript, Tailwind CSS et Prisma.
+Fivezone est une plateforme de visibilité et de génération de clients pour les entreprises locales (restaurants, services, commerces, hôtels…).
 
-## Fonctionnalités
+## 🎯 Objectif
+Aider les entreprises locales à obtenir plus d’appels, messages et réservations grâce à :
+- des fiches optimisées
+- des CTA adaptés par catégorie
+- un abonnement premium (Stripe)
 
+## 🔧 Fonctionnalités
 - **Annuaire d'entreprises** : Parcourir et rechercher des restaurants et des commerces.
 - **Fiches détaillées** : Voir les photos, les avis, les notes et les détails de localisation.
 - **Avis utilisateurs** : S'inscrire pour laisser des avis et des notes.
-- **Panneau Admin/Propriétaire** : Gérer les fiches d'entreprises.
-- **Design Réactif** : Interface mobile-friendly avec Tailwind CSS.
+- **Panneau Admin/Propriétaire** : Gérer les fiches d'entreprises, statistiques (vues, clics, leads).
+- **Design Réactif** : Interface mobile-friendly.
+- **Abonnement Premium** : 29 €/mois via Stripe pour débloquer les fonctionnalités avancées.
 
-## Stack Technique
+## 🚀 Stack Technique
 
 - **Framework** : [Next.js 14+](https://nextjs.org/) (App Router)
 - **Langage** : TypeScript
 - **Style** : Tailwind CSS v4
-- **Base de données** : PostgreSQL (via Prisma)
+- **Base de données** : PostgreSQL / SQLite (via Prisma)
 - **ORM** : Prisma
-- **Icônes** : Lucide React
+- **Paiement** : Stripe
 
 ## Getting Started
 
@@ -37,7 +43,13 @@ Une plateforme moderne pour découvrir des restaurants et des commerces, constru
     - Create a `.env` file in the root if not exists.
     - Add your database URL:
       ```env
-      DATABASE_URL="postgresql://user:password@localhost:5432/restofind?schema=public"
+      DATABASE_URL="file:./dev.db" # Or postgresql url
+      ```
+    - Add Stripe keys:
+      ```env
+      STRIPE_SECRET_KEY=sk_test_...
+      STRIPE_WEBHOOK_SECRET=whsec_...
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
       ```
 4.  Run Prisma migrations (to create tables):
     ```bash

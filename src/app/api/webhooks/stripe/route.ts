@@ -3,8 +3,8 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2025-01-27.acacia", // Updated to latest available/compatible
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build", {
+  apiVersion: "2025-12-15.clover", // Matching the exact version expected by the installed SDK
   typescript: true,
 })
 

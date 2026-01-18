@@ -8,17 +8,23 @@ import { prisma } from "@/lib/prisma"
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const featuredBusinesses = await prisma.business.findMany({
-    take: 4,
-    orderBy: [
-      { subscriptionTier: 'desc' },
-      { viewCount: 'desc' },
-      { rating: 'desc' }
-    ],
-    include: {
-      category: true
-    }
-  });
+  let featuredBusinesses = [];
+  try {
+    featuredBusinesses = await prisma.business.findMany({
+      take: 4,
+      orderBy: [
+        { subscriptionTier: 'desc' },
+        { viewCount: 'desc' },
+        { rating: 'desc' }
+      ],
+      include: {
+        category: true
+      }
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+    // On ignore l'erreur pour afficher quand même la page
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900">

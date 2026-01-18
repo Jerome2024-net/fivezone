@@ -23,7 +23,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900">
       {/* Hero Section - TripAdvisor Style: Clean, Centered, Search-Focused */}
-      <section className="relative w-full py-16 md:py-24 lg:py-32 flex flex-col items-center justify-center bg-[#faf1ed]/30"> {/* Subtle warm background */}
+      <section className="relative w-full py-16 md:py-24 lg:py-32 flex flex-col items-center justify-center bg-[#34E0A1]/10"> {/* Matching brand color background */}
         <div className="container px-4 md:px-6 mx-auto w-full max-w-5xl">
           <h1 className="text-4xl md:text-6xl font-black text-center mb-12 tracking-tight text-slate-900">
             Où aller ?

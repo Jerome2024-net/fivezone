@@ -98,7 +98,7 @@ export default async function Home() {
              </div>
              <Link href="/register" className="shrink-0">
                 <Button className="rounded-full bg-[#34E0A1] text-slate-900 font-bold h-10 px-6 text-sm hover:bg-[#2cbe89] transition-colors">
-                    Inscrivez-vous gratuitement
+                    Référencez-vous gratuitement
                 </Button>
              </Link>
           </div>

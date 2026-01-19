@@ -96,11 +96,11 @@ export default async function Home() {
                 
                 <div className="relative z-10 w-full max-w-lg">
                     <Link href="/pricing" className="w-full block">
-                        <Button className="w-full h-20 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-2xl shadow-[0_0_25px_rgba(52,224,161,0.4)] hover:shadow-[0_0_40px_rgba(52,224,161,0.6)] transition-all transform hover:-translate-y-1">
+                        <Button className="w-full h-auto py-4 md:py-0 md:h-20 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-lg md:text-2xl shadow-[0_0_25px_rgba(52,224,161,0.4)] hover:shadow-[0_0_40px_rgba(52,224,161,0.6)] transition-all transform hover:-translate-y-1 whitespace-normal">
                             RÉFÉRENCER MON ÉTABLISSEMENT
                         </Button>
                     </Link>
-                    <p className="text-slate-400 text-sm mt-4 font-medium">
+                    <p className="text-slate-400 text-xs md:text-sm mt-4 font-medium px-4">
                          Offre de lancement • Rejoignez les premiers membres
                     </p>
                 </div>

@@ -30,10 +30,17 @@ export default async function SearchPage({
     };
   }
 
-  const results = await prisma.business.findMany({
-    where,
-    include: { category: true }
-  });
+  const results = await (async () => {
+    try {
+      return await prisma.business.findMany({
+        where,
+        include: { category: true }
+      });
+    } catch (e) {
+      console.error("Database Error:", e);
+      return [];
+    }
+  })();
 
   const title = searchTerm ? `Résultats pour "${searchTerm}"` : categoryTerm ? `Meilleurs ${categoryTerm}` : 'Tous les lieux';
 

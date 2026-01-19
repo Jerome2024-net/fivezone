@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FiveZone - Découvrez les meilleures entreprises",
   description: "Trouvez les meilleures entreprises et services locaux près de chez vous.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

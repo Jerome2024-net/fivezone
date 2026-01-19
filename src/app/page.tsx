@@ -88,50 +88,21 @@ export default async function Home() {
       </section>
 
        {/* Banner / CTA Section */}
-       <section className="w-full py-16 bg-white border-t border-slate-100">
-          <div className="container px-4 md:px-6 mx-auto max-w-6xl">
-             <div className="relative overflow-hidden rounded-3xl bg-slate-900 shadow-2xl">
-                {/* Decoration background */}
-                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-[#34E0A1] rounded-full blur-3xl opacity-20"></div>
-                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-600 rounded-full blur-3xl opacity-20"></div>
-
-                <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 text-center md:text-left">
-                   <div className="flex-1 space-y-6">
-                      <div className="inline-block px-3 py-1 rounded-full bg-[#34E0A1]/20 text-[#34E0A1] text-xs font-bold uppercase tracking-wider">
-                        Espace Propriétaire
-                      </div>
-                      <div>
-                        <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
-                            Développez votre business.
-                        </h2>
-                        <p className="text-slate-300 text-lg max-w-xl leading-relaxed">
-                            Ne laissez plus vos concurrents prendre votre place. Rejoignez les meilleurs établissements et accédez à une clientèle exclusive.
-                        </p>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 pt-2">
-                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
-                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Top Recherche & Visibilité
-                        </div>
-                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
-                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Badge Vérifié "Premium"
-                        </div>
-                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
-                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Lien WhatsApp Direct
-                        </div>
-                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
-                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Photos Illimitées
-                        </div>
-                      </div>
-                   </div>
-
-                   <div className="flex flex-col items-center justify-center bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl min-w-[320px] md:min-w-[360px] transform md:-rotate-1 transition-transform hover:rotate-0 duration-500">
-                        <Link href="/register" className="w-full">
-                            <Button className="w-full h-16 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-xl shadow-[0_0_20px_rgba(52,224,161,0.3)] hover:shadow-[0_0_30px_rgba(52,224,161,0.5)] transition-all transform hover:-translate-y-1">
-                                JE RÉFÉRENCE MON OFFRE
-                            </Button>
-                        </Link>
-                   </div>
+       <section className="w-full py-12 bg-white border-t border-slate-100">
+          <div className="container px-4 md:px-6 mx-auto">
+             <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto shadow-2xl relative overflow-hidden flex flex-col items-center justify-center">
+                {/* Background effects */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#34E0A1]/10 blur-[100px] rounded-full pointer-events-none"></div>
+                
+                <div className="relative z-10 w-full max-w-lg">
+                    <Link href="/pricing" className="w-full block">
+                        <Button className="w-full h-20 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-2xl shadow-[0_0_25px_rgba(52,224,161,0.4)] hover:shadow-[0_0_40px_rgba(52,224,161,0.6)] transition-all transform hover:-translate-y-1">
+                            JE RÉFÉRENCE MON OFFRE - 29€
+                        </Button>
+                    </Link>
+                    <p className="text-slate-400 text-sm mt-4 font-medium">
+                        Sans engagement • Satisfait ou remboursé
+                    </p>
                 </div>
              </div>
           </div>

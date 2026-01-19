@@ -45,8 +45,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       ],
       cta: "Activer le plan Pro",
       popular: true,
-      href: "https://buy.stripe.com/00wfZi3R52g61j39rS6kg00",
-      external: true
+      href: "/register",
+      external: false
     },
     {
       name: "Entreprise",

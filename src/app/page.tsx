@@ -125,19 +125,12 @@ export default async function Home() {
                       </div>
                    </div>
 
-                   <div className="flex flex-col items-center gap-6 bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl min-w-[320px] md:min-w-[360px] transform md:-rotate-1 transition-transform hover:rotate-0 duration-500">
-                        <div className="text-center">
-                            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Offre de Lancement</span>
-                            <div className="text-6xl font-black text-white mt-4 mb-1 tracking-tighter">29€<span className="text-xl text-slate-500 font-normal tracking-normal">/mois</span></div>
-                        </div>
+                   <div className="flex flex-col items-center justify-center bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl min-w-[320px] md:min-w-[360px] transform md:-rotate-1 transition-transform hover:rotate-0 duration-500">
                         <Link href="/register" className="w-full">
-                            <Button className="w-full h-14 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-lg shadow-[0_0_20px_rgba(52,224,161,0.3)] hover:shadow-[0_0_30px_rgba(52,224,161,0.5)] transition-all transform hover:-translate-y-1">
+                            <Button className="w-full h-16 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-xl shadow-[0_0_20px_rgba(52,224,161,0.3)] hover:shadow-[0_0_30px_rgba(52,224,161,0.5)] transition-all transform hover:-translate-y-1">
                                 JE RÉFÉRENCE MON OFFRE
                             </Button>
                         </Link>
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                            <span className="h-2 w-2 rounded-full bg-green-500"></span> Activation instantanée
-                        </div>
                    </div>
                 </div>
              </div>

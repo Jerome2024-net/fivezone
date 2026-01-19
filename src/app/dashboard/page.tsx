@@ -42,12 +42,28 @@ export default async function DashboardPage() {
                         <BarChart className="h-5 w-5 text-slate-900" />
                    </div>
                    <span className="font-bold text-xl">Espace Propriétaire</span>
-                   {isPro && <span className="bg-[#34E0A1] text-slate-900 text-xs px-2 py-0.5 rounded font-bold ml-2">PRO</span>}
+                   {isPro ? (
+                       <span className="bg-[#34E0A1] text-slate-900 text-xs px-2 py-0.5 rounded font-bold ml-2">PRO</span>
+                   ) : (
+                       <Link href="/pricing" className="ml-2">
+                           <span className="bg-slate-700 hover:bg-[#34E0A1] hover:text-slate-900 transition-colors text-white text-xs px-2 py-1 rounded font-bold border border-slate-600">
+                               PASSER PRO
+                           </span>
+                       </Link>
+                   )}
                </div>
                <div className="flex items-center gap-4">
-                   <span className="text-sm font-medium">{business.name}</span>
-                   <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800">
-                       <LogOut className="h-4 w-4 mr-2" /> Se déconnecter
+                   <span className="text-sm font-medium hidden md:inline">{business.name}</span>
+                   {!isPro && (
+                       <Button size="sm" className="hidden md:flex bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-bold" asChild>
+                           <Link href="/pricing">PASSER PRO</Link>
+                       </Button>
+                   )}
+                   <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800" asChild>
+                        <Link href="/api/auth/signout">
+                            <LogOut className="h-4 w-4 md:mr-2" /> 
+                            <span className="hidden md:inline">Se déconnecter</span>
+                        </Link>
                    </Button>
                </div>
            </div>
@@ -55,18 +71,18 @@ export default async function DashboardPage() {
 
        <main className="flex-1 container mx-auto px-4 md:px-6 py-8">
             {!isPro && (
-                <div className="bg-slate-900 text-white p-4 rounded-xl mb-8 flex items-center justify-between shadow-lg">
+                <div className="bg-slate-900 text-white p-6 rounded-xl mb-8 flex flex-col md:flex-row items-center justify-between shadow-lg gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 bg-[#34E0A1] rounded-full flex items-center justify-center text-slate-900 font-bold">
+                        <div className="h-12 w-12 bg-[#34E0A1] rounded-full flex items-center justify-center text-slate-900 font-bold shrink-0">
                             <Star className="h-6 w-6" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg">Passez au niveau supérieur</h3>
-                            <p className="text-slate-300">Débloquez les vues illimitées, WhatsApp et les promotions.</p>
+                            <h3 className="font-black text-xl text-white">Boostez votre visibilité</h3>
+                            <p className="text-slate-300">Débloquez les vues illimitées, WhatsApp et les promotions exclusives.</p>
                         </div>
                     </div>
-                    <Button className="bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-bold" asChild>
-                        <Link href="/pricing">Voir les offres</Link>
+                    <Button className="bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-bold px-8 h-12 w-full md:w-auto" asChild>
+                        <Link href="/pricing">PASSER PRO</Link>
                     </Button>
                 </div>
             )}

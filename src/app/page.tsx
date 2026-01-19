@@ -88,41 +88,57 @@ export default async function Home() {
       </section>
 
        {/* Banner / CTA Section */}
-       <section className="w-full py-12 bg-slate-900 border-t border-slate-800">
-          <div className="container px-4 md:px-6 mx-auto flex flex-col items-center max-w-5xl">
-             
-             {/* Header Section */}
-             <div className="text-center mb-8">
-                <h2 className="text-2xl md:text-3xl font-black text-white mb-3">
-                   Propriétaire d'un établissement ?
-                </h2>
-                <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-                    Rejoignez le réseau FiveZone exclusif. <span className="text-[#34E0A1] font-bold">L'adhésion PRO</span> garantit votre visibilité et vos clients.
-                </p>
-             </div>
+       <section className="w-full py-16 bg-white border-t border-slate-100">
+          <div className="container px-4 md:px-6 mx-auto max-w-6xl">
+             <div className="relative overflow-hidden rounded-3xl bg-slate-900 shadow-2xl">
+                {/* Decoration background */}
+                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-[#34E0A1] rounded-full blur-3xl opacity-20"></div>
+                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-600 rounded-full blur-3xl opacity-20"></div>
 
-             {/* Pricing Focus - Single Mandatory Card */}
-             <div className="w-full max-w-md">
-                <div className="bg-slate-800 relative p-8 rounded-2xl border-2 border-[#34E0A1] flex flex-col items-center shadow-xl shadow-[#34E0A1]/10">
-                   <div className="absolute -top-4 bg-[#34E0A1] text-slate-900 text-sm font-black px-4 py-1 rounded-full uppercase tracking-wide">
-                      Offre de Lancement
+                <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 text-center md:text-left">
+                   <div className="flex-1 space-y-6">
+                      <div className="inline-block px-3 py-1 rounded-full bg-[#34E0A1]/20 text-[#34E0A1] text-xs font-bold uppercase tracking-wider">
+                        Espace Propriétaire
+                      </div>
+                      <div>
+                        <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
+                            Développez votre business.
+                        </h2>
+                        <p className="text-slate-300 text-lg max-w-xl leading-relaxed">
+                            Ne laissez plus vos concurrents prendre votre place. Rejoignez les meilleurs établissements et accédez à une clientèle exclusive.
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
+                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Top Recherche & Visibilité
+                        </div>
+                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
+                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Badge Vérifié "Premium"
+                        </div>
+                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
+                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Lien WhatsApp Direct
+                        </div>
+                        <div className="flex items-center justify-center md:justify-start gap-3 text-slate-200 font-medium">
+                             <div className="bg-[#34E0A1]/10 p-1 rounded-full"><span className="text-[#34E0A1] font-bold">✓</span></div> Photos Illimitées
+                        </div>
+                      </div>
                    </div>
-                   <h3 className="text-[#34E0A1] font-bold text-xl mb-2">FiveZone PREMIUM</h3>
-                   <div className="text-4xl font-black text-white mb-2">29€<span className="text-lg text-slate-400 font-medium">/mois</span></div>
-                   <p className="text-slate-400 text-sm mb-6 text-center">La solution complète pour réussir.</p>
-                   
-                   <ul className="text-white text-base mb-8 space-y-3 w-full">
-                      <li className="flex items-center gap-3"><span className="text-[#34E0A1] text-xl">✓</span> <strong>Priorité absolue</strong> dans les recherches</li>
-                      <li className="flex items-center gap-3"><span className="text-[#34E0A1] text-xl">✓</span> Badge "Vérifié & Recommandé"</li>
-                      <li className="flex items-center gap-3"><span className="text-[#34E0A1] text-xl">✓</span> Boutons WhatsApp & Réservation</li>
-                      <li className="flex items-center gap-3"><span className="text-[#34E0A1] text-xl">✓</span> Photos, Vidéos & Offres illimitées</li>
-                   </ul>
-                   <Link href="/register" className="w-full">
-                      <Button className="w-full rounded-full bg-[#34E0A1] text-slate-900 font-black h-14 text-lg hover:bg-[#2cbe89] transition-all hover:scale-105 shadow-lg shadow-[#34E0A1]/20">
-                          S'ABONNER ET COMMENCER
-                      </Button>
-                   </Link>
-                   <p className="text-slate-500 text-xs mt-4">Activation immédiate après paiement sécurisé.</p>
+
+                   <div className="flex flex-col items-center gap-6 bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl min-w-[320px] md:min-w-[360px] transform md:-rotate-1 transition-transform hover:rotate-0 duration-500">
+                        <div className="text-center">
+                            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Offre de Lancement</span>
+                            <div className="text-6xl font-black text-white mt-4 mb-1 tracking-tighter">29€<span className="text-xl text-slate-500 font-normal tracking-normal">/mois</span></div>
+                        </div>
+                        <Link href="/register" className="w-full">
+                            <Button className="w-full h-14 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-lg shadow-[0_0_20px_rgba(52,224,161,0.3)] hover:shadow-[0_0_30px_rgba(52,224,161,0.5)] transition-all transform hover:-translate-y-1">
+                                JE RÉFÉRENCE MON OFFRE
+                            </Button>
+                        </Link>
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                            <span className="h-2 w-2 rounded-full bg-green-500"></span> Activation instantanée
+                        </div>
+                   </div>
                 </div>
              </div>
           </div>

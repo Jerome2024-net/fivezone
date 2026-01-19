@@ -88,16 +88,16 @@ export default async function Home() {
       </section>
 
        {/* Banner / CTA Section */}
-       <section className="w-full py-8 bg-[#f2b203]"> {/* TripAdvisor yellow/orange brand color */}
+       <section className="w-full py-8 bg-slate-900">
           <div className="container px-4 md:px-6 mx-auto text-center flex flex-col md:flex-row items-center justify-between gap-6 max-w-5xl">
              <div className="text-left">
-                <h2 className="text-xl md:text-2xl font-black text-slate-900 mb-2">Propriétaire d'un établissement ?</h2>
-                <p className="text-base font-medium text-slate-900/80 max-w-2xl">
+                <h2 className="text-xl md:text-2xl font-black text-white mb-2">Propriétaire d'un établissement ?</h2>
+                <p className="text-base font-medium text-slate-300 max-w-2xl">
                     Boostez votre visibilité et développez votre activité sur FiveZone.
                 </p>
              </div>
              <Link href="/register" className="shrink-0">
-                <Button className="rounded-full bg-slate-900 text-white font-bold h-10 px-6 text-sm hover:bg-black transition-colors">
+                <Button className="rounded-full bg-[#34E0A1] text-slate-900 font-bold h-10 px-6 text-sm hover:bg-[#2cbe89] transition-colors">
                     Inscrivez-vous gratuitement
                 </Button>
              </Link>

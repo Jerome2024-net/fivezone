@@ -95,14 +95,21 @@ export default async function Home() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#34E0A1]/10 blur-[100px] rounded-full pointer-events-none"></div>
                 
                 <div className="relative z-10 w-full max-w-lg">
-                    <Link href="/pricing" className="w-full block">
-                        <Button className="w-full h-auto py-4 md:py-0 md:h-20 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-lg md:text-2xl shadow-[0_0_25px_rgba(52,224,161,0.4)] hover:shadow-[0_0_40px_rgba(52,224,161,0.6)] transition-all transform hover:-translate-y-1 whitespace-normal">
+                    <Link href="/pricing" className="w-full block group">
+                        <Button className="w-full h-auto py-6 md:py-0 md:h-24 bg-gradient-to-r from-[#34E0A1] to-[#2ecc94] hover:to-[#24b07d] text-slate-900 font-black rounded-3xl md:rounded-full text-xl md:text-3xl shadow-[0_0_40px_rgba(52,224,161,0.3)] hover:shadow-[0_0_60px_rgba(52,224,161,0.5)] transition-all transform group-hover:-translate-y-1 whitespace-normal border-b-4 border-[#25a075] active:border-b-0 active:translate-y-1">
                             RÉFÉRENCER MON ÉTABLISSEMENT
                         </Button>
                     </Link>
-                    <p className="text-slate-400 text-xs md:text-sm mt-4 font-medium px-4">
-                         Offre de lancement • Rejoignez les premiers membres
-                    </p>
+                    <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-3 text-slate-400 text-sm font-medium">
+                        <span className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/5">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34E0A1] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#34E0A1]"></span>
+                            </span>
+                            Offre de lancement
+                        </span>
+                        <span>Rejoignez les premiers membres</span>
+                    </div>
                 </div>
              </div>
           </div>

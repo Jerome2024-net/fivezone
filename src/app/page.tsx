@@ -28,16 +28,18 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans">
-      {/* 1. HERO SECTION UPDATED - Style plus TripAdvisor/Airbnb (Fond Blanc + Typo Forte) */}
-      <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-white px-4">
+      {/* 1. HERO SECTION UPDATED - Style plus TripAdvisor/Airbnb (Fond Vert Pale + Titre Intact) */}
+      <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
-          <h1 className="text-4xl md:text-6xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
-            Tout trouver,<br/> 
-            <span className="text-[#34E0A1]">près de chez vous.</span>
+          <h1 className="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight text-slate-900">
+            Les meilleures adresses locales
           </h1>
+          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl font-medium">
+             Artisans • Commerces • Services • Restaurants
+          </p>
           
-          {/* Search Container - Shadow plus marquée pour flotter */}
-          <div className="w-full mb-10 shadow-xl shadow-slate-200/50 rounded-full">
+          {/* Search Container */}
+          <div className="w-full mb-10">
              <SearchSection />
           </div>
 

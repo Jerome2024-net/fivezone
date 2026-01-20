@@ -15,10 +15,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FiveZone - Découvrez les meilleures entreprises",
-  description: "Trouvez les meilleures entreprises et services locaux près de chez vous.",
+  title: "FiveZone - Les meilleures adresses locales",
+  description: "Artisans • Commerces • Services • Restaurants. Tout ce dont vous avez besoin à portée de main.",
   icons: {
     icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  openGraph: {
+    title: "FiveZone - Les meilleures adresses locales",
+    description: "Trouvez les meilleures entreprises et services locaux près de chez vous.",
+    siteName: "FiveZone",
+    images: [
+      {
+        url: "/icon.svg", // Note: Idéalement remplacer par un PNG (1200x630px)
+        width: 800,
+        height: 800,
+        alt: "Logo FiveZone",
+      },
+    ],
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FiveZone - Les meilleures adresses locales",
+    description: "Artisans • Commerces • Services • Restaurants",
+    images: ["/icon.svg"],
   },
 };
 

@@ -38,8 +38,21 @@ export default async function Home() {
           {/* Search Container */}
           <SearchSection />
 
+          {/* Business Link - Google Style (Below Search) */}
+          <div className="mt-6 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
+             <Link 
+                href="/pricing"
+                className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-2 group px-4 py-2 rounded-full hover:bg-white/50"
+             >
+                <span>Propriétaire d'un établissement ?</span>
+                <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
+                    Référencez-vous ici
+                </span>
+             </Link>
+          </div>
+
            {/* Quick Categories - Pills directly under search */}
-           <div className="flex flex-wrap justify-center gap-4 mt-12">
+           <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-8 md:mt-12">
             {[
               { name: 'Restaurants', icon: Utensils, label: 'Restaurants' },
               { name: 'Hotels', icon: Bed, label: 'Hôtels' },

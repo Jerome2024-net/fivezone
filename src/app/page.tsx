@@ -88,23 +88,21 @@ export default async function Home() {
       </section>
 
        {/* Banner / CTA Section */}
-       <section className="w-full py-12 bg-white border-t border-slate-100">
-          <div className="container px-4 md:px-6 mx-auto">
-             <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto shadow-2xl relative overflow-hidden flex flex-col items-center justify-center">
-                {/* Background effects */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#34E0A1]/10 blur-[100px] rounded-full pointer-events-none"></div>
-                
-                <div className="relative z-10 w-full max-w-lg">
-                    <Link href="/pricing" className="w-full block">
-                        <Button className="w-full h-auto py-5 md:py-0 md:h-20 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-black rounded-full text-xl md:text-2xl shadow-none hover:opacity-90 transition-all transform hover:-translate-y-1 whitespace-normal">
-                            RÉFÉRENCER MON ÉTABLISSEMENT
-                        </Button>
-                    </Link>
-                    <p className="text-slate-500 text-sm mt-6 font-medium tracking-wide uppercase text-xs opacity-70">
-                         Offre de lancement • Rejoignez les premiers membres
-                    </p>
-                </div>
-             </div>
+       <section className="w-full py-24 bg-white">
+          <div className="container px-4 md:px-6 mx-auto flex flex-col items-center text-center">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 tracking-tight">
+                Propriétaire d'un établissement ?
+            </h2>
+            
+            <Link href="/pricing">
+                <Button className="rounded-full bg-[#34E0A1] text-slate-900 font-bold h-14 px-8 text-lg hover:bg-[#2cbe89] transition-all shadow-sm">
+                    RÉFÉRENCER MON ÉTABLISSEMENT
+                </Button>
+            </Link>
+             
+            <p className="text-slate-400 text-xs mt-6 font-medium uppercase tracking-widest">
+                Offre de lancement • Rejoignez les premiers membres
+            </p>
           </div>
        </section>
     </div>

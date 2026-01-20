@@ -88,19 +88,22 @@ export default async function Home() {
       </section>
 
        {/* Banner / CTA Section */}
-       <section className="w-full py-24 bg-white">
-          <div className="container px-4 md:px-6 mx-auto flex flex-col items-center text-center">
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 tracking-tight">
+       <section className="w-full py-12 md:py-24 bg-slate-50/50 border-t border-slate-100">
+          <div className="container px-4 mx-auto flex flex-col items-center text-center">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 mb-3 md:mb-6 tracking-tight">
                 Propriétaire d'un établissement ?
             </h2>
+            <p className="text-sm md:text-lg text-slate-500 mb-8 max-w-md mx-auto">
+                Rejoignez FiveZone pour augmenter votre visibilité.
+            </p>
             
-            <Link href="/pricing">
-                <Button className="rounded-full bg-[#34E0A1] text-slate-900 font-bold h-14 px-8 text-lg hover:bg-[#2cbe89] transition-all shadow-sm">
+            <Link href="/pricing" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto rounded-full bg-[#34E0A1] text-slate-900 font-bold h-12 md:h-14 px-6 md:px-8 text-sm md:text-lg hover:bg-[#2cbe89] transition-all shadow-sm mx-auto whitespace-nowrap">
                     RÉFÉRENCER MON ÉTABLISSEMENT
                 </Button>
             </Link>
              
-            <p className="text-slate-400 text-xs mt-6 font-medium uppercase tracking-widest">
+            <p className="text-slate-400 text-[10px] md:text-xs mt-6 font-medium uppercase tracking-widest">
                 Offre de lancement • Rejoignez les premiers membres
             </p>
           </div>

@@ -72,7 +72,7 @@ export default async function Home() {
                 { label: 'Restaurants & Bars', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop', link: '/search?category=Restoration' },
                 { label: 'Shopping', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop', link: '/search?category=Shopping' },
                 { label: 'Bien-être', img: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=600&auto=format&fit=crop', link: '/search?category=Beaute' },
-                { label: 'Services Pro', img: 'https://images.unsplash.com/photo-1521791136064-7985c2d18854?q=80&w=600&auto=format&fit=crop', link: '/search?category=Services' },
+                { label: 'Artisans & Services', img: 'https://images.unsplash.com/photo-1581578731117-104529302f24?q=80&w=600&auto=format&fit=crop', link: '/search?category=Services' },
             ].map((item, idx) => (
                 <Link href={item.link} key={idx} className="group relative h-32 md:h-48 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all block">
                     <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/10 transition-colors z-10" />

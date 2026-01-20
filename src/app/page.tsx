@@ -42,26 +42,6 @@ export default async function Home() {
           <div className="w-full mb-10">
              <SearchSection />
           </div>
-
-          {/* 2. CATEGORIES REFINED - Style minimaliste (Icône simple + Texte) */}
-          <div className="flex flex-wrap justify-center gap-6 md:gap-10 mt-4">
-            {[
-              { name: 'Restoration', icon: Utensils, label: 'Resto' },
-              { name: 'Services', icon: Briefcase, label: 'Services' },
-              { name: 'Shopping', icon: ShoppingBag, label: 'Mode' },
-              { name: 'Travaux', icon: Hammer, label: 'Travaux' },
-              { name: 'Auto', icon: Car, label: 'Auto' },
-              { name: 'Beaute', icon: Sparkles, label: 'Beauté' },
-            ].map((cat) => (
-              <Link key={cat.name} href={`/search?category=${cat.name}`} className="group flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
-                 {/* Suppression des bordures lourdes, focus sur l'icône */}
-                 <div className="p-3 bg-[#34E0A1]/10 rounded-full group-hover:bg-[#34E0A1]/20 transition-colors">
-                    <cat.icon className="h-6 w-6 text-slate-700 group-hover:text-[#34E0A1]" strokeWidth={2} />
-                 </div>
-                 <span className="text-sm font-semibold text-slate-700 border-b-2 border-transparent group-hover:border-[#34E0A1] pb-0.5">{cat.label}</span>
-              </Link>
-            ))}
-           </div>
         </div>
       </section>
 

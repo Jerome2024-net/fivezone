@@ -55,7 +55,7 @@ export default async function Home() {
             ].map((cat) => (
               <Link key={cat.name} href={`/search?category=${cat.name}`} className="group flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
                  {/* Suppression des bordures lourdes, focus sur l'icône */}
-                 <div className="p-3 bg-slate-50 rounded-full group-hover:bg-[#34E0A1]/20 transition-colors">
+                 <div className="p-3 bg-[#34E0A1]/10 rounded-full group-hover:bg-[#34E0A1]/20 transition-colors">
                     <cat.icon className="h-6 w-6 text-slate-700 group-hover:text-[#34E0A1]" strokeWidth={2} />
                  </div>
                  <span className="text-sm font-semibold text-slate-700 border-b-2 border-transparent group-hover:border-[#34E0A1] pb-0.5">{cat.label}</span>
@@ -65,10 +65,34 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 3. FEATURED SECTION - Plus aérée */}
-      <section className="w-full py-16 bg-slate-50/50">
+      {/* VISUAL CATEGORIES - "Envie de quoi ?" (Inspiration Style) */}
+      <section className="container mx-auto px-4 -mt-8 relative z-20 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+            {[
+                { label: 'Restaurants & Bars', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop', link: '/search?category=Restoration' },
+                { label: 'Shopping', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop', link: '/search?category=Shopping' },
+                { label: 'Bien-être', img: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=600&auto=format&fit=crop', link: '/search?category=Beaute' },
+                { label: 'Services Pro', img: 'https://images.unsplash.com/photo-1521791136064-7985c2d18854?q=80&w=600&auto=format&fit=crop', link: '/search?category=Services' },
+            ].map((item, idx) => (
+                <Link href={item.link} key={idx} className="group relative h-32 md:h-48 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all block">
+                    <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/10 transition-colors z-10" />
+                    <img 
+                        src={item.img} 
+                        alt={item.label} 
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 z-20 bg-gradient-to-t from-black/80 to-transparent">
+                        <span className="text-white font-bold text-sm md:text-lg">{item.label}</span>
+                    </div>
+                </Link>
+            ))}
+        </div>
+      </section>
+
+      {/* 3. FEATURED SECTION - Plus aérée + Horizontal Scroll Mobile */}
+      <section className="w-full py-12 md:py-16 bg-slate-50/50">
         <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex items-end justify-between mb-8">
+            <div className="flex items-end justify-between mb-6 md:mb-8">
                 <div>
                     <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">Le top du moment 🔥</h2>
                     <p className="text-slate-500 mt-2 text-base md:text-lg">Les adresses plébiscitées par la communauté.</p>
@@ -80,15 +104,16 @@ export default async function Home() {
             </div>
             
             {featuredBusinesses.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible md:grid md:grid-cols-4 gap-4 md:gap-6 scrollbar-hide snap-x snap-mandatory">
                      {featuredBusinesses.map((business) => (
-                        <BusinessCard 
-                            key={business.id}
-                            id={business.id}
-                            name={business.name}
-                            category={business.category.name}
-                            promoted={business.subscriptionTier === 'PRO'}
-                        />
+                        <div key={business.id} className="min-w-[280px] md:min-w-0 snap-center">
+                            <BusinessCard 
+                                id={business.id}
+                                name={business.name}
+                                category={business.category.name}
+                                promoted={business.subscriptionTier === 'PRO'}
+                            />
+                        </div>
                      ))}
                 </div>
             ) : (

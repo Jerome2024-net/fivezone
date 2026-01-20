@@ -35,9 +35,9 @@ export function SearchSection() {
   const currentTab = tabs.find(t => t.id === activeTab) || tabs[0]
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col gap-4">
-        {/* Search Tabs */}
-        <div className="flex items-center justify-center md:justify-start gap-2 md:gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-3 md:gap-4 relative z-10">
+        {/* Search Tabs - Scrollable on mobile, centered on desktop */}
+        <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-2 scrollbar-hide w-full px-1 md:px-0 mask-image-scroll-fade">
             {tabs.map((tab) => {
                 const Icon = tab.icon
                 const isActive = activeTab === tab.id
@@ -47,13 +47,13 @@ export function SearchSection() {
                         type="button"
                         onClick={() => setActiveTab(tab.id)}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all text-sm md:text-base font-medium",
+                            "flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full whitespace-nowrap transition-all text-sm font-medium shrink-0",
                             isActive 
-                                ? "bg-slate-900 text-white shadow-md" 
-                                : "bg-white/60 hover:bg-white text-slate-700 hover:text-slate-900"
+                                ? "bg-slate-900 text-white shadow-md scale-105" 
+                                : "bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 border border-transparent hover:border-slate-200"
                         )}
                     >
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         <span>{tab.label}</span>
                     </button>
                 )

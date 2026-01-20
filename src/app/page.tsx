@@ -89,11 +89,11 @@ export default async function Home() {
       </section>
 
        {/* Banner / CTA Section - Google Style Link */}
-       <section className="w-full py-12 bg-white border-t border-slate-100/50">
+       <section className="w-full py-8 md:py-12 bg-white border-t border-slate-100/50">
           <div className="container px-4 mx-auto flex justify-center">
              <Link 
                 href="/pricing"
-                className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-2 group px-4 py-2 rounded-full hover:bg-slate-50"
+                className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex flex-col sm:flex-row items-center gap-1 md:gap-2 group px-6 py-3 rounded-xl hover:bg-slate-50 text-center"
              >
                 <span>Propriétaire d'un établissement ?</span>
                 <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">

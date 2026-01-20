@@ -38,21 +38,9 @@ export default async function Home() {
           {/* Search Container */}
           <SearchSection />
 
-          {/* Business Link - Google Style (Below Search) */}
-          <div className="mt-6 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
-             <Link 
-                href="/pricing"
-                className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-2 group px-4 py-2 rounded-full hover:bg-white/50"
-             >
-                <span>Propriétaire d'un établissement ?</span>
-                <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
-                    Référencez-vous ici
-                </span>
-             </Link>
-          </div>
 
-           {/* Quick Categories - Pills directly under search */}
-           <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-8 md:mt-12">
+          {/* Quick Categories - Pills directly under search */}
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-12">
             {[
               { name: 'Restaurants', icon: Utensils, label: 'Restaurants' },
               { name: 'Hotels', icon: Bed, label: 'Hôtels' },
@@ -100,25 +88,18 @@ export default async function Home() {
         </div>
       </section>
 
-       {/* Banner / CTA Section */}
-       <section className="w-full py-12 md:py-24 bg-slate-50/50 border-t border-slate-100">
-          <div className="container px-4 mx-auto flex flex-col items-center text-center">
-            <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 mb-3 md:mb-6 tracking-tight">
-                Propriétaire d'un établissement ?
-            </h2>
-            <p className="text-sm md:text-lg text-slate-500 mb-8 max-w-md mx-auto">
-                Rejoignez FiveZone pour augmenter votre visibilité.
-            </p>
-            
-            <Link href="/pricing" className="w-full sm:w-auto">
-                <Button className="w-full sm:w-auto rounded-full bg-[#34E0A1] text-slate-900 font-bold h-12 md:h-14 px-6 md:px-8 text-sm md:text-lg hover:bg-[#2cbe89] transition-all shadow-sm mx-auto whitespace-nowrap">
-                    RÉFÉRENCER MON ÉTABLISSEMENT
-                </Button>
-            </Link>
-             
-            <p className="text-slate-400 text-[10px] md:text-xs mt-6 font-medium uppercase tracking-widest">
-                Offre de lancement • Rejoignez les premiers membres
-            </p>
+       {/* Banner / CTA Section - Google Style Link */}
+       <section className="w-full py-12 bg-white border-t border-slate-100/50">
+          <div className="container px-4 mx-auto flex justify-center">
+             <Link 
+                href="/pricing"
+                className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-2 group px-4 py-2 rounded-full hover:bg-slate-50"
+             >
+                <span>Propriétaire d'un établissement ?</span>
+                <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
+                    Référencez-vous ici
+                </span>
+             </Link>
           </div>
        </section>
     </div>

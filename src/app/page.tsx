@@ -30,11 +30,11 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen bg-white text-slate-900">
       <section className="relative w-full py-16 md:py-24 lg:py-32 flex flex-col items-center justify-center bg-[#34E0A1]/10"> {/* Matching brand color background */}
         <div className="container px-4 md:px-6 mx-auto w-full max-w-5xl">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-6 tracking-tight text-slate-900 leading-tight">
-            Découvrez les meilleures <br className="hidden md:block" /> adresses & pros locaux
+          <h1 className="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight text-slate-900">
+            Les meilleures adresses locales
           </h1>
-          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl max-w-2xl mx-auto">
-             Restaurants, Artisans, Boutiques, Services... Tout ce dont vous avez besoin, à portée de main.
+          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl font-medium">
+             Artisans • Commerces • Services • Restaurants
           </p>
           
           {/* Search Container */}

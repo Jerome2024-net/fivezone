@@ -24,7 +24,7 @@ export function SearchSection() {
         </div>
         <Input 
             className="flex-1 border-none shadow-none focus-visible:ring-0 text-base md:text-lg placeholder:text-slate-500 h-12 md:h-16 px-4 md:px-4 bg-transparent outline-none ring-0 min-w-0"
-            placeholder="Lieux, Hôtels, Activités..." 
+            placeholder="Plombier, Restaurant, Coiffeur, Garage..." 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
         />

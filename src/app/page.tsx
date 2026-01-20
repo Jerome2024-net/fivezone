@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
-import { MapPin, Utensils, ShoppingBag, Bed } from "lucide-react"
+import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
@@ -28,12 +28,14 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900">
-      {/* Hero Section - TripAdvisor Style: Clean, Centered, Search-Focused */}
       <section className="relative w-full py-16 md:py-24 lg:py-32 flex flex-col items-center justify-center bg-[#34E0A1]/10"> {/* Matching brand color background */}
         <div className="container px-4 md:px-6 mx-auto w-full max-w-5xl">
-          <h1 className="text-4xl md:text-6xl font-black text-center mb-12 tracking-tight text-slate-900">
-            Où aller ?
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-6 tracking-tight text-slate-900 leading-tight">
+            Découvrez les meilleures <br className="hidden md:block" /> adresses & pros locaux
           </h1>
+          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl max-w-2xl mx-auto">
+             Restaurants, Artisans, Boutiques, Services... Tout ce dont vous avez besoin, à portée de main.
+          </p>
           
           {/* Search Container */}
           <SearchSection />
@@ -42,17 +44,19 @@ export default async function Home() {
           {/* Quick Categories - Pills directly under search */}
           <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-12">
             {[
-              { name: 'Restaurants', icon: Utensils, label: 'Restaurants' },
-              { name: 'Hotels', icon: Bed, label: 'Hôtels' },
-              { name: 'Things to Do', icon: MapPin, label: 'Quoi faire' },
+              { name: 'Restoration', icon: Utensils, label: 'Resto' },
+              { name: 'Services', icon: Briefcase, label: 'Pros & Services' },
               { name: 'Shopping', icon: ShoppingBag, label: 'Shopping' },
+              { name: 'Travaux', icon: Hammer, label: 'Travaux' },
+              { name: 'Auto', icon: Car, label: 'Auto' },
+              { name: 'Beaute', icon: Sparkles, label: 'Beauté' },
             ].map((cat) => (
               <Link key={cat.name} href={`/search?category=${cat.name}`} className="group">
                  <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-slate-200 flex items-center justify-center bg-white group-hover:border-slate-900 transition-colors">
-                        <cat.icon className="h-6 w-6 md:h-8 md:w-8 text-slate-700 group-hover:text-slate-900" />
+                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl border border-slate-200 flex items-center justify-center bg-white group-hover:border-[#34E0A1] group-hover:bg-[#34E0A1]/10 transition-all shadow-sm group-hover:shadow-md">
+                        <cat.icon className="h-5 w-5 md:h-7 md:w-7 text-slate-600 group-hover:text-[#34E0A1]" />
                     </div>
-                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 underline-offset-4 group-hover:underline">{cat.label}</span>
+                    <span className="text-xs md:text-sm font-semibold text-slate-600 group-hover:text-[#34E0A1]">{cat.label}</span>
                  </div>
               </Link>
             ))}

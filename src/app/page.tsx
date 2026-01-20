@@ -65,24 +65,28 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* VISUAL CATEGORIES - "Envie de quoi ?" (Inspiration Style) */}
-      <section className="container mx-auto px-4 -mt-8 relative z-20 mb-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+      {/* VISUAL CATEGORIES - "Explorer par Centres d'Intérêt" */}
+      <section className="container mx-auto px-4 mt-8 md:mt-12 mb-12">
+        <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-6">Explorez selon vos envies</h2>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
             {[
-                { label: 'Restaurants & Bars', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop', link: '/search?category=Restoration' },
-                { label: 'Shopping', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop', link: '/search?category=Shopping' },
-                { label: 'Bien-être', img: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=600&auto=format&fit=crop', link: '/search?category=Beaute' },
-                { label: 'Événements', img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop', link: '/search?category=Events' },
+                { label: 'Aventure', icon: '🏃', img: 'https://images.unsplash.com/photo-1533692328991-08159ff19fca?q=80&w=600&auto=format&fit=crop', link: '/search?q=aventure' },
+                { label: 'Culture & Art', icon: '🎭', img: 'https://images.unsplash.com/photo-1566127444979-b3d2b654e3d7?q=80&w=600&auto=format&fit=crop', link: '/search?q=culture' },
+                { label: 'Sport', icon: '⚽', img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format&fit=crop', link: '/search?q=sport' },
+                { label: 'Famille', icon: '👨‍👩‍👧‍👦', img: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=600&auto=format&fit=crop', link: '/search?q=famille' },
+                { label: 'Détente', icon: '🧘‍♀️', img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600&auto=format&fit=crop', link: '/search?q=detente' },
             ].map((item, idx) => (
-                <Link href={item.link} key={idx} className="group relative h-32 md:h-48 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all block">
-                    <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/10 transition-colors z-10" />
+                <Link href={item.link} key={idx} className="group relative h-40 md:h-56 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all block">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
                     <img 
                         src={item.img} 
                         alt={item.label} 
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
-                    <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 z-20 bg-gradient-to-t from-black/80 to-transparent">
-                        <span className="text-white font-bold text-sm md:text-lg">{item.label}</span>
+                    <div className="absolute inset-x-0 bottom-0 p-4 z-20 flex flex-col items-center text-center">
+                        <span className="text-2xl mb-1 transform group-hover:-translate-y-1 transition-transform">{item.icon}</span>
+                        <span className="text-white font-bold text-base md:text-lg">{item.label}</span>
+                        <span className="text-white/80 text-xs mt-1 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">Découvrir</span>
                     </div>
                 </Link>
             ))}

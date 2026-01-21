@@ -1,6 +1,6 @@
 // import { prisma } from "@/lib/prisma" // REMOVED
 import { database } from "@/lib/firebase"
-import { ref, set, push } from "firebase/database"
+import { ref, set, push, query, orderByChild, equalTo, get } from "firebase/database"
 import { hash } from "bcryptjs"
 import { NextResponse } from "next/server"
 import { z } from "zod"

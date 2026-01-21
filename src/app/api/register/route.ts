@@ -80,11 +80,12 @@ export async function POST(req: Request) {
             }, { status: 201 });
         }
 
-    } catch (firebaseError) {
+    } catch (firebaseError: any) {
         console.error("Firebase backup failed:", firebaseError);
         // If BOTH fail, we have a problem. But if Prisma is available, we continue.
         if (!prismaAvailable) {
-             return NextResponse.json({ message: "Erreur lors de l'inscription (Service indisponible)" }, { status: 500 })
+             const errorMessage = firebaseError?.message || firebaseError?.code || "Unknown Firebase Error";
+             return NextResponse.json({ message: `Erreur interne (Mode Sauvegarde échoué): ${errorMessage}` }, { status: 500 })
         }
     }
 

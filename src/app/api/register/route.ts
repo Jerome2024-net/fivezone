@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+// import { prisma } from "@/lib/prisma" // REMOVED
 import { database } from "@/lib/firebase"
 import { ref, set, push } from "firebase/database"
 import { hash } from "bcryptjs"

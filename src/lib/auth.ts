@@ -1,11 +1,12 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { prisma } from "@/lib/prisma"
+// import { prisma } from "@/lib/prisma" // REMOVED TO PREVENT CRASH
 import { compare } from "bcryptjs"
 import { database } from "@/lib/firebase"
 import { ref, query, orderByChild, equalTo, get } from "firebase/database"
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key_for_dev_mode_only", // ENSURE SECRET IS PRESENT
   session: {
     strategy: "jwt",
   },

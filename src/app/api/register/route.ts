@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma"
+import { database } from "@/lib/firebase"
+import { ref, set, push } from "firebase/database"
 import { hash } from "bcryptjs"
 import { NextResponse } from "next/server"
 import { z } from "zod"
@@ -32,6 +34,32 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 10)
     
+    // BACKUP: Save to Firebase Realtime Database
+    try {
+        const usersRef = ref(database, 'users');
+        const newUserRef = push(usersRef);
+        await set(newUserRef, {
+            email,
+            name,
+            role: businessName ? 'OWNER' : 'USER',
+            createdAt: new Date().toISOString(),
+            business: businessName ? {
+                name: businessName,
+                category,
+                address,
+                city,
+                phone,
+                website,
+                logoUrl,
+                media
+            } : null
+        });
+        console.log("Backup: User saved to Firebase");
+    } catch (firebaseError) {
+        console.error("Firebase backup failed:", firebaseError);
+        // Continue execution, do not block main flow if backup fails
+    }
+
     // If business details are provided, create user and business
     if (businessName) {
         if (!category || !address || !city || !logoUrl) {

@@ -6,7 +6,7 @@ const firebaseConfig = {
   authDomain: "fivezone-ca123.firebaseapp.com",
   databaseURL: "https://fivezone-ca123-default-rtdb.firebaseio.com",
   projectId: "fivezone-ca123",
-  storageBucket: "fivezone-ca123.appspot.com",
+  storageBucket: "fivezone-ca123.firebasestorage.app",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };

@@ -95,10 +95,8 @@ export default function RegisterPage() {
             throw new Error(data.message || "Une erreur est survenue")
         }
 
-        // Redirect directly to Stripe Payment with prefilled email
-        // This creates a seamless flow: Register -> Pay -> (Stripe redirects to) Dashboard
-        const stripeUrl = `https://buy.stripe.com/00wfZi3R52g61j39rS6kg00?prefilled_email=${encodeURIComponent(values.email)}`;
-        window.location.href = stripeUrl;
+        // Redirect to Login instead of Stripe for now (since we offer free entry)
+        router.push("/login?registered=true");
         
     } catch (err: any) {
         setError(err.message)

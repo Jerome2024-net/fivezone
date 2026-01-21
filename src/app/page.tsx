@@ -3,26 +3,36 @@ import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
 import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer } from "lucide-react"
 import Link from "next/link"
-import { prisma } from "@/lib/prisma"
+import { database } from "@/lib/firebase" 
+import { ref, get, query, limitToLast } from "firebase/database"
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   let featuredBusinesses = [];
   try {
-    featuredBusinesses = await prisma.business.findMany({
-      take: 4,
-      orderBy: [
-        { subscriptionTier: 'desc' },
-        { viewCount: 'desc' },
-        { rating: 'desc' }
-      ],
-      include: {
-        category: true
-      }
-    });
+     const usersRef = ref(database, 'users');
+     // Fetch last 10 users to show latest businesses
+     // Note: In real app, we would have a separate 'businesses' collection
+     const q = query(usersRef, limitToLast(8));
+     const snapshot = await get(q);
+     
+     if (snapshot.exists()) {
+         const data = snapshot.val();
+         featuredBusinesses = Object.values(data)
+            .filter((u: any) => u.business) // Only keep users with business
+            .map((u: any) => ({
+                id: u.id || Math.random().toString(), // Fallback ID if missing
+                name: u.business.name,
+                category: { name: u.business.category },
+                subscriptionTier: u.role === 'OWNER' ? 'FREE' : 'FREE', // Default
+                viewCount: 0,
+                rating: 5
+            }))
+            .reverse(); // Show newest first
+     }
   } catch (error) {
-    console.error("Database error:", error);
+    console.error("Firebase fetch error:", error);
     // On ignore l'erreur pour afficher quand même la page
   }
 

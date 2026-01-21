@@ -6,8 +6,9 @@ import Link from "next/link"
 import { MediaUpload } from "@/components/dashboard/MediaUpload"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import { database } from "@/lib/firebase" 
+import { ref, get, query, orderByChild, equalTo } from "firebase/database"
 
 export const dynamic = 'force-dynamic'
 
@@ -18,19 +19,35 @@ export default async function DashboardPage() {
       redirect("/login")
   }
   
-  const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: { businesses: { include: { promotions: true } } }
-  })
-  
-  const business = user?.businesses[0];
+  // FETCH USER & BUSINESS FROM FIREBASE (Old Prisma code replaced)
+  let user = null;
+  let business = null;
+
+  try {
+      const usersRef = ref(database, 'users');
+      // Simple scan safe for small number of users
+      const snapshot = await get(usersRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const foundKey = Object.keys(data).find(key => 
+            data[key]?.email?.toLowerCase().trim() === session.user.email.toLowerCase().trim()
+        );
+        if (foundKey) {
+            user = data[foundKey];
+            business = user.business;
+        }
+      }
+  } catch (e) {
+      console.error("Dashboard Fetch Error:", e);
+  }
   
   if (!business) {
      // If user has account but no business, redirect to registration
-     redirect("/register") 
+     // redirect("/register") 
+     // For now show empty state instead of redirect to avoid loops
   }
 
-  const isPro = business.subscriptionTier === 'PRO' || business.subscriptionTier === 'ENTERPRISE'
+  const isPro = business?.subscriptionTier === 'PRO' || business?.subscriptionTier === 'ENTERPRISE' || false
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -53,12 +70,7 @@ export default async function DashboardPage() {
                    )}
                </div>
                <div className="flex items-center gap-4">
-                   <span className="text-sm font-medium hidden md:inline">{business.name}</span>
-                   {!isPro && (
-                       <Button size="sm" className="hidden md:flex bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-bold" asChild>
-                           <Link href="/pricing">PASSER PRO</Link>
-                       </Button>
-                   )}
+                   <span className="text-sm font-medium hidden md:inline">{business?.name || "Mon Entreprise"}</span>
                    <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800" asChild>
                         <Link href="/api/auth/signout">
                             <LogOut className="h-4 w-4 md:mr-2" /> 
@@ -70,6 +82,14 @@ export default async function DashboardPage() {
        </header>
 
        <main className="flex-1 container mx-auto px-4 md:px-6 py-8">
+            {!business ? (
+                <div className="text-center py-12">
+                    <h2 className="text-2xl font-bold mb-4">Bienvenue !</h2>
+                    <p className="mb-4">Vous n'avez pas encore configuré votre entreprise.</p>
+                    <Button asChild><Link href="/register">Créer ma fiche entreprise</Link></Button>
+                </div>
+            ) : (
+            <>
             {!isPro && (
                 <div className="bg-slate-900 text-white p-6 rounded-xl mb-8 flex flex-col md:flex-row items-center justify-between shadow-lg gap-4">
                     <div className="flex items-center gap-4">
@@ -86,19 +106,71 @@ export default async function DashboardPage() {
                     </Button>
                 </div>
             )}
-
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <div>
-                    <h1 className="text-3xl font-black text-slate-900">Tableau de bord</h1>
-                    <p className="text-slate-500">Aperçu des performances de votre fiche</p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Content - Preview & Stats */}
+                <div className="lg:col-span-2 space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Aperçu de votre fiche</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="bg-white border rounded-lg p-4 flex gap-4">
+                                <div className="h-24 w-24 bg-slate-200 rounded-md overflow-hidden shrink-0">
+                                    {business.logoUrl ? (
+                                        <img src={business.logoUrl} alt="Logo" className="h-full w-full object-cover" /> 
+                                    ) : (
+                                        <div className="h-full w-full flex items-center justify-center text-slate-400"><Tag /></div>
+                                    )}
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">{business.name}</h3>
+                                    <p className="text-sm text-slate-500">{business.category}</p>
+                                    <p className="text-sm text-slate-500 mt-1">{business.address}, {business.city}</p>
+                                    <div className="mt-2 flex gap-2">
+                                        <span className="text-xs bg-slate-100 px-2 py-1 rounded">{business.phone || "Pas de téléphone"}</span>
+                                        {business.website && <span className="text-xs bg-slate-100 px-2 py-1 rounded text-blue-600">Site Web</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="bg-white">
-                        <Settings className="h-4 w-4 mr-2" /> Paramètres
-                    </Button>
-                    <Button className="bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-bold">
-                        Gérer la fiche
-                    </Button>
+
+                {/* Sidebar - Quick Actions */}
+                <div className="space-y-6">
+                   <Card>
+                       <CardHeader><CardTitle>Informations</CardTitle></CardHeader>
+                       <CardContent className="space-y-4">
+                           <div className="flex justify-between items-center text-sm">
+                               <span className="text-slate-500">Statut</span>
+                               <span className="font-bold text-green-600 px-2 py-0.5 bg-green-50 rounded-full">Actif</span>
+                           </div>
+                           <div className="flex justify-between items-center text-sm">
+                               <span className="text-slate-500">Abonnement</span>
+                               <span className="font-bold">{isPro ? 'PRO' : 'Gratuit'}</span>
+                           </div>
+                           <div className="pt-4 border-t">
+                               <p className="text-xs text-slate-400 text-center mb-2">Besoin d'aide ?</p>
+                               <Button variant="outline" className="w-full text-xs h-8">Contact Support</Button>
+                           </div>
+                       </CardContent>
+                   </Card>
+                </div>
+            </div>
+            </>
+            )}
+       </main>
+    </div>
+  )
+}
+// OLD CODE REMOVED TO PREVENT ERRORS
+/*
+  const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: { businesses: { include: { promotions: true } } }
+  })
+*/                    </Button>
                 </div>
             </div>
 

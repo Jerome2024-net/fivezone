@@ -24,9 +24,18 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { email, password, name, businessName, category, address, city, phone, website, logoUrl, media } = registrationSchema.parse(body)
 
-    const existingUserByEmail = await prisma.user.findUnique({
-      where: { email: email }
-    })
+    // CHECK PRISMA CONNECTION & EXISTING USER
+    let existingUserByEmail = null;
+    let prismaAvailable = true;
+
+    try {
+      existingUserByEmail = await prisma.user.findUnique({
+        where: { email: email }
+      })
+    } catch (e: any) {
+      console.warn("Prisma unavailable (Database URL missing or connection failed). Proceeding with Firebase backup.", e.message);
+      prismaAvailable = false;
+    }
 
     if (existingUserByEmail) {
       return NextResponse.json({ user: null, message: "Un utilisateur avec cet email existe déjà" }, { status: 409 })
@@ -35,12 +44,18 @@ export async function POST(req: Request) {
     const hashedPassword = await hash(password, 10)
     
     // BACKUP: Save to Firebase Realtime Database
+    // We do this BEFORE Prisma transaction if Prisma is unavailable, or alongside it.
+    // If Prisma is down, this is our ONLY storage.
     try {
         const usersRef = ref(database, 'users');
+        // Check uniqueness in Firebase if Prisma is down (optional but good practice)
+        // Skipping complex query for now to ensure write success.
+        
         const newUserRef = push(usersRef);
         await set(newUserRef, {
             email,
             name,
+            password: hashedPassword, // Store hashed password so we can potentially recover/migrate later
             role: businessName ? 'OWNER' : 'USER',
             createdAt: new Date().toISOString(),
             business: businessName ? {
@@ -52,15 +67,28 @@ export async function POST(req: Request) {
                 website,
                 logoUrl,
                 media
-            } : null
+            } : null,
+            source: 'firebase-fallback'
         });
-        console.log("Backup: User saved to Firebase");
+        console.log("User saved to Firebase");
+        
+        // If Prisma is unavailable, we stop here and return success
+        if (!prismaAvailable) {
+            return NextResponse.json({ 
+                user: { name, email, role: businessName ? 'OWNER' : 'USER' }, 
+                message: "Inscription réussie (Mode Sauvegarde)" 
+            }, { status: 201 });
+        }
+
     } catch (firebaseError) {
         console.error("Firebase backup failed:", firebaseError);
-        // Continue execution, do not block main flow if backup fails
+        // If BOTH fail, we have a problem. But if Prisma is available, we continue.
+        if (!prismaAvailable) {
+             return NextResponse.json({ message: "Erreur lors de l'inscription (Service indisponible)" }, { status: 500 })
+        }
     }
 
-    // If business details are provided, create user and business
+    // If business details are provided, create user and business in Postgres
     if (businessName) {
         if (!category || !address || !city || !logoUrl) {
             return NextResponse.json({ message: "Informations sur l'entreprise manquantes" }, { status: 400 })

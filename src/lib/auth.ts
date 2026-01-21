@@ -6,7 +6,9 @@ import { database } from "@/lib/firebase"
 import { ref, query, orderByChild, equalTo, get } from "firebase/database"
 
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key_for_dev_mode_only", // ENSURE SECRET IS PRESENT
+  debug: true, // Enable debugging to see logs in Railway console
+  trustHost: true, // Trust the host header (important for Railway/custom domains)
+  secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key_for_dev_mode_only", 
   session: {
     strategy: "jwt",
   },
@@ -79,15 +81,21 @@ export const authOptions: NextAuthOptions = {
         }
         */
 
-        if (!user) {
+        if (!user || !user.password) {
+          console.log("User not found or no password");
           return null
         }
 
-        const isPasswordValid = await compare(credentials.password, user.password)
-        console.log("Password valid:", isPasswordValid);
+        try {
+            const isPasswordValid = await compare(credentials.password, user.password)
+            console.log("Password valid:", isPasswordValid);
 
-        if (!isPasswordValid) {
-          return null
+            if (!isPasswordValid) {
+                return null
+            }
+        } catch (bcryptError) {
+            console.error("Bcrypt error:", bcryptError);
+            return null;
         }
 
         return {

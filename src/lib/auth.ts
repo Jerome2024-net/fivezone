@@ -31,24 +31,35 @@ export const authOptions: NextAuthOptions = {
         // 1. Try Firebase (PRIMARY DB NOW)
         try {
             const usersRef = ref(database, 'users');
-            const q = query(usersRef, orderByChild('email'), equalTo(credentials.email));
-            const snapshot = await get(q);
+            // Simplified Fetch: Get all users and filter in memory to avoid Index/Query issues
+            const snapshot = await get(usersRef);
             
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                const key = Object.keys(data)[0];
-                const firebaseUser = data[key];
-                user = {
-                    id: key,
-                    email: firebaseUser.email,
-                    name: firebaseUser.name,
-                    password: firebaseUser.password, // This is hashed
-                    role: firebaseUser.role,
+                // Loosely find user by email (trim and lowercase safe)
+                const searchEmail = credentials.email.toLowerCase().trim();
+                
+                const foundKey = Object.keys(data).find(key => {
+                    const uEmail = data[key]?.email;
+                    return uEmail && uEmail.toLowerCase().trim() === searchEmail;
+                });
+
+                if (foundKey) {
+                    const firebaseUser = data[foundKey];
+                    user = {
+                        id: foundKey,
+                        email: firebaseUser.email,
+                        name: firebaseUser.name,
+                        password: firebaseUser.password, // This is hashed
+                        role: firebaseUser.role,
+                    }
+                    isFirebaseUser = true;
+                    console.log("Firebase Auth: User found", user.email);
+                } else {
+                     console.log("Firebase Auth: User not found in scan");
                 }
-                isFirebaseUser = true;
-                console.log("Firebase Auth: User found", user.email);
             } else {
-                console.log("Firebase Auth: User not found");
+                console.log("Firebase Auth: No users table");
             }
         } catch (firebaseErr: any) {
             console.error("Firebase Auth Lookup failed:", firebaseErr);

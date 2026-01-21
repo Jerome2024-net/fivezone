@@ -24,38 +24,32 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { email, password, name, businessName, category, address, city, phone, website, logoUrl, media } = registrationSchema.parse(body)
 
-    // CHECK PRISMA CONNECTION & EXISTING USER
     let existingUserByEmail = null;
-    let prismaAvailable = true;
-
+    
+    // CHECK EXISTING USER IN FIREBASE (Prisma Disabled)
     try {
-      existingUserByEmail = await prisma.user.findUnique({
-        where: { email: email }
-      })
-    } catch (e: any) {
-      console.warn("Prisma unavailable (Database URL missing or connection failed). Proceeding with Firebase backup.", e.message);
-      prismaAvailable = false;
-    }
-
-    if (existingUserByEmail) {
-      return NextResponse.json({ user: null, message: "Un utilisateur avec cet email existe déjà" }, { status: 409 })
+        const usersRef = ref(database, 'users');
+        const q = query(usersRef, orderByChild('email'), equalTo(email));
+        const snapshot = await get(q);
+        if (snapshot.exists()) {
+             return NextResponse.json({ user: null, message: "Un utilisateur avec cet email existe déjà" }, { status: 409 })
+        }
+    } catch (e) {
+        // Continue if check fails, we will try to write anyway
+        console.warn("Firebase duplication check failed", e);
     }
 
     const hashedPassword = await hash(password, 10)
     
-    // BACKUP: Save to Firebase Realtime Database
-    // We do this BEFORE Prisma transaction if Prisma is unavailable, or alongside it.
-    // If Prisma is down, this is our ONLY storage.
+    // SAVE TO FIREBASE ONLY
     try {
         const usersRef = ref(database, 'users');
-        // Check uniqueness in Firebase if Prisma is down (optional but good practice)
-        // Skipping complex query for now to ensure write success.
-        
         const newUserRef = push(usersRef);
-        await set(newUserRef, {
+        
+        const userData = {
             email,
             name,
-            password: hashedPassword, // Store hashed password so we can potentially recover/migrate later
+            password: hashedPassword, 
             role: businessName ? 'OWNER' : 'USER',
             createdAt: new Date().toISOString(),
             business: businessName ? {
@@ -68,104 +62,27 @@ export async function POST(req: Request) {
                 logoUrl,
                 media
             } : null,
-            source: 'firebase-fallback'
-        });
-        console.log("User saved to Firebase");
+            source: 'firebase-primary'
+        };
+
+        await set(newUserRef, userData);
+        console.log("User saved to Firebase (Primary)");
         
-        // If Prisma is unavailable, we stop here and return success
-        if (!prismaAvailable) {
-            return NextResponse.json({ 
-                user: { name, email, role: businessName ? 'OWNER' : 'USER' }, 
-                message: "Inscription réussie (Mode Sauvegarde)" 
-            }, { status: 201 });
-        }
+        return NextResponse.json({ 
+            user: { name, email, role: 'OWNER' }, 
+            message: "Inscription réussie (Firebase)" 
+        }, { status: 201 });
 
     } catch (firebaseError: any) {
-        console.error("Firebase backup failed:", firebaseError);
-        // If BOTH fail, we have a problem. But if Prisma is available, we continue.
-        if (!prismaAvailable) {
-             const errorMessage = firebaseError?.message || firebaseError?.code || "Unknown Firebase Error";
-             return NextResponse.json({ message: `Erreur interne (Mode Sauvegarde échoué): ${errorMessage}` }, { status: 500 })
-        }
+        console.error("Firebase registration failed:", firebaseError);
+        const errorMessage = firebaseError?.message || firebaseError?.code || "Unknown Firebase Error";
+        return NextResponse.json({ message: `Erreur interne: ${errorMessage}` }, { status: 500 })
     }
 
-    // If business details are provided, create user and business in Postgres
-    if (businessName) {
-        if (!category || !address || !city || !logoUrl) {
-            return NextResponse.json({ message: "Informations sur l'entreprise manquantes" }, { status: 400 })
-        }
+    // PRISMA DISABLED - END OF FUNCTION REACHED NATURALLY IF FIREBASE FAILS BUT WE RETURNED ABOVE
+    return NextResponse.json({ message: "Service indisponible (Firebase Fail)" }, { status: 500 })
 
-        // Start a transaction to create user, category (if needed) and business
-        const result = await prisma.$transaction(async (tx) => {
-            // 1. Create User
-            const newUser = await tx.user.create({
-                data: {
-                    email,
-                    name,
-                    password: hashedPassword,
-                    role: 'OWNER',
-                }
-            })
-
-            // 2. Find or Create Category
-            let categoryRecord = await tx.category.findUnique({
-                where: { slug: category }
-            })
-
-            if (!categoryRecord) {
-                // Ensure unique name/slug if creating new
-                const existingName = await tx.category.findUnique({ where: { name: category } });
-                
-                if (existingName) {
-                    categoryRecord = existingName;
-                } else {
-                    categoryRecord = await tx.category.create({
-                        data: {
-                            name: category,
-                            slug: category, // For simplicity using same string, normally slugify
-                        }
-                    })
-                }
-            }
-
-            // 3. Create Business
-            await tx.business.create({
-                data: {
-                    name: businessName,
-                    categoryId: categoryRecord.id,
-                    address,
-                    city,
-                    phone: phone || null,
-                    website: website || null,
-                    imageUrl: logoUrl, // Using logo as main image
-                    ownerId: newUser.id,
-                    media: media && media.length > 0 ? {
-                        create: media.map(url => ({
-                            url,
-                            type: 'IMAGE'
-                        })) 
-                    } : undefined
-                }
-            })
-
-            return newUser
-        })
-        
-        return NextResponse.json({ user: result, message: "Compte entreprise créé avec succès" }, { status: 201 })
-    } 
-    
-    // Default flow: Regular User Registration
-    const newUser = await prisma.user.create({
-        data: {
-            email,
-            name,
-            password: hashedPassword,
-            role: 'USER',
-        }
-    })
-
-    return NextResponse.json({ user: newUser, message: "Compte utilisateur créé avec succès" }, { status: 201 })
-
+    /* PRISMA CODE REMOVED TEMPORARILY */
   } catch (error: any) {
     console.error("Registration error:", error)
     return NextResponse.json({ message: error.message || "Une erreur est survenue" }, { status: 500 })

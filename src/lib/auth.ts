@@ -27,6 +27,34 @@ export const authOptions: NextAuthOptions = {
         let user = null;
         let isFirebaseUser = false;
 
+        // 1. Try Firebase (PRIMARY DB NOW)
+        try {
+            const usersRef = ref(database, 'users');
+            const q = query(usersRef, orderByChild('email'), equalTo(credentials.email));
+            const snapshot = await get(q);
+            
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const key = Object.keys(data)[0];
+                const firebaseUser = data[key];
+                user = {
+                    id: key,
+                    email: firebaseUser.email,
+                    name: firebaseUser.name,
+                    password: firebaseUser.password, // This is hashed
+                    role: firebaseUser.role,
+                }
+                isFirebaseUser = true;
+                console.log("Firebase Auth: User found", user.email);
+            } else {
+                console.log("Firebase Auth: User not found");
+            }
+        } catch (firebaseErr: any) {
+            console.error("Firebase Auth Lookup failed:", firebaseErr);
+            // Don't throw, just let user be null
+        }
+
+        /* PRISMA DISABLED - CAUSED SERVER ERRORS IN PROD
         // 1. Try Prisma (Primary DB)
         try {
             user = await prisma.user.findUnique({
@@ -37,41 +65,14 @@ export const authOptions: NextAuthOptions = {
         } catch (e: any) {
              console.log("Prisma Auth Failed (Fallback to Firebase):", e.message);
         }
-
-        // 2. Try Firebase (Backup DB) if user not found in Prisma
-        if (!user) {
-            try {
-                const usersRef = ref(database, 'users');
-                // Note: Querying by child requires index on 'email' in rules for performance, 
-                // but works on small datasets without it.
-                // Alternative: Fetch all users and filter (inefficient but safe for MVP without indexes)
-                // Let's try direct query first.
-                const q = query(usersRef, orderByChild('email'), equalTo(credentials.email));
-                const snapshot = await get(q);
-                
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const key = Object.keys(data)[0];
-                    const firebaseUser = data[key];
-                    user = {
-                        id: key,
-                        email: firebaseUser.email,
-                        name: firebaseUser.name,
-                        password: firebaseUser.password, // This is hashed
-                        role: firebaseUser.role,
-                    }
-                    isFirebaseUser = true; // Flag for debugging
-                }
-            } catch (firebaseErr) {
-                console.error("Firebase Auth Lookup failed:", firebaseErr);
-            }
-        }
+        */
 
         if (!user) {
           return null
         }
 
         const isPasswordValid = await compare(credentials.password, user.password)
+        console.log("Password valid:", isPasswordValid);
 
         if (!isPasswordValid) {
           return null

@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Filter } from "lucide-react"
 import Link from "next/link"
 import { SearchResultCard } from "@/components/search/SearchResultCard"
-import { prisma } from "@/lib/prisma"
+import { database } from "@/lib/firebase"
+import { ref, get } from "firebase/database"
 
 export const dynamic = 'force-dynamic'
 
@@ -13,29 +14,33 @@ export default async function SearchPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { q, category } = await searchParams;
-  const searchTerm = typeof q === 'string' ? q : '';
-  const categoryTerm = typeof category === 'string' ? category : '';
+  const searchTerm = (typeof q === 'string' ? q : '').toLowerCase();
+  const categoryTerm = (typeof category === 'string' ? category : '').toLowerCase();
   
-  const where: any = {};
-  if (searchTerm) {
-    where.OR = [
-      { name: { contains: searchTerm } },
-      { description: { contains: searchTerm } },
-      { city: { contains: searchTerm } }
-    ];
-  }
-  if (categoryTerm) {
-    where.category = {
-        name: { contains: categoryTerm }
-    };
-  }
-
+  // Fetch From Firebase using scan strategy (not ideal for huge datasets but fine for now)
   const results = await (async () => {
     try {
-      return await prisma.business.findMany({
-        where,
-        include: { category: true }
-      });
+        const usersRef = ref(database, 'users');
+        const snapshot = await get(usersRef);
+        const data = snapshot.exists() ? snapshot.val() : {};
+        
+        const allBusinesses = Object.values(data)
+            .map((u: any) => u.business)
+            .filter((b: any) => !!b); // Get all businesses
+
+        return allBusinesses.filter((b: any) => {
+             const nameMatch = !searchTerm || b.name?.toLowerCase().includes(searchTerm);
+             const descMatch = !searchTerm || b.description?.toLowerCase().includes(searchTerm);
+             const cityMatch = !searchTerm || b.city?.toLowerCase().includes(searchTerm);
+             
+             // Category filtering
+             // Assuming category is stored as { id, name, slug } OR just string in newer objects
+             const catName = typeof b.category === 'string' ? b.category : b.category?.name;
+             const catMatch = !categoryTerm || catName?.toLowerCase().includes(categoryTerm);
+
+             return (nameMatch || descMatch || cityMatch) && catMatch;
+        });
+
     } catch (e) {
       console.error("Database Error:", e);
       return [];

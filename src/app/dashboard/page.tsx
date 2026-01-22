@@ -1,14 +1,9 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart, Users, Star, MessageSquare, Settings, LogOut, ArrowUpRight, MessageCircle, MousePointerClick, Phone, Tag, Check, Lock } from "lucide-react"
-import Link from "next/link"
-import { MediaUpload } from "@/components/dashboard/MediaUpload"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { database } from "@/lib/firebase" 
-import { ref, get, query, orderByChild, equalTo } from "firebase/database"
+import { ref, get } from "firebase/database"
+import { DashboardClient } from "@/components/dashboard/DashboardClient"
 
 export const dynamic = 'force-dynamic'
 
@@ -19,7 +14,7 @@ export default async function DashboardPage() {
       redirect("/login")
   }
   
-  // FETCH USER & BUSINESS FROM FIREBASE (Old Prisma code replaced)
+  // FETCH USER & BUSINESS FROM FIREBASE
   let user = null;
   let business = null;
 
@@ -43,125 +38,13 @@ export default async function DashboardPage() {
   
   if (!business) {
      // If user has account but no business, redirect to registration
-     // redirect("/register") 
-     // For now show empty state instead of redirect to avoid loops
+     redirect("/register") 
   }
 
   const isPro = business?.subscriptionTier === 'PRO' || business?.subscriptionTier === 'ENTERPRISE' || false
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-       {/* Dashboard Header */}
-       <header className="bg-slate-900 text-white py-4 px-6 shadow-md">
-           <div className="container mx-auto flex justify-between items-center">
-               <div className="flex items-center gap-2">
-                   <div className="h-8 w-8 rounded bg-[#34E0A1] flex items-center justify-center">
-                        <BarChart className="h-5 w-5 text-slate-900" />
-                   </div>
-                   <span className="font-bold text-xl">Espace Propriétaire</span>
-                   {isPro ? (
-                       <span className="bg-[#34E0A1] text-slate-900 text-xs px-2 py-0.5 rounded font-bold ml-2">PRO</span>
-                   ) : (
-                       <Link href="/pricing" className="ml-2">
-                           <span className="bg-slate-700 hover:bg-[#34E0A1] hover:text-slate-900 transition-colors text-white text-xs px-2 py-1 rounded font-bold border border-slate-600">
-                               PASSER PRO
-                           </span>
-                       </Link>
-                   )}
-               </div>
-               <div className="flex items-center gap-4">
-                   <span className="text-sm font-medium hidden md:inline">{business?.name || "Mon Entreprise"}</span>
-                   <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800" asChild>
-                        <Link href="/api/auth/signout">
-                            <LogOut className="h-4 w-4 md:mr-2" /> 
-                            <span className="hidden md:inline">Se déconnecter</span>
-                        </Link>
-                   </Button>
-               </div>
-           </div>
-       </header>
-
-       <main className="flex-1 container mx-auto px-4 md:px-6 py-8">
-            {!business ? (
-                <div className="text-center py-12">
-                    <h2 className="text-2xl font-bold mb-4">Bienvenue !</h2>
-                    <p className="mb-4">Vous n'avez pas encore configuré votre entreprise.</p>
-                    <Button asChild><Link href="/register">Créer ma fiche entreprise</Link></Button>
-                </div>
-            ) : (
-            <>
-            {!isPro && (
-                <div className="bg-slate-900 text-white p-6 rounded-xl mb-8 flex flex-col md:flex-row items-center justify-between shadow-lg gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 bg-[#34E0A1] rounded-full flex items-center justify-center text-slate-900 font-bold shrink-0">
-                            <Star className="h-6 w-6" />
-                        </div>
-                        <div>
-                            <h3 className="font-black text-xl text-white">Boostez votre visibilité</h3>
-                            <p className="text-slate-300">Débloquez les vues illimitées, WhatsApp et les promotions exclusives.</p>
-                        </div>
-                    </div>
-                    <Button className="bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 font-bold px-8 h-12 w-full md:w-auto" asChild>
-                        <Link href="/pricing">PASSER PRO</Link>
-                    </Button>
-                </div>
-            )}
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Content - Preview & Stats */}
-                <div className="lg:col-span-2 space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Aperçu de votre fiche</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="bg-white border rounded-lg p-4 flex gap-4">
-                                <div className="h-24 w-24 bg-slate-200 rounded-md overflow-hidden shrink-0">
-                                    {business.logoUrl ? (
-                                        <img src={business.logoUrl} alt="Logo" className="h-full w-full object-cover" /> 
-                                    ) : (
-                                        <div className="h-full w-full flex items-center justify-center text-slate-400"><Tag /></div>
-                                    )}
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-lg">{business.name}</h3>
-                                    <p className="text-sm text-slate-500">{business.category}</p>
-                                    <p className="text-sm text-slate-500 mt-1">{business.address}, {business.city}</p>
-                                    <div className="mt-2 flex gap-2">
-                                        <span className="text-xs bg-slate-100 px-2 py-1 rounded">{business.phone || "Pas de téléphone"}</span>
-                                        {business.website && <span className="text-xs bg-slate-100 px-2 py-1 rounded text-blue-600">Site Web</span>}
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Sidebar - Quick Actions */}
-                <div className="space-y-6">
-                   <Card>
-                       <CardHeader><CardTitle>Informations</CardTitle></CardHeader>
-                       <CardContent className="space-y-4">
-                           <div className="flex justify-between items-center text-sm">
-                               <span className="text-slate-500">Statut</span>
-                               <span className="font-bold text-green-600 px-2 py-0.5 bg-green-50 rounded-full">Actif</span>
-                           </div>
-                           <div className="flex justify-between items-center text-sm">
-                               <span className="text-slate-500">Abonnement</span>
-                               <span className="font-bold">{isPro ? 'PRO' : 'Gratuit'}</span>
-                           </div>
-                           <div className="pt-4 border-t">
-                               <p className="text-xs text-slate-400 text-center mb-2">Besoin d'aide ?</p>
-                               <Button variant="outline" className="w-full text-xs h-8">Contact Support</Button>
-                           </div>
-                       </CardContent>
-                   </Card>
-                </div>
-            </div>
-            </>
-            )}
-       </main>
-    </div>
+    <DashboardClient initialBusiness={business} isPro={isPro} />
   )
 }
 // OLD CODE REMOVED TO PREVENT ERRORS

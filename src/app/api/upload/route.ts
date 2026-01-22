@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export async function POST(request: Request) {
   try {
@@ -12,31 +12,28 @@ export async function POST(request: Request) {
     }
 
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
-    // Create uploads directory if not exists
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
-    try {
-        await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-        // ignore if exists
-    }
-
-    // Generate unique filename
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-    const filepath = path.join(uploadDir, filename);
-
-    await writeFile(filepath, buffer);
     
-    const publicUrl = `/uploads/${filename}`;
-
-    // TODO: Save to database (Media model)
-    // await prisma.media.create({ ... })
+    // Create a reference to the file in Firebase Storage
+    const storageRef = ref(storage, `uploads/${filename}`);
+    
+    // Upload the file
+    // metadata makes it viewable in browser if content-type is set correctly
+    const metadata = {
+        contentType: file.type,
+    };
+    
+    await uploadBytes(storageRef, buffer, metadata);
+    
+    // Get the public URL
+    const publicUrl = await getDownloadURL(storageRef);
     
     return NextResponse.json({ success: true, activeUrl: publicUrl });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload Error:', error);
-    return NextResponse.json({ success: false, message: 'Échec du téléchargement' }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'Échec du téléchargement: ' + error.message }, { status: 500 });
   }
 }

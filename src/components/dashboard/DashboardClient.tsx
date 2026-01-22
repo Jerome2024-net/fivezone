@@ -25,8 +25,8 @@ const EditSchema = z.object({
   city: z.string().min(1, "La ville est requise"),
   phone: z.string().optional(),
   website: z.string().optional(),
-  logoUrl: z.string().optional(),
-  coverUrl: z.string().optional(),
+  logoUrl: z.string().min(1, "Le logo est obligatoire"),
+  coverUrl: z.string().min(1, "La photo de couverture est obligatoire"),
   ctaAction: z.string().optional(),
   ctaUrl: z.string().optional(),
 })
@@ -107,21 +107,35 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         {/* Media Section */}
                         <div className="space-y-4">
-                            <h2 className="text-lg font-semibold border-b pb-2">Identité Visuelle</h2>
+                            <h2 className="text-lg font-semibold border-b pb-2 flex items-center justify-between">
+                                Identité Visuelle
+                                <span className="text-xs text-red-500 font-normal">* Media Obligatoires</span>
+                            </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <ImageUpload 
-                                    label="Photo de couverture (16:9)" 
-                                    value={form.watch('coverUrl')} 
-                                    onChange={(url) => form.setValue('coverUrl', url)} 
-                                    aspectRatio="video"
-                                    className="w-full"
-                                />
-                                <ImageUpload 
-                                    label="Logo / Avatar (Carré)" 
-                                    value={form.watch('logoUrl')} 
-                                    onChange={(url) => form.setValue('logoUrl', url)} 
-                                    className="w-32"
-                                />
+                                <div className="space-y-2">
+                                    <ImageUpload 
+                                        label="Photo de couverture (16:9) *" 
+                                        value={form.watch('coverUrl')} 
+                                        onChange={(url) => form.setValue('coverUrl', url)} 
+                                        aspectRatio="video"
+                                        className="w-full"
+                                    />
+                                    {form.formState.errors.coverUrl && (
+                                        <p className="text-xs text-red-500 font-bold">{form.formState.errors.coverUrl.message}</p>
+                                    )}
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <ImageUpload 
+                                        label="Logo / Avatar (Carré) *" 
+                                        value={form.watch('logoUrl')} 
+                                        onChange={(url) => form.setValue('logoUrl', url)} 
+                                        className="w-32"
+                                    />
+                                    {form.formState.errors.logoUrl && (
+                                        <p className="text-xs text-red-500 font-bold">{form.formState.errors.logoUrl.message}</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

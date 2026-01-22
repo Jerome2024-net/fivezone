@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Utensils, Coffee, ShoppingBag, Car, Scissors, Stethoscope, Briefcase, Wrench, Folder, Bed, Activity } from "lucide-react"
-import { prisma } from "@/lib/prisma"
+
 
 export const dynamic = 'force-dynamic'
 
@@ -20,18 +20,16 @@ const iconMap: Record<string, any> = {
     "activities": Activity
 };
 
-export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({
-    include: {
-        _count: {
-            select: { businesses: true }
-        }
-    },
-    orderBy: {
-        name: 'asc'
-    }
-  });
+const categories = [
+    { name: 'Restaurants', slug: 'restaurants', _count: { businesses: 120 } },
+    { name: 'Hôtels', slug: 'hotels', _count: { businesses: 45 } },
+    { name: 'Services', slug: 'services', _count: { businesses: 80 } },
+    { name: 'Shopping', slug: 'shopping', _count: { businesses: 60 } },
+    { name: 'Beauté', slug: 'beauty', _count: { businesses: 30 } },
+    { name: 'Santé', slug: 'health', _count: { businesses: 25 } },
+];
 
+export default function CategoriesPage() {
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
        <div className="text-center mb-12">

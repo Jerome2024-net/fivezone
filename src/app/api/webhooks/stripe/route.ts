@@ -1,6 +1,7 @@
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { database } from "@/lib/firebase"
+import { ref, get, update } from "firebase/database"
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build", {
@@ -37,33 +38,30 @@ export async function POST(req: Request) {
           console.log(`Processing subscription for email: ${email}`)
 
           // 1. Find the user by email
-          const user = await prisma.user.findUnique({
-              where: { email },
-              include: { businesses: true }
-          })
+          const usersRef = ref(database, 'users');
+          const snapshot = await get(usersRef);
+          
+          if (snapshot.exists()) {
+              const data = snapshot.val();
+              const userId = Object.keys(data).find(key => 
+                  data[key]?.email?.toLowerCase() === email.toLowerCase()
+              );
 
-          if (user) {
-              if (user.businesses.length > 0) {
-                // 2. Update all businesses owned by this user to PRO (or specific logic)
-                // For this MVP, we upgrade the user's primary business
-                const businessId = user.businesses[0].id
-                
-                await prisma.business.update({
-                    where: { id: businessId },
-                    data: {
-                        subscriptionTier: "PRO",
-                        // Set subscription end date to 30 days from now (or rely on stripe events for recurrence)
-                        subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 
-                        // Unlock Pro features
-                        whatsapp: session.custom_fields?.find(f => f.key === 'whatsapp')?.text?.value || null
-                    }
-                })
-                console.log(`Upgraded business ${businessId} to PRO`)
+              if (userId) {
+                  const userIdx = data[userId];
+                  if (userIdx.business) {
+                      await update(ref(database, `users/${userId}/business`), {
+                          subscriptionTier: "PRO",
+                          subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                          whatsapp: session.custom_fields?.find((f: any) => f.key === 'whatsapp')?.text?.value || null
+                      });
+                      console.log(`Upgraded business for user ${userId} to PRO`);
+                  } else {
+                      console.log("User has no business to upgrade");
+                  }
               } else {
-                  console.log("User has no businesses to upgrade")
+                  console.log("No user found with this email in Firebase");
               }
-          } else {
-              console.log("No user found with this email")
           }
       }
   }

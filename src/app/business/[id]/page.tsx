@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink } from "lucide-react"
 import Link from "next/link"
-import { prisma } from "@/lib/prisma"
+import { database } from "@/lib/firebase" 
+import { ref, get } from "firebase/database"
 import { notFound } from "next/navigation"
 
 export const dynamic = 'force-dynamic'
@@ -10,10 +11,20 @@ export const dynamic = 'force-dynamic'
 export default async function BusinessPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  const business = await prisma.business.findUnique({
-    where: { id },
-    include: { category: true }
-  });
+  let business = null;
+  try {
+      const usersRef = ref(database, 'users');
+      const snapshot = await get(usersRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const foundUser = Object.values(data).find((u: any) => u.business?.id === id);
+        if (foundUser) {
+            business = (foundUser as any).business;
+        }
+      }
+  } catch (error) {
+      console.error("Business Fetch Error:", error);
+  }
   
   if (!business) {
     return (
@@ -30,18 +41,15 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
   const recommended = isPro;
   
   const businessName = business.name;
-  const businessCategory = business.category.name.toLowerCase(); // slug might be better if I fetch it, currently I fetch category relation which has slug.
-  
-  const categoryType = business.category.slug || 'restaurant'; 
+  const categoryType = (typeof business.category === 'string' ? business.category : business.category?.name) || 'Restaurant';
 
   const getCTA = (type: string) => {
-    switch(type) {
-        case 'restaurant': return "Réserver une table";
-        case 'hotel': return "Réserver une chambre";
-        case 'service': return "Prendre Rendez-vous";
-        case 'shop': return "Commander en ligne";
-        default: return "Contacter";
-    }
+    const lower = type.toLowerCase();
+    if (lower.includes('restaurant')) return "Réserver une table";
+    if (lower.includes('hotel')) return "Réserver une chambre";
+    if (lower.includes('service')) return "Prendre Rendez-vous";
+    if (lower.includes('shop') || lower.includes('boutique')) return "Commander en ligne";
+    return "Contacter";
   }
 
   const primaryCTA = getCTA(categoryType);
@@ -68,7 +76,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                      </span>
                      <span className="text-slate-900 underline font-bold cursor-pointer">{business.reviewCount} avis</span>
                      <span>•</span>
-                     <span className="text-slate-900 underline cursor-pointer">$$$$, {business.category.name}, {business.city}</span>
+                     <span className="text-slate-900 underline cursor-pointer">$$$$, {categoryType}, {business.city}</span>
                      <span>•</span>
                      <span className="text-slate-900 underline cursor-pointer">Ouvert</span>
                  </div>

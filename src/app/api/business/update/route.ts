@@ -63,8 +63,20 @@ export async function PUT(req: Request) {
         phone: validatedData.phone || "",
         website: validatedData.website || "",
         description: validatedData.description || "",
+        logoUrl: validatedData.logoUrl || "",
+        coverUrl: validatedData.coverUrl || "",
+        ctaAction: validatedData.ctaAction || "none",
+        ctaUrl: validatedData.ctaUrl || "",
         updatedAt: new Date().toISOString()
     });
+    
+    // Also update the root user image if logo is provided, so it shows in the header
+    if (validatedData.logoUrl) {
+         const userRootRef = ref(database, `users/${userKey}`);
+         await update(userRootRef, {
+             image: validatedData.logoUrl
+         });
+    }
 
     return NextResponse.json({ message: "Informations mises à jour avec succès" })
 

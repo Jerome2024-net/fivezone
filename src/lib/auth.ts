@@ -52,6 +52,7 @@ export const authOptions: NextAuthOptions = {
                         id: foundKey,
                         email: firebaseUser.email,
                         name: firebaseUser.name,
+                        image: firebaseUser.image || firebaseUser.business?.logoUrl || null,
                         password: firebaseUser.password, // This is hashed
                         role: firebaseUser.role,
                     }
@@ -102,6 +103,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id + "",
           email: user.email,
           name: user.name,
+          image: user.image,
           role: user.role,
         }
       }

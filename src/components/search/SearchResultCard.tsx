@@ -18,14 +18,19 @@ export function SearchResultCard({
     name, 
     category,
     rating = 4.5,
-    reviewCount = 0 
+    reviewCount = 0,
+    imageUrl
 }: SearchResultCardProps) {
     return (
         <Link href={`/business/${id}`} className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all shadow-sm">
             <div className="flex flex-col md:flex-row h-full md:h-64">
                 {/* Image */}
                 <div className="w-full md:w-72 h-48 md:h-full bg-slate-100 relative shrink-0">
-                    <div className="absolute inset-0 bg-slate-200" />
+                    {imageUrl ? (
+                        <img src={imageUrl} alt={name} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                        <div className="absolute inset-0 bg-slate-200" />
+                    )}
                     <div className="absolute top-3 right-3 z-10">
                         <button 
                             className="p-2 rounded-full bg-white/90 hover:bg-white text-slate-900 shadow-sm transition-colors"
@@ -38,9 +43,7 @@ export function SearchResultCard({
                             <Heart className="h-4 w-4" />
                         </button>
                     </div>
-                    <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium">
-                        Photo {id}
-                    </div>
+                    {!imageUrl && <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium">Photo {id}</div>}
                 </div>
                 
                 {/* Content */}

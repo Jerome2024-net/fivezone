@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Loader2, Upload, X, Image as ImageIcon } from "lucide-react"
+import { storage } from "@/lib/firebase"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 interface ImageUploadProps {
     value?: string;
@@ -14,28 +16,31 @@ interface ImageUploadProps {
 
 export function ImageUpload({ value, onChange, label, className, aspectRatio = "square" }: ImageUploadProps) {
     const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.length) return;
 
         setUploading(true);
-        const formData = new FormData();
-        formData.append('file', e.target.files[0]);
+        setError(null);
+        const file = e.target.files[0];
 
         try {
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
+            // Client-side Upload to Firebase Storage
+            const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+            const storageRef = ref(storage, `uploads/${filename}`);
+            
+            const metadata = {
+                contentType: file.type,
+            };
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data.activeUrl) {
-                    onChange(data.activeUrl);
-                }
-            }
-        } catch (error) {
-            console.error(error);
+            const snapshot = await uploadBytes(storageRef, file, metadata);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            onChange(downloadURL);
+        } catch (error: any) {
+            console.error("Upload failed:", error);
+            setError("Erreur lors de l'upload. Vérifiez votre connexion.");
         } finally {
             setUploading(false);
         }
@@ -43,15 +48,16 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
 
     return (
         <div className={`space-y-2 ${className}`}>
-            <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center justify-between">
                 {label}
+                {uploading && <span className="text-xs text-muted-foreground animate-pulse">Envoi en cours...</span>}
             </span>
             
             <div className={`
-                relative border-2 border-dashed border-slate-200 rounded-lg 
+                relative border-2 border-dashed rounded-lg 
                 flex flex-col items-center justify-center 
-                hover:border-slate-400 hover:bg-slate-50 transition-all
-                overflow-hidden
+                transition-all overflow-hidden
+                ${error ? 'border-red-300 bg-red-50' : 'border-slate-200 hover:border-slate-400 hover:bg-slate-50'}
                 ${aspectRatio === 'square' ? 'aspect-square w-32' : 'aspect-video w-full'}
             `}>
                 {value ? (
@@ -77,11 +83,12 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
                              <Upload className="h-6 w-6 text-slate-400 mb-2" />
                         )}
                         <span className="text-xs text-slate-500 text-center">
-                            {uploading ? "..." : "Image"}
+                            {uploading ? "..." : (error ? "Réessayer" : "Image")}
                         </span>
                     </label>
                 )}
             </div>
+            {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
         </div>
     )
 }

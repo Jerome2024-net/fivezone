@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react"
+import { storage } from "@/lib/firebase"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 export function MediaUpload() {
   const [uploading, setUploading] = useState(false)
@@ -13,30 +15,23 @@ export function MediaUpload() {
     if (!e.target.files?.length) return;
 
     setUploading(true);
-    const formData = new FormData();
-    Array.from(e.target.files).forEach((file) => {
-        formData.append('file', file);
-    });
+    
+    const filesToUpload = Array.from(e.target.files);
+    const newUrls: string[] = [];
 
     try {
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            // Assuming API returns { url: string }[]
-            if (data.activeUrl) {
-                setFiles(prev => [...prev, data.activeUrl])
-            } else if (data.urls) {
-                setFiles(prev => [...prev, ...data.urls])
-            }
-        } else {
-            console.error('Upload failed');
+        for (const file of filesToUpload) {
+             const storageRef = ref(storage, `uploads/${Date.now()}-${file.name}`);
+             const snapshot = await uploadBytes(storageRef, file);
+             const downloadURL = await getDownloadURL(snapshot.ref);
+             newUrls.push(downloadURL);
         }
+
+        setFiles(prev => [...prev, ...newUrls]);
+
     } catch (error) {
         console.error('Error uploading:', error);
+        alert("Une erreur est survenue lors de l'upload.");
     } finally {
         setUploading(false);
     }

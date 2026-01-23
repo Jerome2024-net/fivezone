@@ -4,8 +4,7 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react"
-import { storage } from "@/lib/firebase"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { supabase } from "@/lib/supabase"
 
 export function MediaUpload() {
   const [uploading, setUploading] = useState(false)
@@ -21,10 +20,19 @@ export function MediaUpload() {
 
     try {
         for (const file of filesToUpload) {
-             const storageRef = ref(storage, `uploads/${Date.now()}-${file.name}`);
-             const snapshot = await uploadBytes(storageRef, file);
-             const downloadURL = await getDownloadURL(snapshot.ref);
-             newUrls.push(downloadURL);
+             const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+             
+             const { error: uploadError } = await supabase.storage
+                .from('uploads')
+                .upload(filename, file);
+
+             if (uploadError) throw uploadError;
+
+             const { data: { publicUrl } } = supabase.storage
+                .from('uploads')
+                .getPublicUrl(filename);
+                
+             newUrls.push(publicUrl);
         }
 
         setFiles(prev => [...prev, ...newUrls]);

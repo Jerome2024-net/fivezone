@@ -3,8 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Loader2, Upload, X, Image as ImageIcon } from "lucide-react"
-import { storage } from "@/lib/firebase"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { supabase } from "@/lib/supabase"
 
 interface ImageUploadProps {
     value?: string;
@@ -26,18 +25,19 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
         const file = e.target.files[0];
 
         try {
-            // Client-side Upload to Firebase Storage
             const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const storageRef = ref(storage, `uploads/${filename}`);
             
-            const metadata = {
-                contentType: file.type,
-            };
+            const { data, error: uploadError } = await supabase.storage
+                .from('uploads')
+                .upload(filename, file);
 
-            const snapshot = await uploadBytes(storageRef, file, metadata);
-            const downloadURL = await getDownloadURL(snapshot.ref);
+            if (uploadError) throw uploadError;
 
-            onChange(downloadURL);
+            const { data: { publicUrl } } = supabase.storage
+                .from('uploads')
+                .getPublicUrl(filename);
+
+            onChange(publicUrl);
         } catch (error: any) {
             console.error("Upload failed:", error);
             setError("Erreur lors de l'upload. Vérifiez votre connexion.");

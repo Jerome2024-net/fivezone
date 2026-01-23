@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink } from "lucide-react"
 import Link from "next/link"
-import { database } from "@/lib/firebase" 
-import { ref, get } from "firebase/database"
+import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 
 export const dynamic = 'force-dynamic'
@@ -11,20 +10,13 @@ export const dynamic = 'force-dynamic'
 export default async function BusinessPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  let business = null;
-  try {
-      const usersRef = ref(database, 'users');
-      const snapshot = await get(usersRef);
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const foundUser = Object.values(data).find((u: any) => u.business?.id === id);
-        if (foundUser) {
-            business = (foundUser as any).business;
-        }
+  const business = await prisma.business.findUnique({
+      where: { id },
+      include: {
+          category: true,
+          owner: true // To show owner details if needed
       }
-  } catch (error) {
-      console.error("Business Fetch Error:", error);
-  }
+  });
   
   if (!business) {
     return (
@@ -41,7 +33,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
   const recommended = isPro;
   
   const businessName = business.name;
-  const categoryType = (typeof business.category === 'string' ? business.category : business.category?.name) || 'Restaurant';
+  const categoryType = business.category.name;
 
   const getCTA = (type: string) => {
     const lower = type.toLowerCase();

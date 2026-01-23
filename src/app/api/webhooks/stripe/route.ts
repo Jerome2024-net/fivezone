@@ -1,7 +1,6 @@
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import { database } from "@/lib/firebase"
-import { ref, get, update } from "firebase/database"
+import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build", {
@@ -37,17 +36,35 @@ export async function POST(req: Request) {
       if (email) {
           console.log(`Processing subscription for email: ${email}`)
 
-          // 1. Find the user by email
-          const usersRef = ref(database, 'users');
-          const snapshot = await get(usersRef);
-          
-          if (snapshot.exists()) {
-              const data = snapshot.val();
-              const userId = Object.keys(data).find(key => 
-                  data[key]?.email?.toLowerCase() === email.toLowerCase()
-              );
+          // 1. Find the user by email in Prisma
+          try {
+              const user = await prisma.user.findUnique({
+                  where: { email },
+                  include: { businesses: true }
+              });
 
-              if (userId) {
+              if (user && user.businesses.length > 0) {
+                  // 2. Update their subscription
+                  const businessId = user.businesses[0].id;
+                  await prisma.business.update({
+                      where: { id: businessId },
+                      data: {
+                          subscriptionTier: 'PRO', // Or determine based on priceId
+                          subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // +30 days example
+                      }
+                  });
+                   console.log(`Updated subscription for user ${user.id}`);
+              } else {
+                  console.log("No user or business found with this email in Prisma");
+              }
+          } catch (e) {
+              console.error("Prisma update error", e);
+          }
+      }
+  }
+
+  return new NextResponse(null, { status: 200 })
+}
                   const userIdx = data[userId];
                   if (userIdx.business) {
                       await update(ref(database, `users/${userId}/business`), {

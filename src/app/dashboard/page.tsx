@@ -1,8 +1,7 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { database } from "@/lib/firebase" 
-import { ref, get } from "firebase/database"
+import { prisma } from "@/lib/prisma"
 import { DashboardClient } from "@/components/dashboard/DashboardClient"
 
 export const dynamic = 'force-dynamic'
@@ -14,32 +13,20 @@ export default async function DashboardPage() {
       redirect("/login")
   }
   
-  // FETCH USER & BUSINESS FROM FIREBASE
-  let user = null;
-  let business = null;
-
-  try {
-      const usersRef = ref(database, 'users');
-      // Simple scan safe for small number of users
-      const snapshot = await get(usersRef);
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const foundKey = Object.keys(data).find(key => 
-            data[key]?.email?.toLowerCase().trim() === session.user.email.toLowerCase().trim()
-        );
-        if (foundKey) {
-            user = data[foundKey];
-            business = user.business;
-        }
+  // FETCH USER & BUSINESS FROM PRISMA
+  const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: {
+          businesses: true
       }
-  } catch (e) {
-      console.error("Dashboard Fetch Error:", e);
-  }
+  });
   
-  if (!business) {
+  if (!user || user.businesses.length === 0) {
      // If user has account but no business, redirect to registration
      redirect("/register") 
   }
+
+  const business = user.businesses[0]; // Assuming one business per user for now
 
   const isPro = business?.subscriptionTier === 'PRO' || business?.subscriptionTier === 'ENTERPRISE' || false
 

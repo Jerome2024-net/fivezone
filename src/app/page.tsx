@@ -3,37 +3,34 @@ import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
 import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer } from "lucide-react"
 import Link from "next/link"
-import { database } from "@/lib/firebase" 
-import { ref, get, query, limitToLast } from "firebase/database"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   let featuredBusinesses = [];
   try {
-     const usersRef = ref(database, 'users');
-     // Fetch last 10 users to show latest businesses
-     // Note: In real app, we would have a separate 'businesses' collection
-     const q = query(usersRef, limitToLast(8));
-     const snapshot = await get(q);
-     
-     if (snapshot.exists()) {
-         const data = snapshot.val();
-         featuredBusinesses = Object.values(data)
-            .filter((u: any) => u.business) // Only keep users with business
-            .map((u: any) => ({
-                id: u.id || Math.random().toString(), // Fallback ID if missing
-                name: u.business.name,
-                category: { name: u.business.category },
-                subscriptionTier: u.role === 'OWNER' ? 'FREE' : 'FREE', // Default
-                viewCount: 0,
-                rating: 5
-            }))
-            .reverse(); // Show newest first
-     }
+     const businesses = await prisma.business.findMany({
+         take: 8,
+         orderBy: {
+             createdAt: 'desc'
+         },
+         include: {
+             category: true
+         }
+     });
+
+     featuredBusinesses = businesses.map(b => ({
+         id: b.id,
+         name: b.name,
+         category: { name: b.category.name },
+         subscriptionTier: b.subscriptionTier,
+         viewCount: b.viewCount,
+         rating: b.rating
+     }));
+
   } catch (error) {
-    console.error("Firebase fetch error:", error);
-    // On ignore l'erreur pour afficher quand même la page
+    console.error("Prisma fetch error:", error);
   }
 
   return (

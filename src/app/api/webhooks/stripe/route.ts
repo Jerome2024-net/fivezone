@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build", {
-  apiVersion: "2025-12-15.clover", // Matching the exact version expected by the installed SDK
+  apiVersion: "2023-10-16",
   typescript: true,
 })
 
@@ -59,26 +59,6 @@ export async function POST(req: Request) {
               }
           } catch (e) {
               console.error("Prisma update error", e);
-          }
-      }
-  }
-
-  return new NextResponse(null, { status: 200 })
-}
-                  const userIdx = data[userId];
-                  if (userIdx.business) {
-                      await update(ref(database, `users/${userId}/business`), {
-                          subscriptionTier: "PRO",
-                          subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-                          whatsapp: session.custom_fields?.find((f: any) => f.key === 'whatsapp')?.text?.value || null
-                      });
-                      console.log(`Upgraded business for user ${userId} to PRO`);
-                  } else {
-                      console.log("User has no business to upgrade");
-                  }
-              } else {
-                  console.log("No user found with this email in Firebase");
-              }
           }
       }
   }

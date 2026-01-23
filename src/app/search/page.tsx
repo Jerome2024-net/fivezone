@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Filter } from "lucide-react"
 import Link from "next/link"
 import { SearchResultCard } from "@/components/search/SearchResultCard"
-import { database } from "@/lib/firebase"
-import { ref, get } from "firebase/database"
+import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
 
 export const dynamic = 'force-dynamic'
 
@@ -17,35 +17,31 @@ export default async function SearchPage({
   const searchTerm = (typeof q === 'string' ? q : '').toLowerCase();
   const categoryTerm = (typeof category === 'string' ? category : '').toLowerCase();
   
-  // Fetch From Firebase using scan strategy (not ideal for huge datasets but fine for now)
-  const results = await (async () => {
-    try {
-        const usersRef = ref(database, 'users');
-        const snapshot = await get(usersRef);
-        const data = snapshot.exists() ? snapshot.val() : {};
-        
-        const allBusinesses = Object.values(data)
-            .map((u: any) => u.business)
-            .filter((b: any) => !!b); // Get all businesses
-
-        return allBusinesses.filter((b: any) => {
-             const nameMatch = !searchTerm || b.name?.toLowerCase().includes(searchTerm);
-             const descMatch = !searchTerm || b.description?.toLowerCase().includes(searchTerm);
-             const cityMatch = !searchTerm || b.city?.toLowerCase().includes(searchTerm);
-             
-             // Category filtering
-             // Assuming category is stored as { id, name, slug } OR just string in newer objects
-             const catName = typeof b.category === 'string' ? b.category : b.category?.name;
-             const catMatch = !categoryTerm || catName?.toLowerCase().includes(categoryTerm);
-
-             return (nameMatch || descMatch || cityMatch) && catMatch;
-        });
-
-    } catch (e) {
-      console.error("Database Error:", e);
-      return [];
+  // Fetch From Prisma
+  const results = await prisma.business.findMany({
+    where: {
+      AND: [
+        searchTerm ? {
+          OR: [
+            { name: { contains: searchTerm, mode: 'insensitive' } },
+            { description: { contains: searchTerm, mode: 'insensitive' } },
+            { city: { contains: searchTerm, mode: 'insensitive' } },
+          ]
+        } : {},
+        categoryTerm ? {
+          category: {
+            OR: [
+                { name: { contains: categoryTerm, mode: 'insensitive' } },
+                { slug: { contains: categoryTerm, mode: 'insensitive' } }
+            ]
+          }
+        } : {}
+      ]
+    },
+    include: {
+      category: true
     }
-  })();
+  });
 
   const title = searchTerm ? `Résultats pour "${searchTerm}"` : categoryTerm ? `Meilleurs ${categoryTerm}` : 'Tous les lieux';
 
@@ -72,10 +68,10 @@ export default async function SearchPage({
                   <div className="space-y-2">
                     {['Restaurants', 'Hotels', 'Boutique', 'Loisirs'].map((cat) => (
                       <Link key={cat} href={`/search?category=${cat}`} className="flex items-center space-x-2 group cursor-pointer">
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${categoryTerm === cat ? 'bg-[#34E0A1] border-[#34E0A1]' : 'border-slate-300'}`}>
-                           {categoryTerm === cat && <div className="w-2 h-2 bg-white rounded-full" />}
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${categoryTerm === cat.toLowerCase() ? 'bg-[#34E0A1] border-[#34E0A1]' : 'border-slate-300'}`}>
+                           {categoryTerm === cat.toLowerCase() && <div className="w-2 h-2 bg-white rounded-full" />}
                         </div>
-                        <span className={`text-sm ${categoryTerm === cat ? 'font-bold text-[#34E0A1]' : 'text-slate-700 group-hover:text-slate-900'}`}>{cat}</span>
+                        <span className={`text-sm ${categoryTerm === cat.toLowerCase() ? 'font-bold text-[#34E0A1]' : 'text-slate-700 group-hover:text-slate-900'}`}>{cat}</span>
                       </Link>
                     ))}
                   </div>
@@ -98,42 +94,32 @@ export default async function SearchPage({
                        {[5, 4, 3].map(rating => (
                            <div key={rating} className="flex items-center gap-2 text-sm text-slate-600">
                                <input type="radio" name="rating" className="text-[#34E0A1] focus:ring-[#34E0A1]" />
-                               <div className="flex gap-0.5">
-                                    {[1,2,3,4,5].map(star => (
-                                        <div key={star} className={`w-3 h-3 rounded-full ${star <= rating ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
-                                    ))}
-                               </div>
-                               <span>& plus</span>
+                               <span>{rating} étoiles & plus</span>
                            </div>
                        ))}
                    </div>
-                </div>
+                 </div>
               </div>
             </div>
           </aside>
 
           {/* Results Grid */}
-          <div className="flex-1 grid grid-cols-1 gap-6">
-              {results.length > 0 ? (
-                  results.map((business) => (
-                    <SearchResultCard 
-                        key={business.id}
-                        id={business.id}
-                        name={business.name}
-                        category={business.category.name}
-                        rating={business.rating}
-                        reviewCount={business.reviewCount}
-                    />
-                  ))
-              ) : (
-                   <div className="bg-white p-8 rounded-xl text-center border border-slate-200">
-                        <p className="text-slate-500 font-medium">Aucun résultat trouvé.</p>
-                        <Link href="/search">
-                             <Button variant="link" className="text-[#34E0A1]">Voir tous les lieux</Button>
-                        </Link>
-                   </div>
-              )}
-          </div>
+          <main className="flex-1">
+             {results.length > 0 ? (
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                 {results.map((business) => (
+                   <SearchResultCard key={business.id} business={business} />
+                 ))}
+               </div>
+             ) : (
+                <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
+                  <p className="text-slate-500 text-lg">Aucun résultat trouvé pour cette recherche.</p>
+                  <Button variant="link" className="text-[#34E0A1] mt-2" asChild>
+                      <Link href="/search">Voir tous les lieux</Link>
+                  </Button>
+                </div>
+             )}
+          </main>
         </div>
       </div>
     </div>

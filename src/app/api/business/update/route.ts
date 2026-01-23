@@ -59,11 +59,6 @@ export async function PUT(req: Request) {
                     create: { name: validatedData.category, slug: validatedData.category }
                 }
             }
-            // coverUrl is not in schema yet? Let's check schema.
-            // Looking at previous schema file content: imageUrl is there. No coverUrl.
-            // I should assume coverUrl might need a field or be ignored for now.
-            // Wait, schema has 'imageUrl'. Dashboard uses logoUrl and coverUrl.
-            // I will use imageUrl for logoUrl. I will ignore coverUrl for now or check if schema has it.
         }
     });
 
@@ -74,42 +69,5 @@ export async function PUT(req: Request) {
     }
     console.error("Update Error:", error);
     return NextResponse.json({ message: "Erreur serveur" }, { status: 500 })
-  }
-}
-
-    // Update Business Data
-    // We update specifically the 'business' node under the user
-    // Note: This matches the structure { user: { business: { ... } } }
-    const businessRef = ref(database, `users/${userKey}/business`);
-    
-    // Merge updates
-    await update(businessRef, {
-        name: validatedData.name,
-        category: validatedData.category,
-        address: validatedData.address,
-        city: validatedData.city,
-        phone: validatedData.phone || "",
-        website: validatedData.website || "",
-        description: validatedData.description || "",
-        logoUrl: validatedData.logoUrl || "",
-        coverUrl: validatedData.coverUrl || "",
-        ctaAction: validatedData.ctaAction || "none",
-        ctaUrl: validatedData.ctaUrl || "",
-        updatedAt: new Date().toISOString()
-    });
-    
-    // Also update the root user image if logo is provided, so it shows in the header
-    if (validatedData.logoUrl) {
-         const userRootRef = ref(database, `users/${userKey}`);
-         await update(userRootRef, {
-             image: validatedData.logoUrl
-         });
-    }
-
-    return NextResponse.json({ message: "Informations mises à jour avec succès" })
-
-  } catch (error: any) {
-    console.error("Update error:", error)
-    return NextResponse.json({ message: error.message || "Erreur serveur" }, { status: 500 })
   }
 }

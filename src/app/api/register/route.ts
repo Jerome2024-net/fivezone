@@ -1,6 +1,4 @@
-// import { prisma } from "@/lib/prisma" // REMOVED
-import { database } from "@/lib/firebase"
-import { ref, set, push, query, orderByChild, equalTo, get } from "firebase/database"
+import { prisma } from "@/lib/prisma"
 import { hash } from "bcryptjs"
 import { NextResponse } from "next/server"
 import { z } from "zod"
@@ -24,10 +22,70 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { email, password, name, businessName, category, address, city, phone, website, logoUrl, media } = registrationSchema.parse(body)
 
-    let existingUserByEmail = null;
+    // CHECK EXISTING USER IN PRISMA
+    const existingUser = await prisma.user.findUnique({
+        where: { email }
+    });
+
+    if (existingUser) {
+        return NextResponse.json(
+            { user: null, message: "Un utilisateur avec cet email existe déjà" },
+            { status: 409 }
+        )
+    }
+
+    const hashedPassword = await hash(password, 10);
     
-    // CHECK EXISTING USER IN FIREBASE (Prisma Disabled)
-    try {
+    // Create User and Business in Transaction
+    const newUser = await prisma.user.create({
+        data: {
+            name,
+            email,
+            password: hashedPassword,
+            businesses: {
+                create: {
+                   name: businessName || `${name}'s Business`,
+                   category: {
+                       connectOrCreate: {
+                           where: { slug: category || 'other' }, // Make sure category exists or defaults
+                           create: { 
+                               name: category || 'Autre',
+                               slug: category || 'other'
+                           }
+                       }
+                   },
+                   address: address || "Non renseignée",
+                   city: city || "Non renseignée",
+                   phone: phone,
+                   website: website,
+                   imageUrl: logoUrl, // Use logo as main image
+                   description: "Bienvenue sur notre profil !"
+                   // Add media if schema supports it, otherwise ignored
+                }
+            }
+        },
+        include: {
+            businesses: true
+        }
+    });
+
+    return NextResponse.json({ 
+        user: { 
+            name: newUser.name, 
+            email: newUser.email,
+            businessId: newUser.businesses[0]?.id
+        }, 
+        message: "Compte créé avec succès" 
+    }, { status: 201 })
+    
+  } catch(error) {
+      console.error("Registration Error:", error);
+      return NextResponse.json(
+        { user: null, message: "Une erreur est survenue lors de l'inscription" },
+        { status: 500 }
+      )
+  }
+}
         const usersRef = ref(database, 'users');
         const q = query(usersRef, orderByChild('email'), equalTo(email));
         const snapshot = await get(q);

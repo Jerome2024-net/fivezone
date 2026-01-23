@@ -1,13 +1,11 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-// import { prisma } from "@/lib/prisma" // REMOVED TO PREVENT CRASH
+import { prisma } from "@/lib/prisma" 
 import { compare } from "bcryptjs"
-import { database } from "@/lib/firebase"
-import { ref, query, orderByChild, equalTo, get } from "firebase/database"
 
 export const authOptions: NextAuthOptions = {
-  debug: true, // Enable debugging to see logs in Railway console
-  trustHost: true, // Trust the host header (important for Railway/custom domains)
+  debug: true,
+  trustHost: true,
   secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key_for_dev_mode_only", 
   session: {
     strategy: "jwt",
@@ -27,27 +25,43 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        let user = null;
-        let isFirebaseUser = false;
-
-        // 1. Try Firebase (PRIMARY DB NOW)
         try {
-            const usersRef = ref(database, 'users');
-            // Simplified Fetch: Get all users and filter in memory to avoid Index/Query issues
-            const snapshot = await get(usersRef);
-            
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                // Loosely find user by email (trim and lowercase safe)
-                const searchEmail = credentials.email.toLowerCase().trim();
-                
-                const foundKey = Object.keys(data).find(key => {
-                    const uEmail = data[key]?.email;
-                    return uEmail && uEmail.toLowerCase().trim() === searchEmail;
-                });
+           // 1. Try Prisma (Supabase Postgres)
+           const user = await prisma.user.findUnique({
+              where: {
+                  email: credentials.email
+              },
+              include: {
+                  businesses: true // Include business to check role/ownership if needed
+              }
+           });
 
-                if (foundKey) {
-                    const firebaseUser = data[foundKey];
+           if (user && await compare(credentials.password, user.password)) {
+                
+                // Construct user object compatible with NextAuth
+                let businessId = null;
+                if (user.businesses && user.businesses.length > 0) {
+                    businessId = user.businesses[0].id;
+                }
+
+                return {
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                };
+           }
+        } catch(error) {
+            console.error("Prisma Auth Error:", error);
+        }
+
+        return null
+      }
+    })
+  ],
+  callbacks: {
+    // ... callbacks
+  }
+}
                     user = {
                         id: foundKey,
                         email: firebaseUser.email,

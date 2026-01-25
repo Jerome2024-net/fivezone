@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink } from "lucide-react"
+import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
@@ -14,7 +14,9 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
       where: { id },
       include: {
           category: true,
-          owner: true // To show owner details if needed
+          owner: true,
+          services: true,
+          media: true
       }
   });
   
@@ -45,6 +47,13 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
   }
 
   const primaryCTA = getCTA(categoryType);
+
+  // Collect all available images
+  const allImages = [
+    business.coverUrl,
+    business.imageUrl,
+    ...(business.media || []).map((m: any) => m.url)
+  ].filter(Boolean) as string[];
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -92,16 +101,36 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
       {/* Photo Mosaic Gallery */}
       <div className="container mx-auto px-4 md:px-6 mb-8">
            <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                {/* Main Large Image */}
                 <div className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer">
+                    {allImages[0] ? (
+                        <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium">Pas de photos</div>
+                    )}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                    <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium z-10">Photo Principale</div>
                 </div>
-                <div className="bg-slate-200 relative group cursor-pointer">
-                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </div>
-                <div className="bg-slate-200 relative group cursor-pointer">
-                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </div>
+
+                {/* Secondary Images */}
+                {[1, 2, 3, 4].map((idx) => (
+                    <div key={idx} className="bg-slate-200 relative group cursor-pointer overflow-hidden">
+                         {allImages[idx] ? (
+                            <img src={allImages[idx]} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
+                         ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+                                <Tag className="h-6 w-6 opacity-20" />
+                            </div>
+                         )}
+                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                         
+                         {/* Show "+X photos" on the last cell if there are more */}
+                         {idx === 4 && allImages.length > 5 && (
+                             <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
+                                 +{allImages.length - 5} photos
+                             </div>
+                         )}
+                    </div>
+                ))}
                 <div className="bg-slate-200 relative group cursor-pointer">
                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                 </div>
@@ -137,6 +166,44 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                </div>
             </section>
             
+            {/* Services / Menu / Rooms Section - HIDDEN FOR MVP
+            {business.services.length > 0 && (
+                <section className="space-y-6 pb-8 border-b border-slate-200">
+                    <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        {business.category.slug === 'hotel' ? 'Chambres & Hébergements' : 
+                         business.category.slug === 'restaurant' ? 'Menu & Table' : 'Nos Prestations'}
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {business.services.map(service => (
+                            <div key={service.id} className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+                                <div>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h3 className="font-bold text-lg text-slate-900">{service.name}</h3>
+                                        <div className="font-black text-slate-900 bg-slate-100 px-2 py-1 rounded text-sm">
+                                            {service.price}€
+                                        </div>
+                                    </div>
+                                    {service.description && <p className="text-slate-600 text-sm mb-4 leading-relaxed">{service.description}</p>}
+                                    <div className="flex gap-3 text-xs font-bold text-slate-500 mb-4">
+                                        {service.duration && <span className="flex items-center"><Clock className="w-3 h-3 mr-1"/> {service.duration} min</span>}
+                                        <span className="uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{service.type}</span>
+                                    </div>
+                                </div>
+                                
+                                <Button className="w-full bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold">
+                                    <Calendar className="w-4 h-4 mr-2" />
+                                    {service.type === 'RESERVATION' ? 'Réserver' : 
+                                     service.type === 'ROOM' ? 'Voir dispo' : 
+                                     service.type === 'TICKET' ? 'Acheter' : 'Choisir'}
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+            */}
+
             {/* Reviews Section */}
             <section className="space-y-8">
                <div className="flex items-center justify-between">
@@ -230,9 +297,18 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
           <div className="lg:col-span-1">
              <div className="sticky top-24 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 space-y-6">
                  
-                 {/* Primary CTA based on Category */}
+                 {/* Primary CTA based on Category - HIDDEN FOR MVP
                  <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg rounded-full shadow-lg">
                     {primaryCTA}
+                 </Button>
+                 */}
+                 
+                 {/* Simple Contact Button instead */}
+                 <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg rounded-full shadow-lg" asChild>
+                    <a href={`tel:${business.phone}`} className="flex items-center justify-center gap-2">
+                        <Phone className="h-5 w-5" />
+                        Appeler
+                    </a>
                  </Button>
 
                  {/* PRO Feature: WhatsApp / Call Button */}
@@ -257,14 +333,14 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                             <Button variant="outline" className="w-full h-12 border-slate-900 text-slate-900 hover:bg-slate-50 font-bold text-lg rounded-full" asChild>
                                 <a href={`tel:${business.phone}`}>
                                     <Phone className="mr-2 h-5 w-5" />
-                                    Appeler l'établissement
+                                    Appeler l&apos;établissement
                                 </a>
                             </Button>
                         )}
                         {!business?.phone && (
                              <Button variant="outline" className="w-full h-12 border-slate-900 text-slate-900 hover:bg-slate-50 font-bold text-lg rounded-full">
                                 <Phone className="mr-2 h-5 w-5" />
-                                Appeler l'établissement
+                                Appeler l&apos;établissement
                             </Button>
                         )}
                     </div>

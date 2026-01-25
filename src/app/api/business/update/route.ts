@@ -52,6 +52,7 @@ export async function PUT(req: Request) {
             phone: validatedData.phone,
             website: validatedData.website,
             imageUrl: validatedData.logoUrl,
+            coverUrl: validatedData.coverUrl,
             // category: need to handle relation update if category changed
             category: { 
                 connectOrCreate: {

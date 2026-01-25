@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link"
+import Image from "next/image"
 import { Heart, BadgeCheck } from "lucide-react"
 
 interface BusinessCardProps {
@@ -16,9 +17,15 @@ export function BusinessCard({ id, name, category, imageUrl, promoted = false }:
         <Link href={`/business/${id}`} className="group cursor-pointer relative block">
             {/* Image Card */}
             <div className={`relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-100 mb-3 ${promoted ? 'ring-2 ring-[#34E0A1] ring-offset-2' : ''}`}>
-                    <div className="absolute inset-0 bg-slate-200 animate-pulse group-hover:scale-105 transition-transform duration-700 ease-in-out">
+                    <div className="absolute inset-0 bg-slate-200 group-hover:scale-105 transition-transform duration-700 ease-in-out">
                          {imageUrl ? (
-                             <img src={imageUrl} alt={name} className="h-full w-full object-cover" />
+                             <Image 
+                                src={imageUrl} 
+                                alt={name} 
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                             />
                          ) : (
                              <div className="h-full w-full flex items-center justify-center text-slate-400 font-medium bg-slate-100">Sans image</div>
                          )}

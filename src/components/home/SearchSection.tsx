@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, MapPin, Bike, CalendarDays, Sparkles } from "lucide-react"
+import { Search, MapPin, ShoppingBag, Hammer, Sparkles, Utensils } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function SearchSection() {
@@ -14,10 +14,10 @@ export function SearchSection() {
 
   const tabs = [
     { id: 'all', label: 'Tout', icon: Search, placeholder: 'Rechercher une adresse, un pro...' },
-    { id: 'places', label: 'Lieux', icon: MapPin, placeholder: 'Musée, Parc, Place publique...' },
-    { id: 'activities', label: 'Activités', icon: Bike, placeholder: 'Sport, Sortie, Loisir...' },
-    { id: 'events', label: 'Événements', icon: CalendarDays, placeholder: 'Concert, Festival, Exposition...' },
-    { id: 'experiences', label: 'Expériences', icon: Sparkles, placeholder: 'Atelier, Dégustation...' },
+    { id: 'restaurant', label: 'Restauration', icon: Utensils, placeholder: 'Restaurants, cafés, bars...' },
+    { id: 'shop', label: 'Commerces', icon: ShoppingBag, placeholder: 'Boutiques, magasins, épiceries...' },
+    { id: 'service', label: 'Services', icon: Sparkles, placeholder: 'Coiffeur, garage, nettoyage...' },
+    { id: 'artisan', label: 'Artisans', icon: Hammer, placeholder: 'Plombier, électricien, menuisier...' },
   ]
 
   const handleSearch = (e: React.FormEvent) => {

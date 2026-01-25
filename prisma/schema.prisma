@@ -20,6 +20,7 @@ model User {
   updatedAt DateTime  @updatedAt
   reviews   Review[]
   businesses Business[]
+  bookings   Booking[]
 }
 
 model Business {
@@ -32,6 +33,7 @@ model Business {
   phone       String?
   website     String?
   imageUrl    String?
+  coverUrl    String?
   rating      Float     @default(0)
   reviewCount Int       @default(0)
   createdAt   DateTime  @default(now())
@@ -54,6 +56,44 @@ model Business {
   reviews     Review[]
   media       Media[]
   promotions  Promotion[]
+  services    Service[]
+  bookings    Booking[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  duration    Int?     // in minutes
+  type        ServiceType @default(SERVICE)
+  
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  bookings    Booking[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  date        DateTime // Date and time of booking
+  status      BookingStatus @default(PENDING)
+  totalPrice  Float
+  notes       String?
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  serviceId   String?
+  service     Service? @relation(fields: [serviceId], references: [id])
+  
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id]) 
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Promotion {
@@ -97,6 +137,23 @@ model Review {
   
   userId     String
   user       User     @relation(fields: [userId], references: [id])
+}
+
+enum ServiceType {
+  SERVICE
+  CLASS
+  TICKET
+  MENU_ITEM
+  ROOM
+  RESERVATION
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  PAID
 }
 
 

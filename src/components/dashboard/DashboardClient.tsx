@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useRouter } from "next/navigation"
 import { ImageUpload } from "./ImageUpload"
+// import { ServiceManager } from "./ServiceManager"
 
 // Validation Schema
 const EditSchema = z.object({
@@ -144,7 +145,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                             <h2 className="text-lg font-semibold border-b pb-2">Informations Principales</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Nom de l'établissement</label>
+                                    <label className="text-sm font-medium">Nom de l&apos;établissement</label>
                                     <Input {...form.register("name")} />
                                 </div>
                                 <div className="space-y-2">
@@ -183,7 +184,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
 
                         {/* CTA Configuration */}
                         <div className="space-y-4">
-                             <h2 className="text-lg font-semibold border-b pb-2">Bouton d'action</h2>
+                             <h2 className="text-lg font-semibold border-b pb-2">Bouton d&apos;action</h2>
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Type de bouton</label>
@@ -352,7 +353,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900">{business.name}</h3>
-                                    <p className="text-xs text-slate-500">Mise à jour de l'activité</p>
+                                    <p className="text-xs text-slate-500">Mise à jour de l&apos;activité</p>
                                 </div>
                             </div>
                             
@@ -426,6 +427,18 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                                 </button>
                              </div>
                         </div>
+
+                        {/* Services / Products Section - HIDDEN FOR MVP
+                        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+                             <div className="mb-4">
+                                <h3 className="font-bold text-lg flex items-center gap-2">
+                                    <Tag className="h-5 w-5" /> Mes Prestations
+                                </h3>
+                                <p className="text-sm text-slate-500">Gérez ici les services ou produits que vos clients peuvent réserver.</p>
+                             </div>
+                             <ServiceManager />
+                        </div>
+                        */}
 
                      </div>
                  </div>

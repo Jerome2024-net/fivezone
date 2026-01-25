@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
-import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer } from "lucide-react"
+import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer, Ticket } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
@@ -26,7 +26,8 @@ export default async function Home() {
          category: { name: b.category.name },
          subscriptionTier: b.subscriptionTier,
          viewCount: b.viewCount,
-         rating: b.rating
+         rating: b.rating,
+         imageUrl: b.coverUrl || b.imageUrl // Prioritize cover, fallback to logo
      }));
 
   } catch (error) {
@@ -38,11 +39,12 @@ export default async function Home() {
       {/* 1. HERO SECTION UPDATED - Style plus TripAdvisor/Airbnb (Fond Vert Pale + Titre Intact) */}
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
-          <h1 className="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight text-slate-900">
-            Les meilleures adresses locales
+          <h1 className="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight text-slate-900 leading-tight">
+            Les meilleures adresses locales.
           </h1>
-          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl font-medium">
-             Artisans • Commerces • Services • Restaurants
+          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl font-medium max-w-2xl">
+             Artisans • Commerces • Services • Restaurants<br/>
+             <span className="text-sm opacity-80 mt-2 block">Trouvez et contactez les meilleurs professionnels près de chez vous.</span>
           </p>
           
           {/* Search Container */}
@@ -99,6 +101,7 @@ export default async function Home() {
                                 name={business.name}
                                 category={business.category.name}
                                 promoted={business.subscriptionTier === 'PRO'}
+                                imageUrl={business.imageUrl}
                             />
                         </div>
                      ))}
@@ -121,7 +124,7 @@ export default async function Home() {
                 href="/pricing"
                 className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex flex-col sm:flex-row items-center gap-1 md:gap-2 group px-6 py-3 rounded-xl hover:bg-slate-50 text-center"
              >
-                <span>Propriétaire d'un établissement ?</span>
+                <span>Propriétaire d&apos;un établissement ?</span>
                 <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
                     Référencez-vous ici
                 </span>

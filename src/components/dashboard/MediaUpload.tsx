@@ -55,20 +55,27 @@ export function MediaUpload() {
             <h3 className="font-bold text-lg text-slate-900 mb-4">Galerie Média</h3>
             
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                {files.map((url, i) => (
-                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 group">
-                        <img src={url} alt={`Upload ${i}`} className="w-full h-full object-cover" />
-                        <button 
-                            onClick={() => removeFile(i)}
-                            className="absolute top-1 right-1 p-1 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-red-500"
-                        >
-                            <X className="h-4 w-4" />
-                        </button>
-                    </div>
-                ))}
+                {files.map((url, i) => {
+                    const isVideo = url.toLowerCase().includes('.mp4') || url.toLowerCase().includes('.webm') || url.toLowerCase().includes('.mov');
+                    return (
+                        <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 group border border-slate-200">
+                            {isVideo ? (
+                                <video src={url} className="w-full h-full object-cover" controls playsInline muted />
+                            ) : (
+                                <img src={url} alt={`Upload ${i}`} className="w-full h-full object-cover" />
+                            )}
+                            <button 
+                                onClick={() => removeFile(i)}
+                                className="absolute top-1 right-1 p-1 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-red-500 z-10"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+                    )
+                })}
                 
                 <label className="border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-slate-400 hover:bg-slate-50 transition-all aspect-square">
-                    <input type="file" className="hidden" multiple accept="image/*,video/*" onChange={handleUpload} disabled={uploading} />
+                    <input type="file" className="hidden" multiple accept="image/*,video/mp4,video/webm,video/quicktime" onChange={handleUpload} disabled={uploading} />
                     {uploading ? (
                          <Loader2 className="h-8 w-8 text-[#34E0A1] animate-spin mb-2" />
                     ) : (

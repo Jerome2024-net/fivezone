@@ -32,7 +32,7 @@ const FormSchema = z.object({
   phone: z.string().optional(),
   website: z.string().optional(),
   logoUrl: z.string().min(1, "La photo de profil/logo est requise"),
-  media: z.array(z.string()).optional(),
+  media: z.array(z.string()).min(1, "Veuillez ajouter au moins une image dans la galerie"),
 }).refine((data) => data.password === data.confirmPassword, {
   path: ["confirmPassword"],
   message: "Les mots de passe ne correspondent pas",
@@ -287,10 +287,20 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Photos de la galerie (Optionnel)</label>
+                    <label className="text-sm font-medium flex justify-between">
+                         Photos de la galerie <span className="text-red-500">* (Min 1 photo)</span>
+                    </label>
                     <MediaUpload 
-                        onChange={(urls) => form.setValue('media', urls)} 
+                        multiple
+                        maxFiles={5}
+                        onChange={(urls) => {
+                             form.setValue('media', urls);
+                             if (urls.length > 0) form.clearErrors('media');
+                        }}
                     />
+                     {form.formState.errors.media && (
+                        <p className="text-xs text-destructive">{form.formState.errors.media.message}</p>
+                    )}
                 </div>
             </div>
 

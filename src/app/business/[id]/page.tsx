@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import MapboxMap from "@/components/ui/MapboxMap"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar } from "lucide-react"
 import Link from "next/link"
@@ -358,19 +359,29 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                      </div>
                  )}
 
-                 {/* Map Placeholder */}
-                 <div className="h-48 w-full bg-slate-100 rounded-lg relative overflow-hidden group cursor-pointer">
-                      <MapPin className="absolute top-1/2 left-1/2 -ml-3 -mt-3 h-6 w-6 text-red-500" />
-                      <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">Voir la carte</div>
+                 {/* Map Integration (Mapbox) */}
+                 <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[250px] relative z-0">
+                    <MapboxMap address={business.address} city={business.city} />
                  </div>
+
+                 {/* Directions Button */}
+                 <Button className="w-full bg-white border border-slate-200 text-slate-900 font-bold hover:bg-slate-50" asChild>
+                    <a 
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address + ", " + business.city)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Itinéraire
+                    </a>
+                 </Button>
                  
-                 <div className="space-y-4">
+                 <div className="space-y-4 pt-4 border-t border-slate-100">
                     <div className="flex items-start gap-4">
                         <MapPin className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
                         <div>
-                            <p className="font-bold text-slate-900">{business?.address || '23 Rue de Rivoli'}</p>
-                            <p className="text-slate-600">{business?.city || '75001 Paris, France'}</p>
-                            <p className="text-slate-600 text-sm mt-1">Secteur Localisation</p>
+                            <p className="font-bold text-slate-900">{business?.address}</p>
+                            <p className="text-slate-600">{business?.city}, France</p>
                         </div>
                     </div>
                     

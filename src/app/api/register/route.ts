@@ -15,12 +15,14 @@ const registrationSchema = z.object({
   website: z.string().optional().or(z.literal("")),
   logoUrl: z.string().optional(),
   media: z.array(z.string()).optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional()
 })
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { email, password, name, businessName, category, address, city, phone, website, logoUrl, media } = registrationSchema.parse(body)
+    const { email, password, name, businessName, category, address, city, phone, website, logoUrl, media, latitude, longitude } = registrationSchema.parse(body)
 
     // CHECK EXISTING USER IN PRISMA
     const existingUser = await prisma.user.findUnique({
@@ -59,8 +61,15 @@ export async function POST(req: Request) {
                    phone: phone,
                    website: website,
                    imageUrl: logoUrl, // Use logo as main image
-                   description: "Bienvenue sur notre profil !"
-                   // Add media if schema supports it, otherwise ignored
+                   latitude: latitude,
+                   longitude: longitude,
+                   description: "Bienvenue sur notre profil !",
+                   media: media && media.length > 0 ? {
+                       create: media.map(url => ({
+                           url,
+                           type: "IMAGE"
+                       }))
+                   } : undefined
                 }
             }
         },

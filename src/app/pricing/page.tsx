@@ -28,8 +28,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
     },
     {
       name: "Pro",
-      price: "29€",
-      period: "/mois",
+      price: "99.00€",
+      period: "/an",
       description: "Boostez votre visibilité et multipliez vos clients.",
       features: [
         "Mise en avant prioritaire (Top recherches)",
@@ -45,8 +45,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       ],
       cta: "Activer le plan Pro",
       popular: true,
-      href: "/register",
-      external: false
+      href: "https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01",
+      external: true
     },
     {
       name: "Entreprise",

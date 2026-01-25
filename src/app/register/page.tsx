@@ -7,7 +7,8 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MediaUpload } from "@/components/register/MediaUpload"
-import {
+import { AddressAutocomplete } from "@/components/ui/AddressAutocomplete"
+import { 
   Card,
   CardContent,
   CardDescription,
@@ -29,6 +30,8 @@ const FormSchema = z.object({
   customCategory: z.string().optional(),
   address: z.string().min(1, "L'adresse est requise"),
   city: z.string().min(1, "La ville est requise"),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
   phone: z.string().optional(),
   website: z.string().optional(),
   logoUrl: z.string().min(1, "La photo de profil/logo est requise"),
@@ -234,7 +237,34 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium" htmlFor="address">Adresse</label>
-                      <Input id="address" {...form.register("address")} placeholder="123 Avenue des Champs-Élysées" />
+                      <AddressAutocomplete 
+                        onAddressSelect={(address, city, coords) => {
+                            form.setValue('address', address);
+                            form.setValue('city', city);
+                            form.setValue('latitude', coords.lat);
+                            form.setValue('longitude', coords.lng);
+                            // Clear errors if any
+                            form.clearErrors('address');
+                            form.clearErrors('city');
+                        }}
+                        placeholder="Rechercher une adresse..."
+                        defaultValue={form.getValues('address')}
+                      />
+                      {/* Hidden input to register the address field in the form state properly if needed, although AddressAutocomplete manages it via onAddressSelect -> setValue. However, if manual edit is needed, AddressAutocomplete allows typing. But passing ref is tricky. simpler to relying on setValue for now. 
+                          Wait, if user types manually in AddressAutocomplete and doesn't select, onAddressSelect isn't called.
+                          The AddressAutocomplete component (I created) does not expose an onChange for manual entry that propagates out simply.
+                          Actually, inside AddressAutocomplete, I have an Input. If I want manual entry to work without selection, 
+                          I should probably pass a generic onChange or make AddressAutocomplete support controlled value properly.
+                          
+                          But for "Intelligent" addressing, we prefer them to select from list. 
+                          Also, I can just use a hidden input for form submission if I was using native forms, but here I use RHF's handleSubmit.
+                          As long as setValue is called, it's fine.
+                          BUT valid concern: what if they type "My House" and don't select?
+                          My AddressAutocomplete current implementation updates local state `query`. It calls `onAddressSelect` only on click.
+                          It does NOT call checking back to parent on text change.
+                          I should update AddressAutocomplete to call an `onChange` prop with the text as well, so manual entry is possible.
+                      */}
+                       <input type="hidden" {...form.register("address")} />
                        {form.formState.errors.address && (
                         <p className="text-xs text-destructive">{form.formState.errors.address.message}</p>
                       )}

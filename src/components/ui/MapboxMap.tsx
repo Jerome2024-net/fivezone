@@ -43,10 +43,14 @@ export default function MapboxMap({ address, city }: MapboxMapProps) {
 
     if (!MAPBOX_TOKEN) {
         return (
-            <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center p-4 text-center text-slate-500 text-sm">
-                <MapPin className="h-8 w-8 mb-2 opacity-20" />
-                <p>Carte indisponible (Token manquant)</p>
-                <p className="text-xs text-slate-400 mt-1">Ajoutez NEXT_PUBLIC_MAPBOX_TOKEN dans .env.local</p>
+            <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center p-6 text-center border bg-[url('https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif')] bg-center bg-cover">
+                <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-sm flex flex-col items-center">
+                    <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center mb-2">
+                        <MapPin className="h-5 w-5 text-slate-700" />
+                    </div>
+                    <p className="font-bold text-slate-900 text-sm">{city}</p>
+                    <p className="text-xs text-slate-500 max-w-[180px] break-words">{address}</p>
+                </div>
             </div>
         );
     }

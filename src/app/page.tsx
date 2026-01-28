@@ -27,7 +27,8 @@ export default async function Home() {
          subscriptionTier: b.subscriptionTier,
          viewCount: b.viewCount,
          rating: b.rating,
-         imageUrl: b.coverUrl || b.imageUrl // Prioritize cover, fallback to logo
+         reviewCount: b.reviewCount,
+         imageUrl: b.coverUrl || b.imageUrl || undefined // Prioritize cover, fallback to logo
      }));
 
   } catch (error) {
@@ -102,6 +103,8 @@ export default async function Home() {
                                 category={business.category.name}
                                 promoted={business.subscriptionTier === 'PRO'}
                                 imageUrl={business.imageUrl}
+                                rating={business.rating}
+                                reviewCount={business.reviewCount}
                             />
                         </div>
                      ))}

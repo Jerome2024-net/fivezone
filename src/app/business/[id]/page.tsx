@@ -118,48 +118,39 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
          </div>
       </div>
 
-      {/* Photo Mosaic Gallery */}
-      <div className="container mx-auto px-4 md:px-6 mb-8">
-           <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
-                {/* Main Large Image */}
-                <div className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer">
-                    {allImages[0] ? (
-                        <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
-                    ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium">Pas de photos</div>
-                    )}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </div>
-
-                {/* Secondary Images */}
-                {[1, 2, 3, 4].map((idx) => (
-                    <div key={idx} className="bg-slate-200 relative group cursor-pointer overflow-hidden">
-                         {allImages[idx] ? (
-                            <img src={allImages[idx]} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
-                         ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-slate-300">
-                                <Tag className="h-6 w-6 opacity-20" />
-                            </div>
-                         )}
-                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                         
-                         {/* Show "+X photos" on the last cell if there are more */}
-                         {idx === 4 && allImages.length > 5 && (
-                             <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
-                                 +{allImages.length - 5} photos
-                             </div>
-                         )}
+      {/* Photo Mosaic Gallery - Only show if images exist */}
+      {allImages.length > 0 && (
+          <div className="container mx-auto px-4 md:px-6 mb-8">
+               <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                    {/* Main Large Image */}
+                    <div className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer">
+                        {allImages[0] && (
+                            <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
+                        )}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                     </div>
-                ))}
-                <div className="bg-slate-200 relative group cursor-pointer">
-                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </div>
-                <div className="bg-slate-200 relative group cursor-pointer flex items-center justify-center">
-                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                     <span className="text-sm font-bold underline z-10 relative bg-white/80 px-3 py-1 rounded-full">+ 45 photos</span>
-                </div>
-           </div>
-      </div>
+
+                    {/* Secondary Images */}
+                    {[1, 2, 3, 4].map((idx) => (
+                        <div key={idx} className="bg-slate-200 relative group cursor-pointer overflow-hidden">
+                             {allImages[idx] ? (
+                                <img src={allImages[idx]} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
+                             ) : (
+                                <div className="absolute inset-0 bg-slate-100" />
+                             )}
+                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                             
+                             {/* Show "+X photos" on the last cell if there are more */}
+                             {idx === 4 && allImages.length > 5 && (
+                                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
+                                     +{allImages.length - 5} photos
+                                 </div>
+                             )}
+                        </div>
+                    ))}
+               </div>
+          </div>
+      )}
 
       {/* Main Content Layout */}
       <div className="container mx-auto px-4 md:px-6 pb-16">
@@ -186,7 +177,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
             <section className="space-y-4 pb-8 border-b border-slate-200">
                <h2 className="text-2xl font-bold text-slate-900">À propos</h2>
                <p className="text-lg text-slate-700 leading-relaxed">
-                   {business?.description || "Découvrez la meilleure expérience locale. Nous proposons un service de qualité et des produits exceptionnels. Notre équipe dévouée s'assure que chaque visite soit mémorable."}
+                   {business?.description || "Aucune description détaillée disponible pour ce profil."}
                </p>
                <div className="flex flex-wrap gap-4 pt-4">
                   {(business.features || []).map((feat: string) => (
@@ -298,14 +289,20 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                     <div className="flex items-start gap-4">
                         <Clock className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
                         <div>
-                            <p className="font-bold text-red-600">Ouvert</p>
-                            <p className="text-slate-600 text-sm">09:00 - 18:00</p>
+                            <p className="font-bold text-slate-900">Horaires</p>
+                            <p className="text-slate-600 text-sm">Sur rendez-vous ou contactez le professionnel</p>
                         </div>
                     </div>
 
                     <div className="flex items-start gap-4">
                          <Globe className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
-                         <p className="font-bold text-slate-900 hover:underline cursor-pointer">{business?.website || 'site-web-indisponible.com'}</p>
+                          {business?.website ? (
+                             <a href={business.website} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 hover:underline cursor-pointer">
+                                {business.website.replace(/^https?:\/\//, '')}
+                             </a>
+                          ) : (
+                             <p className="text-slate-500 italic">Site web non renseigné</p>
+                          )}
                     </div>
 
                     <div className="flex items-start gap-4">

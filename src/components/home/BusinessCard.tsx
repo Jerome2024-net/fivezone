@@ -10,9 +10,11 @@ interface BusinessCardProps {
     category: string
     imageUrl?: string
     promoted?: boolean
+    rating?: number
+    reviewCount?: number
 }
 
-export function BusinessCard({ id, name, category, imageUrl, promoted = false }: BusinessCardProps) {
+export function BusinessCard({ id, name, category, imageUrl, promoted = false, rating = 0, reviewCount = 0 }: BusinessCardProps) {
     return (
         <Link href={`/business/${id}`} className="group cursor-pointer relative block">
             {/* Image Card */}
@@ -60,10 +62,14 @@ export function BusinessCard({ id, name, category, imageUrl, promoted = false }:
                     <div className="flex items-center gap-1">
                     <div className="flex gap-0.5">
                         {[1,2,3,4,5].map(star => (
-                            <div key={star} className={`w-3 h-3 rounded-full ${star <= 4 ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
+                            <div key={star} className={`w-3 h-3 rounded-full ${star <= Math.round(rating) ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
                         ))}
                     </div>
-                    <span className="text-sm text-slate-500 ml-1">1 240 avis</span>
+                    {reviewCount > 0 ? (
+                        <span className="text-sm text-slate-500 ml-1">{reviewCount} avis</span>
+                    ) : (
+                        <span className="text-sm text-slate-400 ml-1 italic">Nouveau</span>
+                    )}
                     </div>
                     
                     <div className="text-sm text-slate-500 truncate">

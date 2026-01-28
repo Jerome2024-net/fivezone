@@ -108,7 +108,16 @@ export default async function SearchPage({
              {results.length > 0 ? (
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                  {results.map((business) => (
-                   <SearchResultCard key={business.id} business={business} />
+                   <SearchResultCard 
+                      key={business.id} 
+                      id={business.id}
+                      name={business.name}
+                      category={business.category.name}
+                      rating={business.rating}
+                      reviewCount={business.reviewCount}
+                      imageUrl={business.coverUrl || business.imageUrl || undefined}
+                      city={business.city}
+                   />
                  ))}
                </div>
              ) : (

@@ -11,15 +11,17 @@ interface SearchResultCardProps {
     rating: number
     reviewCount: number
     imageUrl?: string
+    city?: string
 }
 
 export function SearchResultCard({ 
     id, 
     name, 
     category,
-    rating = 4.5,
+    rating = 0,
     reviewCount = 0,
-    imageUrl
+    imageUrl,
+    city = "Non spécifié"
 }: SearchResultCardProps) {
     return (
         <Link href={`/business/${id}`} className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all shadow-sm">
@@ -58,22 +60,21 @@ export function SearchResultCard({
                         <div className="flex items-center gap-2 mt-2 mb-3">
                             <div className="flex gap-0.5">
                                 {[1,2,3,4,5].map(star => (
-                                    <div key={star} className={`w-3 h-3 rounded-full ${star <= 4 ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
+                                    <div key={star} className={`w-3 h-3 rounded-full ${star <= Math.round(rating) ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
                                 ))}
                             </div>
                             <span className="text-sm text-slate-500 font-medium">{reviewCount} avis</span>
                         </div>
                         
                         <div className="text-sm text-slate-600 space-y-1">
-                            <p>{category} • à 1.2 km</p>
-                            <p>“Nourriture et ambiance incroyables. Le meilleur de la ville !”</p>
+                            <p>{category} • {city}</p>
                         </div>
                     </div>
                     
                     <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
                         <div className="flex items-center gap-1 text-sm text-slate-500">
                             <MapPin className="h-4 w-4" />
-                            <span>Paris, France</span>
+                            <span>{city}</span>
                         </div>
                         <Button className="rounded-full bg-[#F2C94C] hover:bg-[#e0b73b] text-slate-900 font-bold">
                             Voir l'offre

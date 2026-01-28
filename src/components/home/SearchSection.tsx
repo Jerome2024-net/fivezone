@@ -9,24 +9,27 @@ import { cn } from "@/lib/utils"
 
 export function SearchSection() {
   const [query, setQuery] = useState('')
+  const [location, setLocation] = useState('')
   const [activeTab, setActiveTab] = useState('all')
   const router = useRouter()
 
   const tabs = [
-    { id: 'all', label: 'Tout', icon: Search, placeholder: 'Rechercher une compétence, un freelance...' },
-    { id: 'tech', label: 'Tech & Dev', icon: Code, placeholder: 'Développeur React, Python, Mobile...' },
-    { id: 'design', label: 'Design', icon: Palette, placeholder: 'Logo, Webdesign, UI/UX...' },
-    { id: 'marketing', label: 'Marketing', icon: Megaphone, placeholder: 'SEO, Rédaction, Social Media...' },
-    { id: 'business', label: 'Business', icon: Briefcase, placeholder: 'Comptable, Assistant, Juriste...' },
+    { id: 'all', label: 'Tout', icon: Search, placeholder: 'Quel service recherchez-vous ?' },
+    { id: 'tech', label: 'Tech', icon: Code, placeholder: 'Développeur React, Python...' },
+    { id: 'design', label: 'Design', icon: Palette, placeholder: 'Logo, Webdesign...' },
+    { id: 'marketing', label: 'Marketing', icon: Megaphone, placeholder: 'SEO, Rédaction...' },
+    { id: 'business', label: 'Business', icon: Briefcase, placeholder: 'Comptable, Juriste...' },
   ]
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (query.trim()) {
+    if (query.trim() || location.trim()) {
         const searchParams = new URLSearchParams()
-        searchParams.set('q', query)
+        if (query.trim()) searchParams.set('q', query)
+        if (location.trim()) searchParams.set('loc', location)
+        
         if (activeTab !== 'all') {
-            searchParams.set('type', activeTab)
+            searchParams.set('category', activeTab) // Changed from type to category to match search page
         }
         router.push(`/search?${searchParams.toString()}`)
     }
@@ -35,9 +38,9 @@ export function SearchSection() {
   const currentTab = tabs.find(t => t.id === activeTab) || tabs[0]
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col gap-3 md:gap-4 relative z-10">
-        {/* Search Tabs - Scrollable on mobile, centered on desktop */}
-        <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-2 scrollbar-hide w-full px-1 md:px-0 mask-image-scroll-fade">
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-3 md:gap-4 relative z-10">
+        {/* Search Tabs */}
+        <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-2 scrollbar-hide w-full px-1 md:px-0">
             {tabs.map((tab) => {
                 const Icon = tab.icon
                 const isActive = activeTab === tab.id
@@ -60,23 +63,37 @@ export function SearchSection() {
             })}
         </div>
 
-      <form onSubmit={handleSearch} className="bg-white p-1.5 md:p-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 flex items-center transition-shadow hover:shadow-[0_8px_30px_rgb(0,0,0,0.18)]">
-        <div className="hidden md:block pl-6 md:pl-8 shrink-0">
-            <Search className="h-6 w-6 text-slate-800" />
+      <form onSubmit={handleSearch} className="bg-white p-2 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200 flex flex-col md:flex-row items-stretch md:items-center transition-shadow hover:shadow-[0_8px_30px_rgb(0,0,0,0.18)] gap-2 md:gap-0">
+        
+        {/* WHAT Input */}
+        <div className="flex-1 flex items-center relative md:border-r border-slate-200 px-2">
+            <Search className="h-5 w-5 text-slate-400 ml-3 shrink-0" />
+            <Input 
+                className="flex-1 border-none shadow-none focus-visible:ring-0 text-base md:text-lg placeholder:text-slate-400 h-12 md:h-14 px-3 bg-transparent outline-none ring-0 w-full truncate"
+                placeholder={currentTab.placeholder}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+            />
         </div>
-        <Input 
-            className="flex-1 border-none shadow-none focus-visible:ring-0 text-base md:text-lg placeholder:text-slate-400 h-12 md:h-16 px-4 md:px-4 bg-transparent outline-none ring-0 min-w-0"
-            placeholder={currentTab.placeholder}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-        />
+
+        {/* WHERE Input */}
+        <div className="md:w-1/3 flex items-center relative px-2">
+             <MapPin className="h-5 w-5 text-slate-400 ml-3 shrink-0" />
+             <Input 
+                className="flex-1 border-none shadow-none focus-visible:ring-0 text-base md:text-lg placeholder:text-slate-400 h-12 md:h-14 px-3 bg-transparent outline-none ring-0 w-full truncate"
+                placeholder="Ville ou code postal"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+             />
+        </div>
+
         <Button 
             type="submit"
-            size="icon"
-            className="rounded-full h-11 w-11 md:w-auto md:h-14 md:px-10 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 shadow-none hover:opacity-90 transition-all shrink-0"
+            size="lg"
+            className="rounded-[1.5rem] h-12 md:h-14 md:px-8 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 shadow-sm hover:opacity-90 transition-all shrink-0 m-1 md:m-0 font-bold text-base"
         >
-            <Search className="h-5 w-5 md:hidden" />
-            <span className="hidden md:inline text-lg font-bold">Rechercher</span>
+            <span className="md:hidden">Rechercher</span>
+            <span className="hidden md:inline">Rechercher</span>
         </Button>
       </form>
     </div>

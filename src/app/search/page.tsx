@@ -13,9 +13,10 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const { q, category } = await searchParams;
+  const { q, category, loc } = await searchParams;
   const searchTerm = (typeof q === 'string' ? q : '').toLowerCase();
   const categoryTerm = (typeof category === 'string' ? category : '').toLowerCase();
+  const locationTerm = (typeof loc === 'string' ? loc : '').toLowerCase();
   
   // Fetch From Prisma
   const results = await prisma.business.findMany({
@@ -25,8 +26,15 @@ export default async function SearchPage({
           OR: [
             { name: { contains: searchTerm, mode: 'insensitive' } },
             { description: { contains: searchTerm, mode: 'insensitive' } },
-            { city: { contains: searchTerm, mode: 'insensitive' } },
+            { skills: { hasSome: [searchTerm] } }, // Also search in skills
           ]
+        } : {},
+        locationTerm ? {
+            OR: [
+                { city: { contains: locationTerm, mode: 'insensitive' } },
+                { address: { contains: locationTerm, mode: 'insensitive' } },
+                { country: { contains: locationTerm, mode: 'insensitive' } }
+            ]
         } : {},
         categoryTerm ? {
           category: {
@@ -43,7 +51,11 @@ export default async function SearchPage({
     }
   });
 
-  const title = searchTerm ? `Résultats pour "${searchTerm}"` : categoryTerm ? `Meilleurs experts en ${categoryTerm}` : 'Tous les freelances';
+  let title = 'Tous les freelances';
+  if (searchTerm && locationTerm) title = `Résultats pour "${searchTerm}" à "${locationTerm}"`;
+  else if (searchTerm) title = `Résultats pour "${searchTerm}"`;
+  else if (categoryTerm) title = `Experts en ${categoryTerm}`;
+  else if (locationTerm) title = `Experts à ${locationTerm}`;
 
   return (
     <div className="min-h-screen bg-slate-50">

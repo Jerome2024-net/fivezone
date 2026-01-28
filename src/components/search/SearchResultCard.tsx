@@ -12,6 +12,8 @@ interface SearchResultCardProps {
     reviewCount: number
     imageUrl?: string
     city?: string
+    hourlyRate?: number
+    currency?: string
 }
 
 export function SearchResultCard({ 
@@ -21,8 +23,12 @@ export function SearchResultCard({
     rating = 0,
     reviewCount = 0,
     imageUrl,
-    city = "Non spécifié"
+    city = "Non spécifié",
+    hourlyRate,
+    currency = "EUR"
 }: SearchResultCardProps) {
+    const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€';
+    
     return (
         <Link href={`/business/${id}`} className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all shadow-sm">
             <div className="flex flex-col md:flex-row h-full md:h-64">
@@ -67,6 +73,11 @@ export function SearchResultCard({
                         
                         <div className="text-sm text-slate-600 space-y-1">
                             <p>{category} • {city}</p>
+                            {hourlyRate && (
+                                <p className="font-bold text-slate-900 mt-1">
+                                    {hourlyRate} {currencySymbol} <span className="text-slate-500 font-normal">/ jour (TJM)</span>
+                                </p>
+                            )}
                         </div>
                     </div>
                     

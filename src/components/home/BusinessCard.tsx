@@ -12,9 +12,13 @@ interface BusinessCardProps {
     promoted?: boolean
     rating?: number
     reviewCount?: number
+    hourlyRate?: number
+    currency?: string
 }
 
-export function BusinessCard({ id, name, category, imageUrl, promoted = false, rating = 0, reviewCount = 0 }: BusinessCardProps) {
+export function BusinessCard({ id, name, category, imageUrl, promoted = false, rating = 0, reviewCount = 0, hourlyRate, currency = 'EUR' }: BusinessCardProps) {
+    const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€';
+
     return (
         <Link href={`/business/${id}`} className="group cursor-pointer relative block">
             {/* Image Card */}
@@ -74,6 +78,12 @@ export function BusinessCard({ id, name, category, imageUrl, promoted = false, r
                     <div className="text-sm text-slate-500 truncate">
                     {category}
                     </div>
+
+                    {hourlyRate && (
+                        <div className="mt-2 font-bold text-slate-900">
+                            {hourlyRate} {currencySymbol} <span className="text-slate-500 font-normal text-xs">/ jour</span>
+                        </div>
+                    )}
             </div>
         </Link>
     )

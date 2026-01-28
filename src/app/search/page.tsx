@@ -117,6 +117,8 @@ export default async function SearchPage({
                       reviewCount={business.reviewCount}
                       imageUrl={business.coverUrl || business.imageUrl || undefined}
                       city={business.city}
+                      hourlyRate={business.hourlyRate || undefined}
+                      currency={business.currency || 'EUR'}
                    />
                  ))}
                </div>

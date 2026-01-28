@@ -48,6 +48,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
   }
 
   const primaryCTA = getCTA(categoryType);
+  const currencySymbol = business.currency === 'USD' ? '$' : business.currency === 'GBP' ? '£' : business.currency === 'XOF' ? 'FCFA' : '€';
 
   // Collect all available images
   const allImages = [
@@ -88,19 +89,29 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                      </span>
                      <span className="text-slate-900 underline font-bold cursor-pointer">{business.reviewCount} avis</span>
                      <span>•</span>
-                     <span className="text-slate-900 underline cursor-pointer">
-                        {business.hourlyRate ? `${business.hourlyRate} ${business.currency === 'XOF' ? 'FCFA' : business.currency === 'USD' ? '$' : business.currency === 'GBP' ? '£' : '€'} / jour` : 'Sur devis'}, {categoryType}, {business.city}
-                     </span>
+                     <span className="text-slate-900 underline cursor-pointer">{categoryType}, {business.city}</span>
                      <span>•</span>
                      <span className="text-slate-900 underline cursor-pointer">Disponible</span>
                  </div>
+                 
+                 {business.hourlyRate && (
+                     <div className="mt-4 inline-block">
+                        <div className="bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-lg shadow-md flex items-center gap-2">
+                            <span>{business.hourlyRate} {currencySymbol}</span>
+                            <span className="text-slate-400 text-sm font-medium">/ jour (TJM)</span>
+                        </div>
+                     </div>
+                 )}
+
                    {business.linkedinUrl && (
-                       <a href={business.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-slate-600 hover:text-[#0077b5] font-bold text-sm bg-slate-50 px-3 py-1 rounded-full border border-slate-200 transition-colors">
+                       <div className="mt-4">
+                       <a href={business.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-slate-600 hover:text-[#0077b5] font-bold text-sm bg-slate-50 px-3 py-1 rounded-full border border-slate-200 transition-colors">
                            <Globe className="h-3 w-3" />
                            LinkedIn / Portfolio
                        </a>
+                       </div>
                    )}
-                 <div className="flex items-center gap-1 mt-2 text-slate-500 text-sm">
+                 <div className="flex items-center gap-1 mt-4 text-slate-500 text-sm">
                     <MapPin className="h-4 w-4" />
                     <span>{business.address}, {business.city}</span>
                  </div>

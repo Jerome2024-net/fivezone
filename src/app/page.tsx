@@ -28,7 +28,9 @@ export default async function Home() {
          viewCount: b.viewCount,
          rating: b.rating,
          reviewCount: b.reviewCount,
-         imageUrl: b.coverUrl || b.imageUrl || undefined // Prioritize cover, fallback to logo
+         imageUrl: b.coverUrl || b.imageUrl || undefined, // Prioritize cover, fallback to logo
+         hourlyRate: b.hourlyRate || undefined,
+         currency: b.currency || 'EUR'
      }));
 
   } catch (error) {
@@ -105,6 +107,8 @@ export default async function Home() {
                                 imageUrl={business.imageUrl}
                                 rating={business.rating}
                                 reviewCount={business.reviewCount}
+                                hourlyRate={business.hourlyRate}
+                                currency={business.currency}
                             />
                         </div>
                      ))}

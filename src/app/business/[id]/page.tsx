@@ -327,70 +327,16 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
             </section>
           </div>
           
-          {/* Right Column: Sticky Sidebar (Map, Info) */}
           <div className="lg:col-span-1">
              <div className="sticky top-24 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 space-y-6">
                  
-                 {/* Primary CTA based on Category - HIDDEN FOR MVP
-                 <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg rounded-full shadow-lg">
-                    {primaryCTA}
-                 </Button>
-                 */}
-                 
-                 {/* Simple Contact Button instead */}
+                 {/* Single Contact Button */}
                  <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg rounded-full shadow-lg" asChild>
                     <a href={`tel:${business.phone}`} className="flex items-center justify-center gap-2">
                         <Phone className="h-5 w-5" />
-                        Appeler
+                        Contacter
                     </a>
                  </Button>
-
-                 {/* PRO Feature: WhatsApp / Call Button */}
-                 {isPro && (
-                    <div className="space-y-3">
-                        {business?.whatsapp && (
-                             <Button className="w-full h-12 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-lg rounded-full shadow-md transition-all hover:scale-[1.02]" asChild>
-                                <a href={`https://wa.me/${business.whatsapp}`} target="_blank" rel="noopener noreferrer">
-                                    <MessageSquare className="mr-2 h-5 w-5" />
-                                    Discuter sur WhatsApp
-                                </a>
-                             </Button>
-                        )}
-                        {!business?.whatsapp && (
-                             <Button className="w-full h-12 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-lg rounded-full shadow-md transition-all hover:scale-[1.02]">
-                                <MessageSquare className="mr-2 h-5 w-5" />
-                                Discuter sur WhatsApp
-                            </Button>
-                        )}
-
-                        {business?.phone && (
-                            <Button variant="outline" className="w-full h-12 border-slate-900 text-slate-900 hover:bg-slate-50 font-bold text-lg rounded-full" asChild>
-                                <a href={`tel:${business.phone}`}>
-                                    <Phone className="mr-2 h-5 w-5" />
-                                    Contacter l&apos;expert
-                                </a>
-                            </Button>
-                        )}
-                        {!business?.phone && (
-                             <Button variant="outline" className="w-full h-12 border-slate-900 text-slate-900 hover:bg-slate-50 font-bold text-lg rounded-full">
-                                <Phone className="mr-2 h-5 w-5" />
-                                Contacter l&apos;expert
-                            </Button>
-                        )}
-                    </div>
-                 )}
-
-                 {/* PRO Feature: Active Promotion */}
-                 {isPro && (
-                     <div className="bg-red-50 border border-red-100 p-4 rounded-xl">
-                        <div className="flex items-center gap-2 mb-2">
-                             <Tag className="h-5 w-5 text-red-600" />
-                             <span className="font-black text-red-600 uppercase tracking-wide text-xs">Offre Spéciale</span>
-                        </div>
-                        <h4 className="font-bold text-slate-900 mb-1">Devis gratuit sous 24h !</h4>
-                        <p className="text-sm text-slate-700">Pour toute nouvelle proposition de projet.</p>
-                     </div>
-                 )}
 
                  {/* Map Integration (Mapbox) */}
                  <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[250px] relative z-0">
@@ -414,7 +360,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                         <MapPin className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
                         <div>
                             <p className="font-bold text-slate-900">{business?.address}</p>
-                            <p className="text-slate-600">{business?.city}, France</p>
+                            <p className="text-slate-600">{business?.city}, {business?.country || business?.country || "France"}</p>
                         </div>
                     </div>
                     
@@ -422,8 +368,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                         <Clock className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
                         <div>
                             <p className="font-bold text-red-600">Ouvert</p>
-                            <p className="text-slate-600 text-sm">12:00 - 23:00</p>
-                            <p className="text-blue-600 text-sm font-bold cursor-pointer mt-1 hover:underline">Voir tous les horaires</p>
+                            <p className="text-slate-600 text-sm">09:00 - 18:00</p>
                         </div>
                     </div>
 
@@ -436,12 +381,6 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                          <Phone className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
                          <p className="font-bold text-slate-900 hover:underline cursor-pointer">{business?.phone || '+33 1 23 45 67 89'}</p>
                     </div>
-                 </div>
-                 
-                 <div className="pt-4 border-t border-slate-100">
-                    <Button className="w-full rounded-full bg-[#F2C94C] hover:bg-[#e0b73b] text-slate-900 font-bold text-lg h-12">
-                        Réserver une table
-                    </Button>
                  </div>
              </div>
           </div>

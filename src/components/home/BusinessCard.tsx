@@ -49,7 +49,6 @@ export function BusinessCard({ id, name, category, imageUrl, promoted = false, r
                     >
                         <Heart className="h-5 w-5 text-slate-900" />
                     </button>
-                    {!imageUrl && <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium z-0">Image {id}</div>}
             </div>
             
             {/* Content */}

@@ -121,6 +121,12 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
       {/* Photo Mosaic Gallery - Only show if images exist */}
       {allImages.length > 0 && (
           <div className="container mx-auto px-4 md:px-6 mb-8">
+               {allImages.length === 1 ? (
+                   <div className="h-[400px] rounded-2xl overflow-hidden relative group cursor-pointer bg-slate-200">
+                        <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                   </div>
+               ) : (
                <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
                     {/* Main Large Image */}
                     <div className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer">
@@ -149,6 +155,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                         </div>
                     ))}
                </div>
+               )}
           </div>
       )}
 

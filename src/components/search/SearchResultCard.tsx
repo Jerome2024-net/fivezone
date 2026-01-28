@@ -45,7 +45,6 @@ export function SearchResultCard({
                             <Heart className="h-4 w-4" />
                         </button>
                     </div>
-                    {!imageUrl && <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium">Photo {id}</div>}
                 </div>
                 
                 {/* Content */}

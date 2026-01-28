@@ -46,7 +46,7 @@ export default async function Home() {
             Trouvez le freelance idéal.
           </h1>
           <p className="text-slate-600 text-center mb-8 text-lg md:text-2xl font-medium max-w-2xl">
-             Experts vérifiés • Local ou à distance • Sans frais cachés
+             Experts vérifiés • Local ou à distance
           </p>
           
           {/* Search Container */}

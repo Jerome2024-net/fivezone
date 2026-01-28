@@ -39,20 +39,32 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans">
-      {/* 1. HERO SECTION UPDATED - Style plus TripAdvisor/Airbnb (Fond Vert Pale + Titre Intact) */}
+      {/* 1. HERO SECTION UPDATED - Malt/Fiverr Style */}
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
-          <h1 className="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight text-slate-900 leading-tight">
-            Trouvez le freelance idéal.
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
+            Trouvez un expert freelance fiable pour vos projets — localement ou à distance.
           </h1>
-          <p className="text-slate-600 text-center mb-10 text-lg md:text-xl font-medium max-w-2xl">
-             Développeurs • Graphistes • Rédacteurs • Consultants<br/>
-             <span className="text-sm opacity-80 mt-2 block">Connectez-vous avec les meilleurs talents pour vos projets.</span>
+          <p className="text-slate-600 text-center mb-8 text-lg md:text-xl font-medium max-w-2xl">
+             Des profils vérifiés. Des résultats réels. Sans commission cachée.
           </p>
           
           {/* Search Container */}
-          <div className="w-full mb-10">
+          <div className="w-full mb-8">
              <SearchSection />
+             <div className="mt-4 text-center text-sm text-slate-500 hidden md:block">
+                <span className="font-bold text-slate-700">Populaire :</span> Développeur WordPress, Graphiste, Community Manager, Consultant marketing
+             </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mt-2">
+             <Button className="h-12 px-8 text-lg font-bold rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20" asChild>
+                <Link href="/search">Trouvez un freelance</Link>
+             </Button>
+             <Button variant="outline" className="h-12 px-8 text-lg font-bold rounded-full border-2 border-slate-900 text-slate-900 hover:bg-slate-50" asChild>
+                <Link href="/register">Je veux proposer mes services</Link>
+             </Button>
           </div>
         </div>
       </section>

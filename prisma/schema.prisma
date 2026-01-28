@@ -53,6 +53,7 @@ model Business {
   // Freelance Specific Fields
   skills      String[]   @default([])
   hourlyRate  Float?
+  currency    String     @default("EUR")
 
   // Verification Fields
   siret              String?

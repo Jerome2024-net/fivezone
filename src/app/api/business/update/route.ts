@@ -15,6 +15,8 @@ const updateSchema = z.object({
   website: z.string().optional().or(z.literal("")),
   logoUrl: z.string().optional(),
   coverUrl: z.string().optional(),
+  hourlyRate: z.number().optional(), // TJM
+  currency: z.string().optional(),
   ctaAction: z.enum(['none', 'booking', 'order', 'appointment', 'contact', 'website']).optional(),
   ctaUrl: z.string().optional().or(z.literal("")),
 })
@@ -53,6 +55,8 @@ export async function PUT(req: Request) {
             website: validatedData.website,
             imageUrl: validatedData.logoUrl,
             coverUrl: validatedData.coverUrl,
+            hourlyRate: validatedData.hourlyRate,
+            currency: validatedData.currency,
             // category: need to handle relation update if category changed
             category: { 
                 connectOrCreate: {

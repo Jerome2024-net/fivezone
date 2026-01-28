@@ -89,7 +89,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                      <span className="text-slate-900 underline font-bold cursor-pointer">{business.reviewCount} avis</span>
                      <span>•</span>
                      <span className="text-slate-900 underline cursor-pointer">
-                        {business.hourlyRate ? `${business.hourlyRate}€ / jour` : 'Sur devis'}, {categoryType}, {business.city}
+                        {business.hourlyRate ? `${business.hourlyRate} ${business.currency === 'XOF' ? 'FCFA' : business.currency === 'USD' ? '$' : business.currency === 'GBP' ? '£' : '€'} / jour` : 'Sur devis'}, {categoryType}, {business.city}
                      </span>
                      <span>•</span>
                      <span className="text-slate-900 underline cursor-pointer">Disponible</span>

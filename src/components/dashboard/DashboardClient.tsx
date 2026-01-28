@@ -28,6 +28,8 @@ const EditSchema = z.object({
   website: z.string().optional(),
   logoUrl: z.string().min(1, "Le logo est obligatoire"),
   coverUrl: z.string().min(1, "La photo de couverture est obligatoire"),
+  hourlyRate: z.number().optional().or(z.string().transform(val => val === '' ? undefined : Number(val))),
+  currency: z.string().optional(),
   ctaAction: z.string().optional(),
   ctaUrl: z.string().optional(),
 })
@@ -54,6 +56,8 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
             website: business.website || "",
             logoUrl: business.logoUrl || "",
             coverUrl: business.coverUrl || "",
+            hourlyRate: business.hourlyRate || "",
+            currency: business.currency || "EUR",
             ctaAction: business.ctaAction || "none",
             ctaUrl: business.ctaUrl || "",
         }
@@ -71,6 +75,8 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
             website: business.website || "",
             logoUrl: business.logoUrl || "",
             coverUrl: business.coverUrl || "",
+            hourlyRate: business.hourlyRate || "",
+            currency: business.currency || "EUR",
             ctaAction: business.ctaAction || "none",
             ctaUrl: business.ctaUrl || "",
         });
@@ -179,6 +185,29 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                              <div className="space-y-2">
                                 <label className="text-sm font-medium">Site Web</label>
                                 <Input {...form.register("website")} placeholder="https://" />
+                             </div>
+                        </div>
+
+                        {/* Pricing Section - TJM */}
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-semibold border-b pb-2">Tarification (Optionnel)</h2>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Taux Journalier Moyen (TJM)</label>
+                                    <Input type="number" {...form.register("hourlyRate")} placeholder="Ex: 500" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Devise</label>
+                                    <select 
+                                        className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                        {...form.register("currency")}
+                                    >
+                                        <option value="EUR">Euros (€)</option>
+                                        <option value="XOF">Franc CFA (FCFA)</option>
+                                        <option value="USD">Dollars ($)</option>
+                                        <option value="GBP">Livres (£)</option>
+                                    </select>
+                                </div>
                              </div>
                         </div>
 

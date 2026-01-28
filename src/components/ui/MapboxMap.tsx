@@ -46,6 +46,7 @@ export default function MapboxMap({ address, city }: MapboxMapProps) {
             <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center p-4 text-center text-slate-500 text-sm">
                 <MapPin className="h-8 w-8 mb-2 opacity-20" />
                 <p>Carte indisponible (Token manquant)</p>
+                <p className="text-xs text-slate-400 mt-1">Ajoutez NEXT_PUBLIC_MAPBOX_TOKEN dans .env.local</p>
             </div>
         );
     }

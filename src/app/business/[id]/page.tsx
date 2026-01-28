@@ -189,7 +189,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                    {business?.description || "Découvrez la meilleure expérience locale. Nous proposons un service de qualité et des produits exceptionnels. Notre équipe dévouée s'assure que chaque visite soit mémorable."}
                </p>
                <div className="flex flex-wrap gap-4 pt-4">
-                  {[ 'Accès handicapés', 'Wifi gratuit', 'Bar complet', 'Service à table' ].map(feat => (
+                  {(business.features || []).map((feat: string) => (
                       <div key={feat} className="flex items-center gap-2 text-slate-700 font-medium">
                           <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center">
                               <Check className="h-4 w-4 text-green-600" />
@@ -241,89 +241,20 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
             {/* Reviews Section */}
             <section className="space-y-8">
                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-slate-900">Avis (1 245)</h2>
-                  <Button className="rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800">Écrire un avis</Button>
+                  {/* <h2 className="text-2xl font-bold text-slate-900">Avis ({business.reviewCount || 0})</h2> */}
+                  {/* <Button className="rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800">Écrire un avis</Button> */}
                </div>
                
-               {/* Rating Summary Breakdown */}
+               {/* Reviews hidden as requested for MVP */}
+               {/* 
                <div className="flex flex-col md:flex-row gap-8 bg-slate-50 p-6 rounded-xl">
                    <div className="flex-1 space-y-2">
-                       {/* Rating Bars would go here (simplified for space) */}
-                      <div className="flex items-center text-sm font-bold text-slate-700">
-                          <span className="w-24">Excellent</span>
-                          <div className="flex-1 h-3 mx-3 bg-slate-200 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#34E0A1] w-[80%]" />
-                          </div>
-                          <span>850</span>
-                      </div>
-                      <div className="flex items-center text-sm font-bold text-slate-700">
-                          <span className="w-24">Très bon</span>
-                          <div className="flex-1 h-3 mx-3 bg-slate-200 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#34E0A1] w-[15%]" />
-                          </div>
-                          <span>210</span>
-                      </div>
-                      <div className="flex items-center text-sm font-bold text-slate-700">
-                          <span className="w-24">Moyen</span>
-                          <div className="flex-1 h-3 mx-3 bg-slate-200 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#34E0A1] w-[3%]" />
-                          </div>
-                          <span>45</span>
-                      </div>
-                      <div className="flex items-center text-sm font-bold text-slate-700">
-                          <span className="w-24">Médiocre</span>
-                          <div className="flex-1 h-3 mx-3 bg-slate-200 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#34E0A1] w-[1%]" />
-                          </div>
-                          <span>10</span>
-                      </div>
-                      <div className="flex items-center text-sm font-bold text-slate-700">
-                          <span className="w-24">Horrible</span>
-                          <div className="flex-1 h-3 mx-3 bg-slate-200 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#34E0A1] w-[1%]" />
-                          </div>
-                          <span>5</span>
-                      </div>
+                       <div className="text-center text-slate-500 py-4">
+                            Aucun avis pour le moment
+                       </div>
                    </div>
                </div>
-
-               {/* Individual Reviews */}
-               <div className="space-y-6">
-                   {[1, 2, 3].map((rev) => (
-                       <div key={rev} className="border-b border-slate-200 pb-6">
-                           <div className="flex items-center gap-3 mb-3">
-                               <div className="h-10 w-10 bg-slate-200 rounded-full flex items-center justify-center">
-                                   <User className="h-6 w-6 text-slate-500" />
-                               </div>
-                               <div>
-                                   <p className="font-bold text-sm">Jean D.</p>
-                                   <p className="text-xs text-slate-500">Paris, France • 25 contributions</p>
-                               </div>
-                           </div>
-                           <div className="flex items-center gap-2 mb-2">
-                               <div className="flex gap-0.5">
-                                    {[1,2,3,4,5].map(star => (
-                                        <div key={star} className={`w-3 h-3 rounded-full ${star <= (rev === 2 ? 4 : 5) ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
-                                    ))}
-                               </div>
-                               <span className="text-sm text-slate-500">Avis publié hier</span>
-                           </div>
-                           <h3 className="font-bold text-lg mb-2">Expérience de dîner exceptionnelle !</h3>
-                           <p className="text-slate-700 leading-relaxed">
-                               Le service était impeccable et la nourriture divine. Nous avons commandé le menu dégustation et chaque plat était un délice. Ambiance très raffinée mais accueillante. Nous reviendrons certainement !
-                           </p>
-                           <div className="flex gap-4 mt-4">
-                               <Button variant="ghost" size="sm" className="text-slate-500 text-xs px-0 hover:bg-transparent hover:underline">
-                                   Utile
-                               </Button>
-                               <Button variant="ghost" size="sm" className="text-slate-500 text-xs px-0 hover:bg-transparent hover:underline">
-                                   Partager
-                               </Button>
-                           </div>
-                       </div>
-                   ))}
-               </div>
-
+               */}
             </section>
           </div>
           

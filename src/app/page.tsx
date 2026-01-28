@@ -84,7 +84,7 @@ export default async function Home() {
         <div className="container px-4 md:px-6 mx-auto">
             <div className="flex items-end justify-between mb-6 md:mb-8">
                 <div>
-                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">Experts à la une 🔥</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Experts à la une</h2>
                     <p className="text-slate-500 mt-2 text-base md:text-lg">Les freelances recommandés par la communauté.</p>
                 </div>
                 {/* Lien "Voir tout" style TripAdvisor */}

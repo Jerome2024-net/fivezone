@@ -1,6 +1,8 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Allow build to pass even if API key is missing (it will fail at runtime if not fixed)
+const apiKey = process.env.RESEND_API_KEY || 're_dummy_key_for_build';
+const resend = new Resend(apiKey)
 
 // From address - use your verified domain or Resend's default
 const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev'

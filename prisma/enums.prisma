@@ -1,0 +1,6 @@
+   
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}

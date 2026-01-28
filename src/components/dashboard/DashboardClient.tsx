@@ -145,7 +145,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                             <h2 className="text-lg font-semibold border-b pb-2">Informations Principales</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Nom de l&apos;établissement</label>
+                                    <label className="text-sm font-medium">Titre du profil (Nom)</label>
                                     <Input {...form.register("name")} />
                                 </div>
                                 <div className="space-y-2">
@@ -161,7 +161,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
 
                         {/* Contact & Location */}
                         <div className="space-y-4">
-                             <h2 className="text-lg font-semibold border-b pb-2">Lieu & Contact</h2>
+                             <h2 className="text-lg font-semibold border-b pb-2">Localisation & Contact</h2>
                              <div className="space-y-2">
                                 <label className="text-sm font-medium">Adresse complète</label>
                                 <Input {...form.register("address")} />

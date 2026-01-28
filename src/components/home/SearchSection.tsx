@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, MapPin, ShoppingBag, Hammer, Sparkles, Utensils } from "lucide-react"
+import { Search, MapPin, Code, Palette, Briefcase, Megaphone, Laptop } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function SearchSection() {
@@ -13,11 +13,11 @@ export function SearchSection() {
   const router = useRouter()
 
   const tabs = [
-    { id: 'all', label: 'Tout', icon: Search, placeholder: 'Rechercher une adresse, un pro...' },
-    { id: 'restaurant', label: 'Restauration', icon: Utensils, placeholder: 'Restaurants, cafés, bars...' },
-    { id: 'shop', label: 'Commerces', icon: ShoppingBag, placeholder: 'Boutiques, magasins, épiceries...' },
-    { id: 'service', label: 'Services', icon: Sparkles, placeholder: 'Coiffeur, garage, nettoyage...' },
-    { id: 'artisan', label: 'Artisans', icon: Hammer, placeholder: 'Plombier, électricien, menuisier...' },
+    { id: 'all', label: 'Tout', icon: Search, placeholder: 'Rechercher une compétence, un freelance...' },
+    { id: 'tech', label: 'Tech & Dev', icon: Code, placeholder: 'Développeur React, Python, Mobile...' },
+    { id: 'design', label: 'Design', icon: Palette, placeholder: 'Logo, Webdesign, UI/UX...' },
+    { id: 'marketing', label: 'Marketing', icon: Megaphone, placeholder: 'SEO, Rédaction, Social Media...' },
+    { id: 'business', label: 'Business', icon: Briefcase, placeholder: 'Comptable, Assistant, Juriste...' },
   ]
 
   const handleSearch = (e: React.FormEvent) => {

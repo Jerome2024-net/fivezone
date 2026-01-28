@@ -40,11 +40,11 @@ export default async function Home() {
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
           <h1 className="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight text-slate-900 leading-tight">
-            Les meilleures adresses locales.
+            Trouvez le freelance idéal.
           </h1>
           <p className="text-slate-600 text-center mb-10 text-lg md:text-xl font-medium max-w-2xl">
-             Artisans • Commerces • Services • Restaurants<br/>
-             <span className="text-sm opacity-80 mt-2 block">Trouvez et contactez les meilleurs professionnels près de chez vous.</span>
+             Développeurs • Graphistes • Rédacteurs • Consultants<br/>
+             <span className="text-sm opacity-80 mt-2 block">Connectez-vous avec les meilleurs talents pour vos projets.</span>
           </p>
           
           {/* Search Container */}
@@ -58,10 +58,10 @@ export default async function Home() {
       <section className="container mx-auto px-4 -mt-8 relative z-20 mb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
             {[
-                { label: 'Restaurants & Bars', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop', link: '/search?category=Restoration' },
-                { label: 'Shopping', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop', link: '/search?category=Shopping' },
-                { label: 'Bien-être', img: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?q=80&w=600&auto=format&fit=crop', link: '/search?category=Beaute' },
-                { label: 'Événements', img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop', link: '/search?category=Events' },
+                { label: 'Développement', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop', link: '/search?category=Tech' },
+                { label: 'Design & Création', img: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?q=80&w=600&auto=format&fit=crop', link: '/search?category=Design' },
+                { label: 'Marketing', img: 'https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=600&auto=format&fit=crop', link: '/search?category=Marketing' },
+                { label: 'Business', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=600&auto=format&fit=crop', link: '/search?category=Business' },
             ].map((item, idx) => (
                 <Link href={item.link} key={idx} className="group relative h-32 md:h-48 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all block">
                     <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/10 transition-colors z-10" />
@@ -83,8 +83,8 @@ export default async function Home() {
         <div className="container px-4 md:px-6 mx-auto">
             <div className="flex items-end justify-between mb-6 md:mb-8">
                 <div>
-                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">Le top du moment 🔥</h2>
-                    <p className="text-slate-500 mt-2 text-base md:text-lg">Les adresses plébiscitées par la communauté.</p>
+                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">Experts à la une 🔥</h2>
+                    <p className="text-slate-500 mt-2 text-base md:text-lg">Les freelances recommandés par la communauté.</p>
                 </div>
                 {/* Lien "Voir tout" style TripAdvisor */}
                 <Link href="/search" className="hidden md:block text-sm font-bold underline decoration-2 decoration-slate-200 hover:decoration-[#34E0A1] transition-all">
@@ -112,7 +112,7 @@ export default async function Home() {
                 </div>
             )}
              <div className="mt-8 text-center md:hidden">
-                <Link href="/search" className="text-sm font-bold text-[#34E0A1]">Voir tous les lieux →</Link>
+                <Link href="/search" className="text-sm font-bold text-[#34E0A1]">Voir tous les experts →</Link>
              </div>
         </div>
       </section>
@@ -124,9 +124,9 @@ export default async function Home() {
                 href="/pricing"
                 className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex flex-col sm:flex-row items-center gap-1 md:gap-2 group px-6 py-3 rounded-xl hover:bg-slate-50 text-center"
              >
-                <span>Propriétaire d&apos;un établissement ?</span>
+                <span>Vous êtes Freelance ?</span>
                 <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
-                    Référencez-vous ici
+                    Créez votre profil gratuitement
                 </span>
              </Link>
           </div>

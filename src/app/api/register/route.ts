@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma"
 import { hash } from "bcryptjs"
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { sendMetaEvent } from "@/lib/meta"
+import { headers } from "next/headers"
 
 const registrationSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
@@ -9,10 +11,15 @@ const registrationSchema = z.object({
   password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
   businessName: z.string().optional(),
   category: z.string().optional(),
+  country: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
   phone: z.string().optional(),
   website: z.string().optional().or(z.literal("")),
+  // New verification fields
+  siret: z.string().optional().or(z.literal("")),
+  linkedinUrl: z.string().optional().or(z.literal("")),
+  
   logoUrl: z.string().optional(),
   media: z.array(z.string()).optional(),
   latitude: z.number().optional(),
@@ -22,7 +29,7 @@ const registrationSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { email, password, name, businessName, category, address, city, phone, website, logoUrl, media, latitude, longitude } = registrationSchema.parse(body)
+    const { email, password, name, businessName, category, country, address, city, phone, website, siret, linkedinUrl, logoUrl, media, latitude, longitude } = registrationSchema.parse(body)
 
     // CHECK EXISTING USER IN PRISMA
     const existingUser = await prisma.user.findUnique({
@@ -58,8 +65,14 @@ export async function POST(req: Request) {
                    },
                    address: address || "Non renseignée",
                    city: city || "Non renseignée",
+                   country: country || "France",
                    phone: phone,
                    website: website,
+                   // Verification data
+                   siret: siret,
+                   linkedinUrl: linkedinUrl,
+                   verificationStatus: "PENDING", // Explicitly set to PENDING
+
                    imageUrl: logoUrl, // Use logo as main image
                    latitude: latitude,
                    longitude: longitude,
@@ -75,6 +88,28 @@ export async function POST(req: Request) {
         },
         include: {
             businesses: true
+        }
+    });
+
+    // Send Meta CAPI Event
+    const headersList = await headers();
+    const userAgent = headersList.get('user-agent') || '';
+    // IP is tougher in Next.js edge/serverless, often x-forwarded-for
+    const ip = headersList.get('x-forwarded-for') || '127.0.0.1';
+
+    await sendMetaEvent({
+        eventName: 'CompleteRegistration',
+        eventSourceUrl: req.url,
+        userData: {
+            em: newUser.email,
+            client_user_agent: userAgent,
+            client_ip_address: ip.split(',')[0] // Take first IP if list
+        },
+        customData: {
+            currency: 'EUR',
+            value: 0, // Free registration
+            content_name: 'Business Registration',
+            status: 'completed'
         }
     });
 

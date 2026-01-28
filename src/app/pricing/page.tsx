@@ -17,7 +17,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       period: "/mois",
       description: "L'essentiel pour être présent sur FiveZone.",
       features: [
-        "Fiche établissement de base",
+        "Fiche profil freelance",
         "Jusqu'à 3 photos",
         "Répondre aux avis",
         "Support par email"
@@ -34,7 +34,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       features: [
         "Mise en avant prioritaire (Top recherches)",
         "Apparition sur la page d’accueil locale",
-        "Badge 'Établissement Recommandé'",
+        "Badge 'Expert Recommandé'",
         "Bouton WhatsApp / Appel en un clic",
         "Photos & Vidéos illimitées",
         "Publication d'offres & Promotions",
@@ -52,9 +52,9 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       name: "Entreprise",
       price: "Sur devis",
       period: "",
-      description: "Solutions personnalisées pour les chaînes.",
+      description: "Solutions sur mesure pour les Agences.",
       features: [
-        "Gestion multi-établissements",
+        "Gestion multi-profils (Agences)",
         "API dédiée",
         "Account Manager dédié",
         "Facturation centralisée"
@@ -90,7 +90,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               Des tarifs simples et transparents
             </h1>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              Choisissez le plan qui correspond le mieux à votre établissement et commencez à attirer plus de clients dès aujourd'hui.
+              Choisissez le plan qui correspond le mieux à vos besoins et commencez à attirer plus de clients dès aujourd'hui.
             </p>
           </div>
 

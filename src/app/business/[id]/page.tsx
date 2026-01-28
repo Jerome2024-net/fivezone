@@ -24,7 +24,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
   if (!business) {
     return (
         <div className="flex flex-col min-h-screen bg-slate-50 items-center justify-center">
-            <h1 className="text-3xl font-bold text-slate-900 mb-4">Établissement non trouvé</h1>
+            <h1 className="text-3xl font-bold text-slate-900 mb-4">Profil non trouvé</h1>
             <Link href="/">
                 <Button>Retour à l'accueil</Button>
             </Link>
@@ -62,8 +62,18 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
       <div className="container mx-auto px-4 md:px-6 pt-6 pb-6">
          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
              <div>
-                 <div className="flex items-center gap-3">
+                 <div className="flex items-center gap-3 flex-wrap">
                     <h1 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight">{businessName}</h1>
+                    {business.verificationStatus === 'VERIFIED' ? (
+                        <span className="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-blue-200" title="Identité et Légalité Vérifiée">
+                             <BadgeCheck className="h-4 w-4" />
+                             Profil Vérifié
+                        </span>
+                    ) : (
+                        <span className="bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1" title="En attente de validation">
+                             En attente de validation
+                        </span>
+                    )}
                     {recommended && (
                       <span className="bg-[#34E0A1] text-slate-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                         <BadgeCheck className="h-4 w-4" /> Recommandé
@@ -78,14 +88,23 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                      </span>
                      <span className="text-slate-900 underline font-bold cursor-pointer">{business.reviewCount} avis</span>
                      <span>•</span>
-                     <span className="text-slate-900 underline cursor-pointer">$$$$, {categoryType}, {business.city}</span>
+                     <span className="text-slate-900 underline cursor-pointer">
+                        {business.hourlyRate ? `${business.hourlyRate}€ / jour` : 'Sur devis'}, {categoryType}, {business.city}
+                     </span>
                      <span>•</span>
-                     <span className="text-slate-900 underline cursor-pointer">Ouvert</span>
+                     <span className="text-slate-900 underline cursor-pointer">Disponible</span>
                  </div>
+                   {business.linkedinUrl && (
+                       <a href={business.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-slate-600 hover:text-[#0077b5] font-bold text-sm bg-slate-50 px-3 py-1 rounded-full border border-slate-200 transition-colors">
+                           <Globe className="h-3 w-3" />
+                           LinkedIn / Portfolio
+                       </a>
+                   )}
                  <div className="flex items-center gap-1 mt-2 text-slate-500 text-sm">
                     <MapPin className="h-4 w-4" />
                     <span>{business.address}, {business.city}</span>
                  </div>
+                 {business.siret && <p className="text-xs text-slate-400 mt-1 font-mono">SIRET: {business.siret}</p>}
              </div>
              
              <div className="flex gap-2">
@@ -149,6 +168,20 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
           {/* Left Column: Details, Menu, Reviews */}
           <div className="lg:col-span-2 space-y-12">
             
+            {/* Skills / Expertise */}
+            {business.skills && business.skills.length > 0 && (
+                <section className="space-y-4 pb-8 border-b border-slate-200">
+                    <h2 className="text-2xl font-bold text-slate-900">Compétences & Expertises</h2>
+                    <div className="flex flex-wrap gap-2">
+                        {business.skills.map((skill: string) => (
+                            <div key={skill} className="bg-slate-100 text-slate-800 px-4 py-2 rounded-full font-medium text-sm border border-slate-200">
+                                {skill}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
             {/* About / Description */}
             <section className="space-y-4 pb-8 border-b border-slate-200">
                <h2 className="text-2xl font-bold text-slate-900">À propos</h2>
@@ -334,14 +367,14 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                             <Button variant="outline" className="w-full h-12 border-slate-900 text-slate-900 hover:bg-slate-50 font-bold text-lg rounded-full" asChild>
                                 <a href={`tel:${business.phone}`}>
                                     <Phone className="mr-2 h-5 w-5" />
-                                    Appeler l&apos;établissement
+                                    Contacter l&apos;expert
                                 </a>
                             </Button>
                         )}
                         {!business?.phone && (
                              <Button variant="outline" className="w-full h-12 border-slate-900 text-slate-900 hover:bg-slate-50 font-bold text-lg rounded-full">
                                 <Phone className="mr-2 h-5 w-5" />
-                                Appeler l&apos;établissement
+                                Contacter l&apos;expert
                             </Button>
                         )}
                     </div>
@@ -354,8 +387,8 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                              <Tag className="h-5 w-5 text-red-600" />
                              <span className="font-black text-red-600 uppercase tracking-wide text-xs">Offre Spéciale</span>
                         </div>
-                        <h4 className="font-bold text-slate-900 mb-1">Dessert offert !</h4>
-                        <p className="text-sm text-slate-700">Pour tout menu complet acheté ce midi. Valable jusqu'au 31/01.</p>
+                        <h4 className="font-bold text-slate-900 mb-1">Devis gratuit sous 24h !</h4>
+                        <p className="text-sm text-slate-700">Pour toute nouvelle proposition de projet.</p>
                      </div>
                  )}
 

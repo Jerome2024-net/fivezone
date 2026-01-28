@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface AddressAutocompleteProps {
     onAddressSelect: (address: string, city: string, coordinates: { lat: number, lng: number }) => void;
+    onChange?: (value: string) => void;
     defaultValue?: string;
     placeholder?: string;
 }
@@ -22,7 +23,7 @@ interface MapboxFeature {
     }[];
 }
 
-export function AddressAutocomplete({ onAddressSelect, defaultValue = "", placeholder = "Entrez une adresse..." }: AddressAutocompleteProps) {
+export function AddressAutocomplete({ onAddressSelect, onChange, defaultValue = "", placeholder = "Entrez une adresse..." }: AddressAutocompleteProps) {
     const [query, setQuery] = React.useState(defaultValue);
     const [suggestions, setSuggestions] = React.useState<MapboxFeature[]>([]);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -109,6 +110,7 @@ export function AddressAutocomplete({ onAddressSelect, defaultValue = "", placeh
                     value={query}
                     onChange={(e) => {
                         setQuery(e.target.value);
+                        if (onChange) onChange(e.target.value);
                         setIsOpen(true);
                     }}
                     placeholder={placeholder}

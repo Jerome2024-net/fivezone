@@ -1,41 +1,36 @@
 import Link from "next/link"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { Utensils, Coffee, ShoppingBag, Car, Scissors, Stethoscope, Briefcase, Wrench, Folder, Bed, Activity } from "lucide-react"
+import { Code, Palette, Megaphone, Briefcase, Camera, PenTool, Folder, Monitor } from "lucide-react"
 
 
 export const dynamic = 'force-dynamic'
 
 const iconMap: Record<string, any> = {
-    "restaurants": Utensils,
-    "food": Utensils,
-    "cafes": Coffee,
-    "shopping": ShoppingBag,
-    "automotive": Car,
-    "beauty": Scissors,
-    "health": Stethoscope,
-    "services": Briefcase,
-    "home": Wrench,
-    "hotels": Bed,
-    "hotel": Bed,
-    "activities": Activity
+    "tech": Code,
+    "design": Palette,
+    "marketing": Megaphone,
+    "business": Briefcase,
+    "photo": Camera,
+    "writing": PenTool,
+    "development": Monitor
 };
 
 const categories = [
-    { name: 'Restaurants', slug: 'restaurants', _count: { businesses: 120 } },
-    { name: 'Hôtels', slug: 'hotels', _count: { businesses: 45 } },
-    { name: 'Services', slug: 'services', _count: { businesses: 80 } },
-    { name: 'Shopping', slug: 'shopping', _count: { businesses: 60 } },
-    { name: 'Beauté', slug: 'beauty', _count: { businesses: 30 } },
-    { name: 'Santé', slug: 'health', _count: { businesses: 25 } },
+    { name: 'Tech & Développement', slug: 'tech', _count: { businesses: 120 } },
+    { name: 'Design & Graphisme', slug: 'design', _count: { businesses: 45 } },
+    { name: 'Marketing Digital', slug: 'marketing', _count: { businesses: 80 } },
+    { name: 'Business & Conseil', slug: 'business', _count: { businesses: 60 } },
+    { name: 'Rédaction & Contenu', slug: 'writing', _count: { businesses: 30 } },
+    { name: 'Photo & Vidéo', slug: 'photo', _count: { businesses: 25 } },
 ];
 
 export default function CategoriesPage() {
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
        <div className="text-center mb-12">
-            <h1 className="text-3xl font-bold tracking-tight mb-4">Parcourir par catégorie</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-4">Parcourir par domaine d'expertise</h1>
             <p className="text-muted-foreground text-lg">
-                Trouvez exactement ce que vous cherchez parmi notre sélection de cuisines et catégories.
+                Trouvez le talent qu'il vous faut parmi nos catégories de freelances.
             </p>
        </div>
 

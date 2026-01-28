@@ -50,6 +50,15 @@ model Business {
   subscriptionTier String    @default("FREE") // FREE, PRO, ENTERPRISE
   subscriptionEnd  DateTime?
   
+  // Freelance Specific Fields
+  skills      String[]   @default([])
+  hourlyRate  Float?
+
+  // Verification Fields
+  siret              String?
+  linkedinUrl        String?
+  verificationStatus VerificationStatus @default(PENDING)
+
   whatsapp    String?
   viewCount   Int       @default(0)
   clickCount  Int       @default(0) // Website clicks
@@ -156,6 +165,12 @@ enum BookingStatus {
   CANCELLED
   COMPLETED
   PAID
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
 }
 
 

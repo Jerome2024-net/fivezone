@@ -35,8 +35,8 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-bold text-sm uppercase tracking-wider text-slate-900">Explorer</h3>
             <ul className="space-y-2 text-sm text-slate-600">
-              <li><Link href="#" className="hover:underline">Écrire un avis</Link></li>
-              <li><Link href="#" className="hover:underline">Ajouter un lieu</Link></li>
+              <li><Link href="#" className="hover:underline">Recommander un freelance</Link></li>
+              <li><Link href="/register" className="hover:underline">S'inscrire comme Freelance</Link></li>
               <li><Link href="#" className="hover:underline">Rejoindre la communauté</Link></li>
               <li><Link href="#" className="hover:underline">Choix des voyageurs</Link></li>
             </ul>
@@ -45,7 +45,7 @@ export function Footer() {
            <div className="space-y-4">
             <h3 className="font-bold text-sm uppercase tracking-wider text-slate-900">Espace Pro</h3>
             <ul className="space-y-2 text-sm text-slate-600">
-              <li><Link href="/register" className="hover:underline font-bold text-slate-900">Propriétaires : Réclamez votre entreprise</Link></li>
+              <li><Link href="/register" className="hover:underline font-bold text-slate-900">Vous êtes Freelance ?</Link></li>
               <li><Link href="/pricing" className="hover:underline">Nos Tarifs</Link></li>
               <li><Link href="#" className="hover:underline">Placements sponsorisés</Link></li>
             </ul>

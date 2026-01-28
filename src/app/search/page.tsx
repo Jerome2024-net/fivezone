@@ -43,7 +43,7 @@ export default async function SearchPage({
     }
   });
 
-  const title = searchTerm ? `Résultats pour "${searchTerm}"` : categoryTerm ? `Meilleurs ${categoryTerm}` : 'Tous les lieux';
+  const title = searchTerm ? `Résultats pour "${searchTerm}"` : categoryTerm ? `Meilleurs experts en ${categoryTerm}` : 'Tous les freelances';
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -66,22 +66,22 @@ export default async function SearchPage({
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900">Catégorie</label>
                   <div className="space-y-2">
-                    {['Restaurants', 'Hotels', 'Boutique', 'Loisirs'].map((cat) => (
+                    {['Tech', 'Design', 'Marketing', 'Business', 'Redaction', 'Photo'].map((cat) => (
                       <Link key={cat} href={`/search?category=${cat}`} className="flex items-center space-x-2 group cursor-pointer">
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${categoryTerm === cat.toLowerCase() ? 'bg-[#34E0A1] border-[#34E0A1]' : 'border-slate-300'}`}>
-                           {categoryTerm === cat.toLowerCase() && <div className="w-2 h-2 bg-white rounded-full" />}
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center ${categoryTerm.includes(cat.toLowerCase()) ? 'bg-[#34E0A1] border-[#34E0A1]' : 'border-slate-300'}`}>
+                           {categoryTerm.includes(cat.toLowerCase()) && <div className="w-2 h-2 bg-white rounded-full" />}
                         </div>
-                        <span className={`text-sm ${categoryTerm === cat.toLowerCase() ? 'font-bold text-[#34E0A1]' : 'text-slate-700 group-hover:text-slate-900'}`}>{cat}</span>
+                        <span className={`text-sm ${categoryTerm.includes(cat.toLowerCase()) ? 'font-bold text-[#34E0A1]' : 'text-slate-700 group-hover:text-slate-900'}`}>{cat}</span>
                       </Link>
                     ))}
                   </div>
                 </div>
                 
                 <div className="space-y-3">
-                  <label className="text-sm font-bold text-slate-900">Prix</label>
-                  <div className="flex gap-2">
-                    {['€', '€€', '€€€', '€€€€'].map((price) => (
-                      <button key={price} className="flex-1 py-1 text-sm border border-slate-300 rounded hover:bg-slate-50 font-medium">
+                  <label className="text-sm font-bold text-slate-900">TJM (Taux Journalier)</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['< 300€', '300-600€', '> 600€'].map((price) => (
+                      <button key={price} className="flex-1 py-1 px-2 text-xs border border-slate-300 rounded hover:bg-slate-50 font-medium whitespace-nowrap">
                         {price}
                       </button>
                     ))}
@@ -113,9 +113,9 @@ export default async function SearchPage({
                </div>
              ) : (
                 <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
-                  <p className="text-slate-500 text-lg">Aucun résultat trouvé pour cette recherche.</p>
+                  <p className="text-slate-500 text-lg">Aucun expert trouvé pour cette recherche.</p>
                   <Button variant="link" className="text-[#34E0A1] mt-2" asChild>
-                      <Link href="/search">Voir tous les lieux</Link>
+                      <Link href="/search">Voir tous les freelances</Link>
                   </Button>
                 </div>
              )}

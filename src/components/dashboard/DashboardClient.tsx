@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { 
     MapPin, Phone, Globe, Star, Share2, Heart, Check, 
     User, BadgeCheck, Tag, Pencil, Camera, X, Loader2,
-    LayoutDashboard, Eye, MessageSquare, MousePointerClick
+    LayoutDashboard, Eye, MessageSquare, MousePointerClick, Inbox, Send,
+    CreditCard, Settings, LogOut, FileText
 } from "lucide-react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
@@ -15,9 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useRouter } from "next/navigation"
 import { ImageUpload } from "./ImageUpload"
-// import { ServiceManager } from "./ServiceManager"
+import { MissionsDashboard } from "@/components/missions/MissionsDashboard"
+import { signOut } from "next-auth/react"
 
-// Validation Schema
+// Validation Schema for Business Profile
 const EditSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
   description: z.string().optional(),
@@ -29,58 +31,91 @@ const EditSchema = z.object({
   logoUrl: z.string().min(1, "Le logo est obligatoire"),
   coverUrl: z.string().min(1, "La photo de couverture est obligatoire"),
   hourlyRate: z.number().optional().or(z.string().transform(val => val === '' ? undefined : Number(val))),
+  yearsOfExperience: z.number().optional().or(z.string().transform(val => val === '' ? undefined : Number(val))),
   currency: z.string().optional(),
+  skills: z.string().optional(), 
+  languages: z.string().optional(),
+  available: z.boolean().optional(),
   ctaAction: z.string().optional(),
   ctaUrl: z.string().optional(),
 })
 
 interface DashboardClientProps {
-    initialBusiness: any;
+    initialBusiness?: any;
     isPro: boolean;
+    pendingMissions?: number;
+    userType: 'client' | 'freelancer';
+    userName?: string;
 }
 
-export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps) {
+export function DashboardClient({ 
+    initialBusiness, 
+    isPro, 
+    pendingMissions = 0, 
+    userType,
+    userName = "Utilisateur"
+}: DashboardClientProps) {
     const [isEditing, setIsEditing] = useState(false);
-    const [business, setBusiness] = useState(initialBusiness);
+    // Unified active tab state
+    const [activeTab, setActiveTab] = useState<string>('overview');
+    const [business, setBusiness] = useState(initialBusiness || {});
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+
+    // Default active tab based on user type if not set (first load logic if needed)
+    useEffect(() => {
+        if (userType === 'client' && activeTab === 'overview') {
+            setActiveTab('requests');
+        }
+    }, [userType]);
 
     const form = useForm<z.infer<typeof EditSchema>>({
         resolver: zodResolver(EditSchema),
         defaultValues: {
-            name: business.name || "",
-            description: business.description || "",
-            category: business.category || "",
-            address: business.address || "",
-            city: business.city || "",
-            phone: business.phone || "",
-            website: business.website || "",
-            logoUrl: business.logoUrl || "",
-            coverUrl: business.coverUrl || "",
-            hourlyRate: business.hourlyRate || "",
-            currency: business.currency || "EUR",
-            ctaAction: business.ctaAction || "none",
-            ctaUrl: business.ctaUrl || "",
+            name: business?.name || "",
+            description: business?.description || "",
+            category: business?.category || "",
+            address: business?.address || "",
+            city: business?.city || "",
+            phone: business?.phone || "",
+            website: business?.website || "",
+            logoUrl: business?.logoUrl || "",
+            coverUrl: business?.coverUrl || "",
+            hourlyRate: business?.hourlyRate || "",
+            currency: business?.currency || "EUR",
+            yearsOfExperience: business?.yearsOfExperience || "",
+            skills: business?.skills ? business?.skills.join(', ') : "",
+            languages: business?.languages ? business?.languages.join(', ') : "",
+            available: business?.available !== undefined ? business?.available : true,
+            ctaAction: business?.ctaAction || "none",
+            ctaUrl: business?.ctaUrl || "",
         }
     });
 
     // Reset form when business updates
     useEffect(() => {
-        form.reset({
-            name: business.name || "",
-            description: business.description || "",
-            category: business.category || "",
-            address: business.address || "",
-            city: business.city || "",
-            phone: business.phone || "",
-            website: business.website || "",
-            logoUrl: business.logoUrl || "",
-            coverUrl: business.coverUrl || "",
-            hourlyRate: business.hourlyRate || "",
-            currency: business.currency || "EUR",
-            ctaAction: business.ctaAction || "none",
-            ctaUrl: business.ctaUrl || "",
-        });
-    }, [business, form]);
+        if (userType === 'freelancer' && business) {
+            form.reset({
+                name: business.name || "",
+                description: business.description || "",
+                category: business.category || "",
+                address: business.address || "",
+                city: business.city || "",
+                phone: business.phone || "",
+                website: business.website || "",
+                logoUrl: business.logoUrl || "",
+                coverUrl: business.coverUrl || "",
+                hourlyRate: business.hourlyRate || "",
+                currency: business.currency || "EUR",
+                yearsOfExperience: business.yearsOfExperience || "",
+                skills: business.skills ? business.skills.join(', ') : "",
+                languages: business.languages ? business.languages.join(', ') : "",
+                available: business.available !== undefined ? business.available : true,
+                ctaAction: business.ctaAction || "none",
+                ctaUrl: business.ctaUrl || "",
+            });
+        }
+    }, [business, form, userType]);
 
     const onSubmit = async (values: z.infer<typeof EditSchema>) => {
         setIsLoading(true);
@@ -95,6 +130,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
 
             setBusiness({ ...business, ...values });
             setIsEditing(false);
+            router.refresh();
         } catch (error) {
             console.error(error);
         } finally {
@@ -102,6 +138,143 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
         }
     }
 
+    // --- CLIENT DASHBOARD ---
+    if (userType === 'client') {
+        const tabs = [
+            { id: 'requests', label: 'Mes demandes', icon: Inbox },
+            { id: 'messages', label: 'Messages', icon: MessageSquare },
+            { id: 'invoices', label: 'Factures', icon: FileText },
+            { id: 'settings', label: 'Paramètres', icon: Settings },
+        ];
+
+        return (
+            <div className="min-h-screen bg-slate-50 flex flex-col">
+                <div className="bg-white border-b border-slate-200 sticky top-16 z-30">
+                     <div className="container mx-auto px-4">
+                        <div className="flex items-center justify-between py-6">
+                            <div>
+                                <h1 className="text-2xl font-black text-slate-900">Bonjour, {userName} 👋</h1>
+                                <p className="text-slate-500 font-medium">Gérez vos projets et vos échanges.</p>
+                            </div>
+                            <Button variant="outline" onClick={() => signOut({ callbackUrl: '/' })} className="hidden md:flex">
+                                <LogOut className="h-4 w-4 mr-2" /> Déconnexion
+                            </Button>
+                        </div>
+                        
+                        {/* Tabs */}
+                        <div className="flex space-x-1 overflow-x-auto no-scrollbar">
+                            {tabs.map((tab) => {
+                                const Icon = tab.icon;
+                                const isActive = activeTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`
+                                            flex items-center gap-2 px-6 py-3 text-sm font-bold border-b-2 transition-colors whitespace-nowrap
+                                            ${isActive 
+                                                ? 'border-slate-900 text-slate-900' 
+                                                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-200'
+                                            }
+                                        `}
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        {tab.label}
+                                        {tab.id === 'requests' && pendingMissions > 0 && (
+                                            <span className="bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendingMissions}</span>
+                                        )}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                     </div>
+                </div>
+
+                <div className="flex-1 container mx-auto px-4 py-8">
+                    {activeTab === 'requests' && (
+                        <div className="space-y-6">
+                             {/* Stats Summary for Client */}
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                                    <h3 className="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2">Projets en cours</h3>
+                                    <div className="text-3xl font-black text-slate-900">{pendingMissions}</div>
+                                </div>
+                                <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                                    <h3 className="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2">Messages non lus</h3>
+                                    <div className="text-3xl font-black text-slate-900">0</div>
+                                </div>
+                                <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                                    <h3 className="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2">Freelances contactés</h3>
+                                    <div className="text-3xl font-black text-slate-900">-</div>
+                                </div>
+                             </div>
+
+                             {/* UPSell to become Freelancer */}
+                             <div className="bg-slate-900 rounded-xl p-6 text-white flex flex-col md:flex-row items-center justify-between shadow-lg">
+                                 <div className="mb-4 md:mb-0">
+                                     <h3 className="font-bold text-lg mb-1">Vous êtes aussi un professionnel ? 🚀</h3>
+                                     <p className="text-slate-300 text-sm">Créez votre profil prestataire gratuitement et trouvez des clients.</p>
+                                 </div>
+                                 <Link href="/register">
+                                     <Button className="bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold whitespace-nowrap">
+                                         Je veux devenir prestataire
+                                     </Button>
+                                 </Link>
+                             </div>
+
+                             <MissionsDashboard type="client" />
+                        </div>
+                    )}
+
+                    {activeTab === 'messages' && (
+                        <div className="flex flex-col items-center justify-center min-h-[400px] text-center bg-white rounded-xl border border-dashed border-slate-200 p-8">
+                            <div className="h-16 w-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                                <MessageSquare className="h-8 w-8 text-blue-500" />
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 mb-2">Messagerie</h3>
+                            <p className="text-slate-500 max-w-sm">
+                                Retrouvez bientôt ici tous vos échanges avec les freelances. Pour l'instant, les échanges se font par email.
+                            </p>
+                        </div>
+                    )}
+
+                     {activeTab === 'invoices' && (
+                        <div className="flex flex-col items-center justify-center min-h-[400px] text-center bg-white rounded-xl border border-dashed border-slate-200 p-8">
+                            <div className="h-16 w-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                                <CreditCard className="h-8 w-8 text-green-500" />
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 mb-2">Factures</h3>
+                            <p className="text-slate-500 max-w-sm">
+                                Vos factures de service seront disponibles ici une fois les missions terminées et le paiement effectué.
+                            </p>
+                        </div>
+                    )}
+
+                     {activeTab === 'settings' && (
+                        <div className="max-w-2xl bg-white rounded-xl border border-slate-100 shadow-sm p-8">
+                            <h2 className="text-xl font-bold mb-6">Paramètres du compte</h2>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Nom d'affichage</label>
+                                    <Input value={userName} disabled />
+                                    <p className="text-xs text-slate-500 mt-1">Contactez le support pour changer votre nom.</p>
+                                </div>
+                                {/* Additional settings placeholders */}
+                            </div>
+                            <Button variant="outline" onClick={() => signOut({ callbackUrl: '/' })} className="w-full mt-6 md:hidden">
+                                <LogOut className="h-4 w-4 mr-2" /> Déconnexion
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )
+    }
+
+
+    // --- FREELANCER DASHBOARD (Existing Logic with Refinements) ---
+
+    // Edit Mode View
     if (isEditing) {
         return (
             <div className="min-h-screen bg-white">
@@ -186,6 +359,37 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                                 <label className="text-sm font-medium">Site Web</label>
                                 <Input {...form.register("website")} placeholder="https://" />
                              </div>
+                        </div>
+
+                        {/* Skills & Experience */}
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-semibold border-b pb-2">Compétences & Expérience</h2>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Compétences clés (séparées par des virgules)</label>
+                                    <Input {...form.register("skills")} placeholder="Ex: Gestion de projet, React, Photoshop, Droit des affaires..." />
+                                    <p className="text-xs text-slate-500">Ces mots-clés aideront à vous trouver dans la recherche.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Années d'expérience</label>
+                                    <Input type="number" {...form.register("yearsOfExperience")} placeholder="Ex: 5" className="max-w-[150px]" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Langues parlées (séparées par des virgules)</label>
+                                    <Input {...form.register("languages")} placeholder="Ex: Français, Anglais, Espagnol..." />
+                                </div>
+                                <div className="flex items-center gap-3 pt-2">
+                                    <input 
+                                        type="checkbox" 
+                                        id="available"
+                                        {...form.register("available")}
+                                        className="h-5 w-5 rounded border-slate-300 text-[#34E0A1] focus:ring-[#34E0A1]"
+                                    />
+                                    <label htmlFor="available" className="text-sm font-medium cursor-pointer">
+                                        Je suis disponible pour de nouvelles missions
+                                    </label>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Pricing Section - TJM */}
@@ -320,7 +524,48 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                      </div>
                  </div>
 
-                 {/* 3. Main Content Grid (Social Style) */}
+                 {/* Navigation Tabs */}
+                 <div className="flex gap-1 mb-6 border-b border-slate-200">
+                     <button
+                         onClick={() => setActiveTab('overview')}
+                         className={`px-6 py-3 font-bold text-sm transition-colors relative ${
+                             activeTab === 'overview' 
+                                 ? 'text-slate-900' 
+                                 : 'text-slate-500 hover:text-slate-700'
+                         }`}
+                     >
+                         <LayoutDashboard className="h-4 w-4 inline mr-2" />
+                         Vue d'ensemble
+                         {activeTab === 'overview' && (
+                             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900" />
+                         )}
+                     </button>
+                     <button
+                         onClick={() => setActiveTab('missions')}
+                         className={`px-6 py-3 font-bold text-sm transition-colors relative flex items-center gap-2 ${
+                             activeTab === 'missions' 
+                                 ? 'text-slate-900' 
+                                 : 'text-slate-500 hover:text-slate-700'
+                         }`}
+                     >
+                         <Inbox className="h-4 w-4" />
+                         Demandes de mission
+                         {pendingMissions > 0 && (
+                             <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                 {pendingMissions}
+                             </span>
+                         )}
+                         {activeTab === 'missions' && (
+                             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900" />
+                         )}
+                     </button>
+                 </div>
+
+                 {/* Tab Content */}
+                 {activeTab === 'missions' ? (
+                     <MissionsDashboard type="freelancer" />
+                 ) : (
+                 /* 3. Main Content Grid (Social Style) */
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                      
                      {/* Left Sidebar - Intro & Details */}
@@ -334,8 +579,8 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                              </div>
                              <div className="w-px bg-slate-100" />
                              <div>
-                                 <div className="text-2xl font-black text-slate-900">0</div>
-                                 <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Clics</div>
+                                 <div className="text-2xl font-black text-slate-900">{pendingMissions}</div>
+                                 <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Demandes</div>
                              </div>
                              <div className="w-px bg-slate-100" />
                              <div>
@@ -364,6 +609,58 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
                                      </div>
                                  )}
                              </div>
+                         </div>
+
+                         {/* Stripe Payment Connect */}
+                         <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-4">
+                            <h3 className="font-bold text-lg flex items-center gap-2">
+                                <CreditCard className="h-5 w-5 text-slate-900" /> Paiements
+                            </h3>
+                            
+                            {business.stripeAccountId ? (
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-green-600 font-bold text-sm bg-green-50 p-3 rounded-lg border border-green-100">
+                                        <Check className="h-4 w-4" /> Compte connecté
+                                    </div>
+                                    <p className="text-xs text-slate-500">
+                                        Vous pouvez recevoir des paiements pour vos missions.
+                                    </p>
+                                    <a 
+                                        href="https://dashboard.stripe.com/" 
+                                        target="_blank" 
+                                        className="block w-full text-center py-2 text-sm font-bold border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                                    >
+                                        Gérer sur Stripe ↗
+                                    </a>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    <p className="text-sm text-slate-600">
+                                        Connectez votre compte bancaire pour recevoir vos paiements de missions directement (Escrow sécurisé).
+                                    </p>
+                                    <Button 
+                                        onClick={async () => {
+                                            setIsLoading(true);
+                                            try {
+                                                const res = await fetch('/api/stripe/connect', { method: 'POST' });
+                                                const data = await res.json();
+                                                if (data.url) window.location.href = data.url;
+                                            } catch (e) {
+                                                console.error(e);
+                                            } finally {
+                                                setIsLoading(false);
+                                            }
+                                        }}
+                                        disabled={isLoading}
+                                        className="w-full bg-[#635BFF] hover:bg-[#534be0] text-white font-bold"
+                                    >
+                                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Connecter Stripe"}
+                                    </Button>
+                                    <p className="text-[10px] text-slate-400 text-center">
+                                        Via Stripe Connect • Sécurisé
+                                    </p>
+                                </div>
+                            )}
                          </div>
                      </div>
 
@@ -471,6 +768,7 @@ export function DashboardClient({ initialBusiness, isPro }: DashboardClientProps
 
                      </div>
                  </div>
+                 )}
             </div>
         </div>
     )

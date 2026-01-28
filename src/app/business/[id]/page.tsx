@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button"
 import MapboxMap from "@/components/ui/MapboxMap"
 import { Card, CardContent } from "@/components/ui/card"
-import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar } from "lucide-react"
+import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar, Zap, Globe2 } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
+import { MissionButton } from "@/components/missions/MissionButton"
 
 export const dynamic = 'force-dynamic'
 
@@ -78,6 +79,11 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                     {recommended && (
                       <span className="bg-[#34E0A1] text-slate-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                         <BadgeCheck className="h-4 w-4" /> Recommandé
+                      </span>
+                    )}
+                    {business.available && (
+                      <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                        <Zap className="h-4 w-4" /> Disponible
                       </span>
                     )}
                  </div>
@@ -178,13 +184,38 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
           <div className="lg:col-span-2 space-y-12">
             
             {/* Skills / Expertise */}
-            {business.skills && business.skills.length > 0 && (
+            {(business.skills.length > 0 || business.yearsOfExperience) && (
                 <section className="space-y-4 pb-8 border-b border-slate-200">
-                    <h2 className="text-2xl font-bold text-slate-900">Compétences & Expertises</h2>
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-2xl font-bold text-slate-900">Compétences & Expertises</h2>
+                        {business.yearsOfExperience && (
+                            <span className="bg-slate-900 text-white text-sm font-bold px-3 py-1 rounded-full">
+                                {business.yearsOfExperience} an{business.yearsOfExperience > 1 ? 's' : ''} d'expérience
+                            </span>
+                        )}
+                    </div>
+                    {business.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {business.skills.map((skill: string) => (
+                                <div key={skill} className="bg-slate-100 text-slate-800 px-4 py-2 rounded-full font-medium text-sm border border-slate-200">
+                                    {skill}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </section>
+            )}
+
+            {/* Languages */}
+            {business.languages && business.languages.length > 0 && (
+                <section className="space-y-4 pb-8 border-b border-slate-200">
+                    <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <Globe2 className="h-6 w-6" /> Langues parlées
+                    </h2>
                     <div className="flex flex-wrap gap-2">
-                        {business.skills.map((skill: string) => (
-                            <div key={skill} className="bg-slate-100 text-slate-800 px-4 py-2 rounded-full font-medium text-sm border border-slate-200">
-                                {skill}
+                        {business.languages.map((lang: string) => (
+                            <div key={lang} className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-medium text-sm border border-blue-200">
+                                {lang}
                             </div>
                         ))}
                     </div>
@@ -268,13 +299,24 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
           </div>
           
           <div className="lg:col-span-1">
-             <div className="sticky top-24 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 space-y-6">
+             <div className="sticky top-24 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 space-y-4">
                  
-                 {/* Single Contact Button */}
-                 <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg rounded-full shadow-lg" asChild>
+                 {/* Mission Request Button - Primary CTA */}
+                 {business.ownerId && (
+                    <MissionButton
+                        businessId={business.id}
+                        freelanceId={business.ownerId}
+                        freelanceName={business.name}
+                        hourlyRate={business.hourlyRate}
+                        currency={business.currency}
+                    />
+                 )}
+
+                 {/* Contact Button */}
+                 <Button className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-full" asChild>
                     <a href={`tel:${business.phone}`} className="flex items-center justify-center gap-2">
                         <Phone className="h-5 w-5" />
-                        Contacter
+                        Appeler directement
                     </a>
                  </Button>
 

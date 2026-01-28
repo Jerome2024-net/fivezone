@@ -21,6 +21,10 @@ model User {
   reviews   Review[]
   businesses Business[]
   bookings   Booking[]
+  sentMissionRequests     MissionRequest[] @relation("ClientMissions")
+  receivedMissionRequests MissionRequest[] @relation("FreelanceMissions")
+  paymentsMade            Payment[]        @relation("Payer")
+  disputesFounded         Dispute[]
 }
 
 model Business {
@@ -52,13 +56,20 @@ model Business {
   
   // Freelance Specific Fields
   skills      String[]   @default([])
+  languages   String[]   @default([])
+  yearsOfExperience Int?
   hourlyRate  Float?
   currency    String     @default("EUR")
+  available   Boolean    @default(true)
 
   // Verification Fields
   siret              String?
   linkedinUrl        String?
   verificationStatus VerificationStatus @default(PENDING)
+  
+  // Stripe Connect
+  stripeAccountId          String?   @unique
+  stripeOnboardingComplete Boolean   @default(false)
 
   whatsapp    String?
   viewCount   Int       @default(0)
@@ -70,6 +81,7 @@ model Business {
   promotions  Promotion[]
   services    Service[]
   bookings    Booking[]
+  missionRequests MissionRequest[]
 }
 
 model Service {
@@ -172,6 +184,134 @@ enum VerificationStatus {
   PENDING
   VERIFIED
   REJECTED
+}
+
+// ==================== MISSION REQUEST SYSTEM ====================
+
+model MissionRequest {
+  id          String   @id @default(cuid())
+  
+  // Project Details
+  title       String
+  description String
+  budget      Float?
+  budgetType  BudgetType @default(FIXED)
+  deadline    DateTime?
+  duration    String?   // e.g., "2 weeks", "1 month"
+  
+  // Status & Workflow
+  status      MissionStatus @default(PENDING)
+  
+  // Freelance Response
+  freelanceMessage String?
+  proposedPrice    Float?
+  proposedDeadline DateTime?
+  respondedAt      DateTime?
+  
+  // Client Info (for guest requests - no account needed)
+  clientName   String
+  clientEmail  String
+  clientPhone  String?
+  clientCompany String?
+  
+  // Optional relation to User (if client has account)
+  clientId    String?
+  client      User?    @relation("ClientMissions", fields: [clientId], references: [id])
+  
+  freelanceId String
+  freelance   User     @relation("FreelanceMissions", fields: [freelanceId], references: [id])
+  
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  
+  // Payment & Dispute
+  payment     Payment?
+  dispute     Dispute?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum MissionStatus {
+  PENDING
+  VIEWED
+  PROPOSAL
+  ACCEPTED     // Client accepted price/terms, waiting for payment
+  IN_PROGRESS  // Payment secured (Held), work starts
+  DELIVERED    // Freelance marked as done
+  COMPLETED    // Client validated, funds released
+  DISPUTED     // Problem reported
+  CANCELLED
+  REFUNDED     // Cancelled and money returned
+}
+
+enum BudgetType {
+  FIXED
+  HOURLY
+  DAILY
+  TO_DISCUSS
+}
+
+// ==================== PAYMENT SYSTEM ====================
+
+model Payment {
+  id                    String        @id @default(cuid())
+  amount                Int           // Amount in cents (e.g. 1000 = 10.00€)
+  currency              String        @default("eur")
+  status                PaymentStatus @default(PENDING)
+  
+  stripePaymentIntentId String?       @unique
+  stripeChargeId        String?       @unique
+  stripeTransferId      String?       @unique
+  
+  missionId             String        @unique
+  mission               MissionRequest @relation(fields: [missionId], references: [id])
+  
+  payerId               String
+  payer                 User          @relation("Payer", fields: [payerId], references: [id])
+  
+  recipientId           String        // The Business ID (freelancer)
+  
+  features              Json?         // Store platform fee data if we change commission later
+  
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  heldAt                DateTime?
+  releasedAt            DateTime?
+}
+
+enum PaymentStatus {
+  PENDING
+  REQUIRES_ACTION
+  HELD              // Money is in Platform account, waiting for delivery
+  RELEASED          // Money transferred to Freelancer Connected Account
+  REFUNDED
+  FAILED
+}
+
+model Dispute {
+  id          String        @id @default(cuid())
+  missionId   String        @unique
+  mission     MissionRequest @relation(fields: [missionId], references: [id])
+  
+  openedById  String
+  openedBy    User          @relation(fields: [openedById], references: [id])
+  
+  reason      String
+  description String?
+  status      DisputeStatus @default(OPEN)
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  resolvedAt  DateTime?
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED_REFUND
+  RESOLVED_PAYOUT
 }
 
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link"
-import { Heart, MapPin } from "lucide-react"
+import { Heart, MapPin, Zap, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface SearchResultCardProps {
@@ -14,6 +14,8 @@ interface SearchResultCardProps {
     city?: string
     hourlyRate?: number
     currency?: string
+    available?: boolean
+    yearsOfExperience?: number
 }
 
 export function SearchResultCard({ 
@@ -25,7 +27,9 @@ export function SearchResultCard({
     imageUrl,
     city = "Non spécifié",
     hourlyRate,
-    currency = "EUR"
+    currency = "EUR",
+    available = true,
+    yearsOfExperience
 }: SearchResultCardProps) {
     const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€';
     
@@ -51,6 +55,14 @@ export function SearchResultCard({
                             <Heart className="h-4 w-4" />
                         </button>
                     </div>
+                    {/* Availability badge */}
+                    {available && (
+                        <div className="absolute top-3 left-3 z-10">
+                            <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                                <Zap className="h-3 w-3" /> Dispo
+                            </span>
+                        </div>
+                    )}
                 </div>
                 
                 {/* Content */}
@@ -69,6 +81,14 @@ export function SearchResultCard({
                                 ))}
                             </div>
                             <span className="text-sm text-slate-500 font-medium">{reviewCount} avis</span>
+                            {yearsOfExperience && (
+                                <>
+                                    <span className="text-slate-300">•</span>
+                                    <span className="text-sm text-slate-500 font-medium flex items-center gap-1">
+                                        <Clock className="h-3 w-3" /> {yearsOfExperience} an{yearsOfExperience > 1 ? 's' : ''}
+                                    </span>
+                                </>
+                            )}
                         </div>
                         
                         <div className="text-sm text-slate-600 space-y-1">
@@ -87,7 +107,7 @@ export function SearchResultCard({
                             <span>{city}</span>
                         </div>
                         <Button className="rounded-full bg-[#F2C94C] hover:bg-[#e0b73b] text-slate-900 font-bold">
-                            Voir l'offre
+                            Voir le profil
                         </Button>
                     </div>
                 </div>

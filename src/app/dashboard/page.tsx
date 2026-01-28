@@ -21,16 +21,46 @@ export default async function DashboardPage() {
       }
   });
   
-  if (!user || user.businesses.length === 0) {
-     // If user has account but no business, redirect to registration
-     redirect("/register") 
+  if (!user) {
+     redirect("/login")
   }
 
+  // Determine user type
   const business = user.businesses[0]; // Assuming one business per user for now
-
+  const userType = business ? 'freelancer' : 'client';
   const isPro = business?.subscriptionTier === 'PRO' || business?.subscriptionTier === 'ENTERPRISE' || false
 
+  // Get mission counts
+  let pendingMissions = 0;
+
+  if (userType === 'freelancer') {
+      const missionCounts = await prisma.missionRequest.groupBy({
+        by: ['status'],
+        where: { freelanceId: user.id },
+        _count: true
+      })
+      pendingMissions = missionCounts
+        .filter(m => m.status === 'PENDING' || m.status === 'VIEWED')
+        .reduce((acc, m) => acc + m._count, 0)
+  } else {
+      // For clients, maybe count active proposals?
+      const missionCounts = await prisma.missionRequest.groupBy({
+        by: ['status'],
+        where: { clientId: user.id },
+        _count: true
+      })
+      pendingMissions = missionCounts
+        .filter(m => m.status === 'PROPOSAL')
+        .reduce((acc, m) => acc + m._count, 0)
+  }
+
   return (
-    <DashboardClient initialBusiness={business} isPro={isPro} />
+    <DashboardClient 
+      initialBusiness={business} 
+      userType={userType}
+      isPro={isPro} 
+      pendingMissions={pendingMissions}
+      userName={user.name || "Client"}
+    />
   )
 }

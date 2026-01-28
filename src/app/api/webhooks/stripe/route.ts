@@ -31,9 +31,41 @@ export async function POST(req: Request) {
   const session = event.data.object as Stripe.Checkout.Session
 
   if (event.type === "checkout.session.completed") {
-      const email = session.customer_details?.email
       
-      if (email) {
+      // CASE 1: Mission Payment (Escrow)
+      if (session.metadata?.missionId && session.metadata?.clientId) {
+          console.log(`Processing mission payment: ${session.metadata.missionId}`);
+          try {
+              const { missionId, clientId, businessId } = session.metadata;
+              const paymentIntentId = session.payment_intent as string;
+              
+              await prisma.payment.create({
+                  data: {
+                      amount: session.amount_total || 0,
+                      currency: session.currency || 'eur',
+                      status: 'HELD',
+                      stripePaymentIntentId: paymentIntentId,
+                      missionId: missionId,
+                      payerId: clientId,
+                      recipientId: businessId || "", // Should be there
+                      heldAt: new Date(),
+                  }
+              });
+
+              await prisma.missionRequest.update({
+                  where: { id: missionId },
+                  data: { status: 'IN_PROGRESS' } // Funded -> In Progress
+              });
+              
+              console.log("Mission payment recorded successfully");
+          } catch (e) {
+              console.error("Failed to record mission payment:", e);
+              return new NextResponse("Database Error", { status: 500 });
+          }
+      }
+      // CASE 2: Subscription (Legacy/Existing)
+      else if (session.customer_details?.email) {
+          const email = session.customer_details?.email
           console.log(`Processing subscription for email: ${email}`)
 
           // 1. Find the user by email in Prisma

@@ -16,7 +16,11 @@ const updateSchema = z.object({
   logoUrl: z.string().optional(),
   coverUrl: z.string().optional(),
   hourlyRate: z.number().optional(), // TJM
+  yearsOfExperience: z.number().optional(),
   currency: z.string().optional(),
+  skills: z.union([z.string(), z.array(z.string())]).optional(),
+  languages: z.union([z.string(), z.array(z.string())]).optional(),
+  available: z.boolean().optional(),
   ctaAction: z.enum(['none', 'booking', 'order', 'appointment', 'contact', 'website']).optional(),
   ctaUrl: z.string().optional().or(z.literal("")),
 })
@@ -43,6 +47,24 @@ export async function PUT(req: Request) {
 
     const businessId = user.businesses[0].id;
 
+    let skillsUpdate: string[] | undefined = undefined;
+    if (validatedData.skills) {
+        if (typeof validatedData.skills === 'string') {
+            skillsUpdate = validatedData.skills.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        } else if (Array.isArray(validatedData.skills)) {
+            skillsUpdate = validatedData.skills;
+        }
+    }
+
+    let languagesUpdate: string[] | undefined = undefined;
+    if (validatedData.languages) {
+        if (typeof validatedData.languages === 'string') {
+            languagesUpdate = validatedData.languages.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        } else if (Array.isArray(validatedData.languages)) {
+            languagesUpdate = validatedData.languages;
+        }
+    }
+
     // Update Business
     await prisma.business.update({
         where: { id: businessId },
@@ -57,6 +79,12 @@ export async function PUT(req: Request) {
             coverUrl: validatedData.coverUrl,
             hourlyRate: validatedData.hourlyRate,
             currency: validatedData.currency,
+            yearsOfExperience: validatedData.yearsOfExperience,
+            skills: skillsUpdate,
+            languages: languagesUpdate,
+            available: validatedData.available,
+            ctaAction: validatedData.ctaAction,
+            ctaUrl: validatedData.ctaUrl,
             // category: need to handle relation update if category changed
             category: { 
                 connectOrCreate: {

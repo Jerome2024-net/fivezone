@@ -50,22 +50,6 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       href: `https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`,
       external: true,
       available: true
-    },
-    {
-      name: "Entreprise",
-      price: "Sur devis",
-      period: "",
-      description: "Solutions sur mesure pour les Agences.",
-      features: [
-        "Gestion multi-profils (Agences)",
-        "API dédiée",
-        "Account Manager dédié",
-        "Facturation centralisée"
-      ],
-      cta: "Contacter les ventes",
-      popular: false,
-      href: "/contact",
-      available: true
     }
   ];
 

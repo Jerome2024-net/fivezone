@@ -20,6 +20,7 @@ model User {
   disputesFounded         Dispute[]
   sentMissionRequests     MissionRequest[] @relation("ClientMissions")
   receivedMissionRequests MissionRequest[] @relation("FreelanceMissions")
+  messages                Message[]        @relation("UserMessages")
   paymentsMade            Payment[]        @relation("Payer")
   reviews                 Review[]
 }
@@ -176,7 +177,7 @@ model Message {
   missionId String
   senderId  String
   mission   MissionRequest @relation(fields: [missionId], references: [id])
-  sender    User     @relation(fields: [senderId], references: [id])
+  sender    User     @relation("UserMessages", fields: [senderId], references: [id])
 }
 
 model Payment {

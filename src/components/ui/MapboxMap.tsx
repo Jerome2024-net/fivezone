@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
+import dynamic from 'next/dynamic';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin } from 'lucide-react';
+
+const Map = dynamic(() => import('react-map-gl'), { ssr: false });
+import { Marker, NavigationControl } from 'react-map-gl';
 
 interface MapboxMapProps {
     address: string;

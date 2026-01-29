@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -28,13 +29,9 @@ export function MissionRequestForm({
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
+    const { data: session } = useSession()
     
     const [formData, setFormData] = useState({
-        // Client info
-        clientName: '',
-        clientEmail: '',
-        clientPhone: '',
-        clientCompany: '',
         // Project info
         title: '',
         description: '',
@@ -57,6 +54,8 @@ export function MissionRequestForm({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...formData,
+                    clientName: session?.user?.name || 'Client',
+                    clientEmail: session?.user?.email,
                     budget: formData.budget ? parseFloat(formData.budget) : undefined,
                     businessId,
                     freelanceId
@@ -133,59 +132,16 @@ export function MissionRequestForm({
                         </div>
                     )}
 
-                    {/* Client Information Section */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 text-lg font-bold text-slate-900">
-                            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                                <User className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <h3>Vos coordonnées</h3>
+                    {/* Logged User Info */}
+                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                            <span className="font-bold text-blue-700 text-lg">
+                                {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+                            </span>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-base font-semibold text-slate-700">Nom complet <span className="text-red-500">*</span></label>
-                                <Input 
-                                    value={formData.clientName}
-                                    onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-                                    placeholder="Jean Dupont"
-                                    required
-                                    className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                                />
-                            </div>
-                            
-                            <div className="space-y-2">
-                                <label className="text-base font-semibold text-slate-700">Email professionnel <span className="text-red-500">*</span></label>
-                                <Input 
-                                    type="email"
-                                    value={formData.clientEmail}
-                                    onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
-                                    placeholder="jean@entreprise.com"
-                                    required
-                                    className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                                />
-                            </div>
-                            
-                            <div className="space-y-2">
-                                <label className="text-base font-semibold text-slate-700">Téléphone</label>
-                                <Input 
-                                    type="tel"
-                                    value={formData.clientPhone}
-                                    onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
-                                    placeholder="+33 6 12 34 56 78"
-                                    className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                                />
-                            </div>
-                            
-                            <div className="space-y-2">
-                                <label className="text-base font-semibold text-slate-700">Entreprise</label>
-                                <Input 
-                                    value={formData.clientCompany}
-                                    onChange={(e) => setFormData({ ...formData, clientCompany: e.target.value })}
-                                    placeholder="Nom de votre société"
-                                    className="bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                                />
-                            </div>
+                        <div>
+                            <p className="font-medium text-slate-900">Demande envoyée par</p>
+                            <p className="text-slate-600">{session?.user?.name} ({session?.user?.email})</p>
                         </div>
                     </div>
 

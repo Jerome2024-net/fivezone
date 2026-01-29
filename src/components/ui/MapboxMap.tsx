@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Map, { Marker, NavigationControl } from 'react-map-gl';
+import { useEffect, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin } from 'lucide-react';
 
 interface MapboxMapProps {
@@ -10,34 +11,84 @@ interface MapboxMapProps {
 }
 
 export default function MapboxMap({ address, city }: MapboxMapProps) {
-    const [viewState, setViewState] = useState({
-        longitude: 2.3522, // Default Paris
-        latitude: 48.8566,
-        zoom: 13
-    });
-    const [coords, setCoords] = useState<{lat: number, lng: number} | null>(null);
+    const mapContainer = useRef<HTMLDivElement>(null);
+    const map = useRef<mapboxgl.Map | null>(null);
+    const marker = useRef<mapboxgl.Marker | null>(null);
     
     // NOTE: This token should be in your .env.local file as NEXT_PUBLIC_MAPBOX_TOKEN
-    // Example: NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1IjoiamVy...
     const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
     useEffect(() => {
-        if (!MAPBOX_TOKEN) return;
+        if (!MAPBOX_TOKEN || !mapContainer.current) return;
+        if (map.current) return; // initialize map only once
 
-        // Simple geocoding fetch to Mapbox API to convert address string to coordinates
-        const query = encodeURIComponent(`${address}, ${city}`);
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPBOX_TOKEN}&limit=1`;
+        mapboxgl.accessToken = MAPBOX_TOKEN;
 
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
+        map.current = new mapboxgl.Map({
+            container: mapContainer.current,
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [2.3522, 48.8566], // Default Paris
+            zoom: 13,
+            attributionControl: false
+        });
+
+        map.current.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+        return () => {
+            map.current?.remove();
+            map.current = null;
+        };
+    }, [MAPBOX_TOKEN]);
+
+    useEffect(() => {
+        if (!map.current || !MAPBOX_TOKEN) return;
+
+        const geocodeAddress = async () => {
+             try {
+                const query = encodeURIComponent(`${address}, ${city}`);
+                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPBOX_TOKEN}&limit=1`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
                 if (data.features && data.features.length > 0) {
                     const [lng, lat] = data.features[0].center;
-                    setCoords({ lat, lng });
-                    setViewState(prev => ({ ...prev, latitude: lat, longitude: lng }));
+
+                    // Fly to location
+                    map.current?.flyTo({
+                        center: [lng, lat],
+                        zoom: 14,
+                        essential: true
+                    });
+
+                    // Update or create marker
+                    if (marker.current) {
+                        marker.current.setLngLat([lng, lat]);
+                    } else {
+                        // Create a custom DOM element for the marker to mimic the previous look
+                        const el = document.createElement('div');
+                        el.className = 'custom-marker';
+                        el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#dc2626" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin drop-shadow-md"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+                        
+                        // Fix SVG sizing issues if needed, or just let it be. 
+                        // Actually, using the default marker is safer for now to avoid CSS issues, 
+                        // but if we want the red pin:
+                        
+                        marker.current = new mapboxgl.Marker({ color: '#dc2626' })
+                            .setLngLat([lng, lat])
+                            .addTo(map.current!);
+                    }
+                        
                 }
-            })
-            .catch(err => console.error("Geocoding error:", err));
+            } catch (err) {
+                console.error("Geocoding error:", err);
+            }
+        };
+
+        if (address && city) {
+             geocodeAddress();
+        }
+
     }, [address, city, MAPBOX_TOKEN]);
 
     if (!MAPBOX_TOKEN) {
@@ -56,21 +107,8 @@ export default function MapboxMap({ address, city }: MapboxMapProps) {
 
     return (
         <div className="w-full h-full relative">
-            <Map
-                {...viewState}
-                onMove={evt => setViewState(evt.viewState)}
-                style={{width: '100%', height: '100%'}}
-                mapStyle="mapbox://styles/mapbox/streets-v12"
-                mapboxAccessToken={MAPBOX_TOKEN}
-            >
-                <NavigationControl position="bottom-right" />
-                
-                {coords && (
-                    <Marker longitude={coords.lng} latitude={coords.lat} anchor="bottom">
-                        <MapPin className="h-8 w-8 text-red-600 fill-red-600 drop-shadow-md" />
-                    </Marker>
-                )}
-            </Map>
+            <div ref={mapContainer} className="w-full h-full" />
         </div>
     );
 }
+

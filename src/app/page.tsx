@@ -12,9 +12,10 @@ export default async function Home() {
   let errorLog = null;
   
   try {
-     // Config Check
+     // Config Check & Debug
      if (!process.env.DATABASE_URL) {
-         throw new Error("DATABASE_URL variable is missing in Railway.");
+         const availableEnvVars = Object.keys(process.env).filter(key => !key.startsWith('npm_') && !key.startsWith('Program'));
+         throw new Error(`DATABASE_URL is missing. Available Env Keys: ${availableEnvVars.join(', ')}`);
      }
 
      const businesses = await prisma.business.findMany({

@@ -12,12 +12,6 @@ export default async function Home() {
   let errorLog = null;
   
   try {
-     // Config Check & Debug
-     if (!process.env.DATABASE_URL) {
-         const availableEnvVars = Object.keys(process.env).filter(key => !key.startsWith('npm_') && !key.startsWith('Program'));
-         throw new Error(`DATABASE_URL is missing. Available Env Keys: ${availableEnvVars.join(', ')}`);
-     }
-
      const businesses = await prisma.business.findMany({
          take: 8,
          orderBy: { createdAt: 'desc' },

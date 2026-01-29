@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
-import dynamicImport from "next/dynamic"
-const MapboxMap = dynamicImport(() => import("@/components/ui/MapboxMap"), { ssr: false })
+import MapLoader from "@/components/ui/MapLoader"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar, Zap, Globe2 } from "lucide-react"
 import Link from "next/link"
@@ -326,7 +325,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
 
                  {/* Map Integration (Mapbox) */}
                  <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[250px] relative z-0">
-                    <MapboxMap address={business.address} city={business.city} />
+                    <MapLoader address={business.address} city={business.city} />
                  </div>
 
                  {/* Directions Button */}

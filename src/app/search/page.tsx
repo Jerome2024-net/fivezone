@@ -159,7 +159,7 @@ export default async function SearchPage({
       <div className="bg-white border-b border-slate-200">
           <div className="container mx-auto px-4 py-8">
               <h1 className="text-3xl font-black text-slate-900">{title}</h1>
-              <p className="text-slate-500 mt-2">Affichage de {results.length} résultats correspondant à vos critères</p>
+              <p className="text-slate-500 mt-2">Affichage de {businesses.length} résultats correspondant à vos critères</p>
               
               {/* Active filters pills */}
               {activeFilterCount > 0 && (

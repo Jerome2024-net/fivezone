@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import MapLoader from "@/components/ui/MapLoader"
 import { Card, CardContent } from "@/components/ui/card"
-import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar, Zap, Globe2 } from "lucide-react"
+import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar, Zap, Globe2, Send } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"

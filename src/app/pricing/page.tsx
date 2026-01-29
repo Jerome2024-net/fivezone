@@ -9,8 +9,9 @@ interface PricingPageProps {
 export default async function PricingPage({ searchParams }: PricingPageProps) {
   const params = await searchParams;
   const isRegistered = params.registered === 'true';
+  const email = typeof params.email === 'string' ? params.email : undefined;
 
-  const plans = [
+  const allPlans = [
     {
       name: "Gratuit",
       price: "0€",
@@ -24,7 +25,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       ],
       cta: isRegistered ? "Continuer avec le plan Gratuit" : "Commencer gratuitement",
       popular: false,
-      href: isRegistered ? "/login" : "/register"
+      href: isRegistered ? "/login" : "/register",
+      available: !isRegistered // Not available during mandatory registration flow
     },
     {
       name: "Pro",
@@ -45,8 +47,9 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       ],
       cta: "Activer le plan Pro",
       popular: true,
-      href: "https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01",
-      external: true
+      href: `https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`,
+      external: true,
+      available: true
     },
     {
       name: "Entreprise",
@@ -61,9 +64,12 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       ],
       cta: "Contacter les ventes",
       popular: false,
-      href: "/contact"
+      href: "/contact",
+      available: true
     }
-  ]
+  ];
+
+  const plans = allPlans.filter(plan => plan.available);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
@@ -79,8 +85,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </div>
                   <h2 className="text-2xl font-bold text-green-800 mb-2">Inscription réussie !</h2>
                   <p className="text-green-700">
-                      Votre compte a été créé. Pour profiter pleinement de la plateforme et attirer vos premiers clients, 
-                      choisissez la formule qui vous correspond.
+                      Votre compte a été créé. Pour activer votre profil et être visible par les clients, 
+                      l'abonnement annuel est requis.
                   </p>
               </div>
           )}
@@ -94,7 +100,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className={`grid gap-8 mx-auto ${plans.length === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-3 max-w-6xl'}`}>
             {plans.map((plan) => (
               <div 
                 key={plan.name} 

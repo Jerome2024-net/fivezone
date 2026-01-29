@@ -88,7 +88,8 @@ export default function RegisterPage() {
             throw new Error(data.message || "Une erreur est survenue")
         }
 
-        router.push("/login?registered=true");
+        // Rediriger vers la page de paiement avec l'email pour le pré-remplissage
+        router.push(`/pricing?registered=true&email=${encodeURIComponent(values.email)}`);
         
     } catch (err: any) {
         setError(err.message)

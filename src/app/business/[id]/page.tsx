@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
-import MapboxMap from "@/components/ui/MapboxMap"
+import dynamicImport from "next/dynamic"
+const MapboxMap = dynamicImport(() => import("@/components/ui/MapboxMap"), { ssr: false })
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar, Zap, Globe2 } from "lucide-react"
 import Link from "next/link"

@@ -7,8 +7,8 @@ import { sendMissionNotificationEmail } from "@/lib/email"
 
 // Schema for creating a mission request (NO LOGIN REQUIRED)
 const createMissionSchema = z.object({
-    title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
-    description: z.string().min(20, "Décrivez votre projet en au moins 20 caractères"),
+    title: z.string().min(2, "Le titre est trop court"),
+    description: z.string().min(5, "La description est trop courte"),
     budget: z.number().optional(),
     budgetType: z.enum(['FIXED', 'HOURLY', 'DAILY', 'TO_DISCUSS']).optional(),
     deadline: z.string().optional(), // ISO date string
@@ -91,7 +91,8 @@ export async function POST(req: Request) {
 
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return NextResponse.json({ message: "Données invalides", errors: error.errors }, { status: 400 })
+            const errorMsg = error.errors.map(e => e.message).join(', ');
+            return NextResponse.json({ message: `Données invalides : ${errorMsg}`, errors: error.errors }, { status: 400 })
         }
         console.error("Create Mission Error:", error)
         return NextResponse.json({ message: "Erreur serveur" }, { status: 500 })

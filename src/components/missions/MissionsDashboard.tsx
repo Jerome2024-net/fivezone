@@ -240,6 +240,103 @@ function MissionCard({
     )
 }
 
+// Simple Chat Component
+function MissionChat({ missionId, currentUserId }: { missionId: string, currentUserId?: string }) {
+    const [messages, setMessages] = useState<{ id: string, content: string, senderId: string, sender: { id: string, name: string }, createdAt: string }[]>([])
+    const [newMessage, setNewMessage] = useState('')
+    const [loading, setLoading] = useState(true)
+
+    const fetchMessages = async () => {
+        try {
+            const res = await fetch(`/api/missions/${missionId}/messages`)
+            if (res.ok) {
+                const data = await res.json()
+                setMessages(data.messages)
+            }
+        } catch (error) {
+            console.error('Failed to fetch messages', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const sendMessage = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!newMessage.trim()) return
+
+        try {
+            const res = await fetch(`/api/missions/${missionId}/messages`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: newMessage })
+            })
+            
+            if (res.ok) {
+                setNewMessage('')
+                fetchMessages()
+            }
+        } catch (error) {
+            console.error('Failed to send message', error)
+        }
+    }
+
+    useEffect(() => {
+        fetchMessages()
+        const interval = setInterval(fetchMessages, 5000) // Poll every 5s
+        return () => clearInterval(interval)
+    }, [missionId])
+
+    return (
+        <div className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden flex flex-col h-[400px]">
+             <div className="bg-white p-4 border-b border-slate-200 font-bold text-slate-900 flex items-center gap-2 shadow-sm">
+                <MessageSquare className="h-4 w-4 text-[#34E0A1]" />
+                Discussion
+             </div>
+             
+             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+                {loading && messages.length === 0 ? (
+                    <div className="flex justify-center p-4"><Loader2 className="animate-spin text-slate-400" /></div>
+                ) : messages.length === 0 ? (
+                    <div className="text-center text-slate-400 py-10 text-sm italic">
+                        Aucun message. Commencez la discussion !
+                    </div>
+                ) : (
+                    messages.map(msg => {
+                        const isMe = msg.senderId === currentUserId
+                        return (
+                            <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] p-3 rounded-2xl shadow-sm ${
+                                    isMe 
+                                    ? 'bg-slate-900 text-white rounded-br-none' 
+                                    : 'bg-white text-slate-900 border border-slate-200 rounded-bl-none'
+                                }`}>
+                                    <div className={`flex justify-between items-baseline mb-1 gap-4 border-b pb-1 ${isMe ? 'border-slate-700' : 'border-slate-100'}`}>
+                                        <span className={`font-bold text-xs ${isMe ? 'text-slate-300' : 'text-slate-900'}`}>{msg.sender.name || 'Utilisateur'}</span>
+                                        <span className={`text-[10px] ${isMe ? 'text-slate-400' : 'text-slate-400'}`}>{new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                    </div>
+                                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                                </div>
+                            </div>
+                        )
+                    })
+                )}
+             </div>
+
+             <form onSubmit={sendMessage} className="p-3 bg-white border-t border-slate-200 flex gap-2">
+                <Input 
+                    value={newMessage}
+                    onChange={e => setNewMessage(e.target.value)}
+                    placeholder="Écrivez votre message..."
+                    className="flex-1 border-slate-200 focus-visible:ring-[#34E0A1]"
+                />
+                <Button type="submit" size="icon" className="bg-[#34E0A1] text-slate-900 hover:bg-[#2bc98e] font-bold">
+                    <Send className="h-4 w-4" />
+                </Button>
+             </form>
+        </div>
+    )
+}
+
 function MissionDetailModal({ 
     mission, 
     type,
@@ -441,6 +538,11 @@ function MissionDetailModal({
                             )}
                         </>
                     )}
+
+                    {/* Chat Section - Always visible if mission exists */}
+                    <div className="pt-4 border-t border-slate-100">
+                        <MissionChat missionId={mission.id} currentUserId={type === 'client' ? mission.clientId || undefined : mission.freelance.id} />
+                    </div>
 
                     {/* Client Actions */}
                     {type === 'client' && mission.status === 'PROPOSAL' && (

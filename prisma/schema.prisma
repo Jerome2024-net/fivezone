@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,136 +8,117 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String?
-  email     String    @unique
-  password  String
-  role      String    @default("USER")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  reviews   Review[]
-  businesses Business[]
-  bookings   Booking[]
+  id                      String           @id @default(cuid())
+  name                    String?
+  email                   String           @unique
+  password                String
+  role                    String           @default("USER")
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  bookings                Booking[]
+  businesses              Business[]
+  disputesFounded         Dispute[]
   sentMissionRequests     MissionRequest[] @relation("ClientMissions")
   receivedMissionRequests MissionRequest[] @relation("FreelanceMissions")
   paymentsMade            Payment[]        @relation("Payer")
-  disputesFounded         Dispute[]
+  reviews                 Review[]
 }
 
 model Business {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  address     String
-  city        String
-  country     String    @default("France")
-  phone       String?
-  website     String?
-  imageUrl    String?
-  coverUrl    String?
-  rating      Float     @default(0)
-  reviewCount Int       @default(0)
-  latitude    Float?
-  longitude   Float?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  categoryId  String
-  category    Category  @relation(fields: [categoryId], references: [id])
-  
-  ownerId     String?
-  owner       User?     @relation(fields: [ownerId], references: [id])
-  
-  subscriptionTier String    @default("FREE") // FREE, PRO, ENTERPRISE
-  subscriptionEnd  DateTime?
-  
-  // Freelance Specific Fields
-  skills      String[]   @default([])
-  languages   String[]   @default([])
-  yearsOfExperience Int?
-  hourlyRate  Float?
-  currency    String     @default("EUR")
-  available   Boolean    @default(true)
-
-  // Verification Fields
-  siret              String?
-  linkedinUrl        String?
-  verificationStatus VerificationStatus @default(PENDING)
-  
-  // Stripe Connect
-  stripeAccountId          String?   @unique
-  stripeOnboardingComplete Boolean   @default(false)
-
-  whatsapp    String?
-  viewCount   Int       @default(0)
-  clickCount  Int       @default(0) // Website clicks
-  contactCount Int      @default(0) // Phone/Whatsapp clicks
-
-  reviews     Review[]
-  media       Media[]
-  promotions  Promotion[]
-  services    Service[]
-  bookings    Booking[]
-  missionRequests MissionRequest[]
+  id                       String             @id @default(cuid())
+  name                     String
+  description              String?
+  address                  String
+  city                     String
+  country                  String             @default("France")
+  phone                    String?
+  website                  String?
+  imageUrl                 String?
+  rating                   Float              @default(0)
+  reviewCount              Int                @default(0)
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+  categoryId               String
+  ownerId                  String?
+  subscriptionTier         String             @default("FREE")
+  subscriptionEnd          DateTime?
+  whatsapp                 String?
+  viewCount                Int                @default(0)
+  clickCount               Int                @default(0)
+  contactCount             Int                @default(0)
+  coverUrl                 String?
+  latitude                 Float?
+  longitude                Float?
+  hourlyRate               Float?
+  skills                   String[]           @default([])
+  linkedinUrl              String?
+  siret                    String?
+  verificationStatus       VerificationStatus @default(PENDING)
+  currency                 String             @default("EUR")
+  yearsOfExperience        Int?
+  available                Boolean            @default(true)
+  languages                String[]           @default([])
+  stripeAccountId          String?            @unique
+  stripeOnboardingComplete Boolean            @default(false)
+  bookings                 Booking[]
+  category                 Category           @relation(fields: [categoryId], references: [id])
+  owner                    User?              @relation(fields: [ownerId], references: [id])
+  media                    Media[]
+  missionRequests          MissionRequest[]
+  promotions               Promotion[]
+  reviews                  Review[]
+  services                 Service[]
 }
 
 model Service {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   name        String
   description String?
   price       Float
-  duration    Int?     // in minutes
+  duration    Int?
   type        ServiceType @default(SERVICE)
-  
   businessId  String
-  business    Business @relation(fields: [businessId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   bookings    Booking[]
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  business    Business    @relation(fields: [businessId], references: [id])
 }
 
 model Booking {
-  id          String   @id @default(cuid())
-  date        DateTime // Date and time of booking
-  status      BookingStatus @default(PENDING)
-  totalPrice  Float
-  notes       String?
-  
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  
-  serviceId   String?
-  service     Service? @relation(fields: [serviceId], references: [id])
-  
-  businessId  String
-  business    Business @relation(fields: [businessId], references: [id]) 
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String        @id @default(cuid())
+  date       DateTime
+  status     BookingStatus @default(PENDING)
+  totalPrice Float
+  notes      String?
+  userId     String
+  serviceId  String?
+  businessId String
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  business   Business      @relation(fields: [businessId], references: [id])
+  service    Service?      @relation(fields: [serviceId], references: [id])
+  user       User          @relation(fields: [userId], references: [id])
 }
 
 model Promotion {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String
   discount    String?
-  startDate   DateTime @default(now())
+  startDate   DateTime  @default(now())
   endDate     DateTime?
-  active      Boolean  @default(true)
-  
+  active      Boolean   @default(true)
   businessId  String
-  business    Business @relation(fields: [businessId], references: [id])
+  business    Business  @relation(fields: [businessId], references: [id])
 }
 
 model Media {
-  id          String   @id @default(cuid())
-  url         String
-  type        String   // "IMAGE" or "VIDEO"
-  createdAt   DateTime @default(now())
-  
-  businessId  String
-  business    Business @relation(fields: [businessId], references: [id])
+  id         String   @id @default(cuid())
+  url        String
+  type       String
+  createdAt  DateTime @default(now())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
 }
 
 model Category {
@@ -155,12 +133,84 @@ model Review {
   rating     Int
   comment    String?
   createdAt  DateTime @default(now())
-  
   businessId String
-  business   Business @relation(fields: [businessId], references: [id])
-  
   userId     String
+  business   Business @relation(fields: [businessId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+}
+
+model MissionRequest {
+  id               String        @id @default(cuid())
+  title            String
+  description      String
+  budget           Float?
+  budgetType       BudgetType    @default(FIXED)
+  deadline         DateTime?
+  duration         String?
+  status           MissionStatus @default(PENDING)
+  freelanceMessage String?
+  proposedPrice    Float?
+  proposedDeadline DateTime?
+  respondedAt      DateTime?
+  clientId         String?
+  freelanceId      String
+  businessId       String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  clientCompany    String?
+  clientEmail      String
+  clientName       String
+  clientPhone      String?
+  dispute          Dispute?
+  messages         Message[]
+  business         Business      @relation(fields: [businessId], references: [id])
+  client           User?         @relation("ClientMissions", fields: [clientId], references: [id])
+  freelance        User          @relation("FreelanceMissions", fields: [freelanceId], references: [id])
+  payment          Payment?
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  missionId String
+  senderId  String
+  mission   MissionRequest @relation(fields: [missionId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
+}
+
+model Payment {
+  id                    String         @id @default(cuid())
+  amount                Int
+  currency              String         @default("eur")
+  status                PaymentStatus  @default(PENDING)
+  stripePaymentIntentId String?        @unique
+  stripeChargeId        String?        @unique
+  stripeTransferId      String?        @unique
+  missionId             String         @unique
+  payerId               String
+  recipientId           String
+  features              Json?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  heldAt                DateTime?
+  releasedAt            DateTime?
+  mission               MissionRequest @relation(fields: [missionId], references: [id])
+  payer                 User           @relation("Payer", fields: [payerId], references: [id])
+}
+
+model Dispute {
+  id          String         @id @default(cuid())
+  missionId   String         @unique
+  openedById  String
+  reason      String
+  description String?
+  status      DisputeStatus  @default(OPEN)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  resolvedAt  DateTime?
+  mission     MissionRequest @relation(fields: [missionId], references: [id])
+  openedBy    User           @relation(fields: [openedById], references: [id])
 }
 
 enum ServiceType {
@@ -186,64 +236,17 @@ enum VerificationStatus {
   REJECTED
 }
 
-// ==================== MISSION REQUEST SYSTEM ====================
-
-model MissionRequest {
-  id          String   @id @default(cuid())
-  
-  // Project Details
-  title       String
-  description String
-  budget      Float?
-  budgetType  BudgetType @default(FIXED)
-  deadline    DateTime?
-  duration    String?   // e.g., "2 weeks", "1 month"
-  
-  // Status & Workflow
-  status      MissionStatus @default(PENDING)
-  
-  // Freelance Response
-  freelanceMessage String?
-  proposedPrice    Float?
-  proposedDeadline DateTime?
-  respondedAt      DateTime?
-  
-  // Client Info (for guest requests - no account needed)
-  clientName   String
-  clientEmail  String
-  clientPhone  String?
-  clientCompany String?
-  
-  // Optional relation to User (if client has account)
-  clientId    String?
-  client      User?    @relation("ClientMissions", fields: [clientId], references: [id])
-  
-  freelanceId String
-  freelance   User     @relation("FreelanceMissions", fields: [freelanceId], references: [id])
-  
-  businessId  String
-  business    Business @relation(fields: [businessId], references: [id])
-  
-  // Payment & Dispute
-  payment     Payment?
-  dispute     Dispute?
-  
-  // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
 enum MissionStatus {
   PENDING
   VIEWED
   PROPOSAL
-  ACCEPTED     // Client accepted price/terms, waiting for payment
-  IN_PROGRESS  // Payment secured (Held), work starts
-  DELIVERED    // Freelance marked as done
-  COMPLETED    // Client validated, funds released
-  DISPUTED     // Problem reported
+  ACCEPTED
+  IN_PROGRESS
+  DELIVERED
+  COMPLETED
+  DISPUTED
   CANCELLED
-  REFUNDED     // Cancelled and money returned
+  REFUNDED
 }
 
 enum BudgetType {
@@ -253,58 +256,13 @@ enum BudgetType {
   TO_DISCUSS
 }
 
-// ==================== PAYMENT SYSTEM ====================
-
-model Payment {
-  id                    String        @id @default(cuid())
-  amount                Int           // Amount in cents (e.g. 1000 = 10.00€)
-  currency              String        @default("eur")
-  status                PaymentStatus @default(PENDING)
-  
-  stripePaymentIntentId String?       @unique
-  stripeChargeId        String?       @unique
-  stripeTransferId      String?       @unique
-  
-  missionId             String        @unique
-  mission               MissionRequest @relation(fields: [missionId], references: [id])
-  
-  payerId               String
-  payer                 User          @relation("Payer", fields: [payerId], references: [id])
-  
-  recipientId           String        // The Business ID (freelancer)
-  
-  features              Json?         // Store platform fee data if we change commission later
-  
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
-  heldAt                DateTime?
-  releasedAt            DateTime?
-}
-
 enum PaymentStatus {
   PENDING
   REQUIRES_ACTION
-  HELD              // Money is in Platform account, waiting for delivery
-  RELEASED          // Money transferred to Freelancer Connected Account
+  HELD
+  RELEASED
   REFUNDED
   FAILED
-}
-
-model Dispute {
-  id          String        @id @default(cuid())
-  missionId   String        @unique
-  mission     MissionRequest @relation(fields: [missionId], references: [id])
-  
-  openedById  String
-  openedBy    User          @relation(fields: [openedById], references: [id])
-  
-  reason      String
-  description String?
-  status      DisputeStatus @default(OPEN)
-  
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  resolvedAt  DateTime?
 }
 
 enum DisputeStatus {
@@ -313,5 +271,3 @@ enum DisputeStatus {
   RESOLVED_REFUND
   RESOLVED_PAYOUT
 }
-
-

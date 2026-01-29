@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -30,6 +31,7 @@ export function MissionRequestForm({
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
     const { data: session } = useSession()
+    const router = useRouter()
     
     const [formData, setFormData] = useState({
         // Project info
@@ -41,10 +43,33 @@ export function MissionRequestForm({
         duration: ''
     })
 
+    // Load draft from storage if exists
+    useEffect(() => {
+        const savedDraft = sessionStorage.getItem(`mission_draft_${businessId}`)
+        if (savedDraft) {
+            try {
+                const parsed = JSON.parse(savedDraft)
+                setFormData(parsed)
+            } catch (e) {
+                console.error("Failed to load draft")
+            }
+        }
+    }, [businessId]) 
+
     const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€'
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        
+        // If not logged in, save draft and redirect
+        if (!session) {
+            sessionStorage.setItem(`mission_draft_${businessId}`, JSON.stringify(formData))
+            // Redirect to register/login with callback
+            const callbackUrl = encodeURIComponent(window.location.pathname)
+            router.push(`/login?callbackUrl=${callbackUrl}`)
+            return
+        }
+
         setIsLoading(true)
         setError(null)
 
@@ -76,6 +101,9 @@ export function MissionRequestForm({
                 throw new Error(data.message || `Erreur (${res.status}): Une erreur est survenue`)
             }
 
+            // Clear draft after success
+            sessionStorage.removeItem(`mission_draft_${businessId}`)
+            
             setSuccess(true)
             onSuccess?.()
             
@@ -133,17 +161,29 @@ export function MissionRequestForm({
                     )}
 
                     {/* Logged User Info */}
-                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                            <span className="font-bold text-blue-700 text-lg">
-                                {session?.user?.name?.[0]?.toUpperCase() || 'U'}
-                            </span>
+                    {session ? (
+                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                                <span className="font-bold text-blue-700 text-lg">
+                                    {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+                                </span>
+                            </div>
+                            <div>
+                                <p className="font-medium text-slate-900">Demande envoyée par</p>
+                                <p className="text-slate-600">{session?.user?.name} ({session?.user?.email})</p>
+                            </div>
                         </div>
-                        <div>
-                            <p className="font-medium text-slate-900">Demande envoyée par</p>
-                            <p className="text-slate-600">{session?.user?.name} ({session?.user?.email})</p>
+                    ) : (
+                        <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                                <User className="h-5 w-5 text-amber-700" />
+                            </div>
+                            <div>
+                                <p className="font-medium text-slate-900">Mode invité</p>
+                                <p className="text-slate-600 text-sm">Vous pourrez vous connecter ou créer un compte à l'étape suivante pour valider l'envoi.</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div className="h-px bg-slate-100" />
 
@@ -255,9 +295,14 @@ export function MissionRequestForm({
                             type="submit" 
                             size="lg"
                             disabled={isLoading}
-                            className="flex-[2] bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-xl shadow-lg shadow-[#34E0A1]/20 hover:shadow-xl hover:shadow-[#34E0A1]/30 transition-all hover:-translate-y-0.5"
+                            className={`flex-[2] font-bold text-lg rounded-xl shadow-lg transition-all hover:-translate-y-0.5 ${!session ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-[#34E0A1]/20 hover:shadow-xl hover:shadow-[#34E0A1]/30'}`}
                         >
                             {isLoading ? (
+                                <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Envoi...</>
+                            ) : (
+                                <>{!session ? 'Se connecter & Envoyer' : 'Envoyer la demande'} <Send className="ml-2 h-5 w-5" /></>
+                            )}
+                        </Button>
                                 <Loader2 className="h-6 w-6 animate-spin mr-2" />
                             ) : (
                                 <Send className="h-5 w-5 mr-3" />

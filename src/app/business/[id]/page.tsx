@@ -6,6 +6,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { MissionButton } from "@/components/missions/MissionButton"
+import { Suspense } from "react"
 
 export const dynamic = 'force-dynamic'
 
@@ -303,13 +304,15 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                  
                  {/* Mission Request Button - Primary CTA */}
                  {business.ownerId && (
-                    <MissionButton
-                        businessId={business.id}
-                        freelanceId={business.ownerId}
-                        freelanceName={business.name}
-                        hourlyRate={business.hourlyRate}
-                        currency={business.currency}
-                    />
+                    <Suspense fallback={<Button disabled className="w-full h-14 rounded-full">Chargement...</Button>}>
+                        <MissionButton
+                            businessId={business.id}
+                            freelanceId={business.ownerId}
+                            freelanceName={business.name}
+                            hourlyRate={business.hourlyRate}
+                            currency={business.currency}
+                        />
+                    </Suspense>
                  )}
 
                  {/* Contact Button */}
@@ -384,17 +387,19 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
                </Button>
                <div className="flex-1">
                     {business.ownerId && (
-                        <MissionButton
-                            businessId={business.id}
-                            freelanceId={business.ownerId}
-                            freelanceName={business.name}
-                            hourlyRate={business.hourlyRate}
-                            currency={business.currency}
-                            className="h-12 rounded-2xl text-base shadow-none w-full"
-                        >
-                            <Send className="h-5 w-5 mr-2" />
-                            Demander un devis
-                        </MissionButton>
+                        <Suspense fallback={<div className="h-12 w-full bg-slate-100 rounded-2xl animate-pulse" />}>
+                            <MissionButton
+                                businessId={business.id}
+                                freelanceId={business.ownerId}
+                                freelanceName={business.name}
+                                hourlyRate={business.hourlyRate}
+                                currency={business.currency}
+                                className="h-12 rounded-2xl text-base shadow-none w-full"
+                            >
+                                <Send className="h-5 w-5 mr-2" />
+                                Demander un devis
+                            </MissionButton>
+                        </Suspense>
                     )}
                </div>
            </div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { MissionRequestForm } from "./MissionRequestForm"
 import { Send, Lock } from "lucide-react"
 import { useSession } from "next-auth/react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 interface MissionButtonProps {
     businessId: string
@@ -29,14 +29,16 @@ export function MissionButton({
     const [showForm, setShowForm] = useState(false)
     const { data: session } = useSession()
     const router = useRouter()
-    const searchParams = useSearchParams()
 
     // Auto-open if returning from login
     useEffect(() => {
-        if (searchParams.get('action') === 'send_mission') {
-            setShowForm(true)
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search)
+            if (params.get('action') === 'send_mission') {
+                setShowForm(true)
+            }
         }
-    }, [searchParams])
+    }, [])
 
     const handleClick = () => {
         // Allow guests to open the form to draft

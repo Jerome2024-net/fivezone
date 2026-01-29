@@ -24,6 +24,9 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  let businesses = [];
+  let dbError = null;
+
   const resolvedParams = await searchParams;
   const { q, category, loc, minRate, maxRate, exp, rating, lang, available } = resolvedParams;
   
@@ -49,6 +52,7 @@ export default async function SearchPage({
   if (lang) currentParams.lang = String(lang);
   if (available) currentParams.available = String(available);
   
+  try {
   // Build filters array
   const filters: Prisma.BusinessWhereInput[] = [];
   
@@ -119,7 +123,7 @@ export default async function SearchPage({
   }
   
   // Fetch From Prisma
-  const results = await prisma.business.findMany({
+  businesses = await prisma.business.findMany({
     where: filters.length > 0 ? { AND: filters } : {},
     include: {
       category: true
@@ -129,6 +133,11 @@ export default async function SearchPage({
       { rating: 'desc' }
     ]
   });
+
+  } catch (error) {
+    console.error("Search DB Error:", error);
+    dbError = error instanceof Error ? error.message : "Database Connection Error";
+  }
 
   let title = 'Tous les freelances';
   if (searchTerm && locationTerm) title = `Résultats pour "${searchTerm}" à "${locationTerm}"`;
@@ -141,6 +150,12 @@ export default async function SearchPage({
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {dbError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 m-4">
+             <p className="font-bold text-red-700">Erreur Système (Base de Données)</p>
+             <p className="text-sm text-red-600 font-mono mt-1">{dbError}</p>
+        </div>
+      )}
       <div className="bg-white border-b border-slate-200">
           <div className="container mx-auto px-4 py-8">
               <h1 className="text-3xl font-black text-slate-900">{title}</h1>
@@ -341,9 +356,9 @@ export default async function SearchPage({
 
           {/* Results Grid */}
           <main className="flex-1">
-             {results.length > 0 ? (
+             {businesses.length > 0 ? (
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                 {results.map((business) => (
+                 {businesses.map((business) => (
                    <SearchResultCard 
                       key={business.id} 
                       id={business.id}

@@ -9,15 +9,18 @@ export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   let featuredBusinesses = [];
+  let errorLog = null;
+  
   try {
+     // Config Check
+     if (!process.env.DATABASE_URL) {
+         throw new Error("DATABASE_URL variable is missing in Railway.");
+     }
+
      const businesses = await prisma.business.findMany({
          take: 8,
-         orderBy: {
-             createdAt: 'desc'
-         },
-         include: {
-             category: true
-         }
+         orderBy: { createdAt: 'desc' },
+         include: { category: true }
      });
 
      featuredBusinesses = businesses.map(b => ({
@@ -33,14 +36,29 @@ export default async function Home() {
          currency: b.currency || 'EUR'
      }));
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Prisma fetch error:", error);
-    // Silent fail for UI - show empty list instead of crashing
-    featuredBusinesses = [];
+    errorLog = error.message || JSON.stringify(error);
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans">
+      
+      {/* ERROR DEBUGGING - Only visible if there is an issue */}
+      {errorLog && (
+        <div className="bg-red-900 text-white p-6 text-center">
+            <h2 className="text-xl font-bold mb-2">⚠️ Diagnostic Système</h2>
+            <p className="font-mono text-sm max-w-2xl mx-auto break-all bg-black p-4 rounded mb-4">
+                {errorLog}
+            </p>
+            <p className="text-sm">
+                Si vous voyez ce message, c'est que la connexion à la base de données a échoué.
+                Vérifiez que la variable <strong>DATABASE_URL</strong> est bien définie dans Railway.
+            </p>
+        </div>
+      )}
+
+      {/* 1. HERO SECTION UPDATED - Malt/Fiverr Style */}
       {/* 1. HERO SECTION UPDATED - Malt/Fiverr Style */}
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">

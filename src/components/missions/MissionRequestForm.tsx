@@ -63,10 +63,18 @@ export function MissionRequestForm({
                 })
             })
 
-            const data = await res.json()
+            const text = await res.text();
+            let data;
+            
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Non-JSON Response:", text);
+                throw new Error(`Erreur serveur (${res.status}): La réponse n'est pas au format valide. Réessayez.`);
+            }
 
             if (!res.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'envoi')
+                throw new Error(data.message || `Erreur (${res.status}): Une erreur est survenue`)
             }
 
             setSuccess(true)

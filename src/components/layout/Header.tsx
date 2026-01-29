@@ -135,57 +135,68 @@ export function Header() {
       </div>
 
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-lg p-4 flex flex-col gap-4 animate-accordion-down">
-             <nav className="flex flex-col gap-2">
-                <Link href="/search" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-lg font-bold text-slate-700 hover:bg-slate-50 rounded-lg">
-                    Découvrir
-                </Link>
-                <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-lg font-bold text-slate-700 hover:bg-slate-50 rounded-lg">
-                    Tarifs
-                </Link>
-                <Link href="/about" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-lg font-bold text-slate-700 hover:bg-slate-50 rounded-lg">
-                    À propos
-                </Link>
-            </nav>
-            <div className="h-px bg-slate-100 my-2" />
-            <div className="flex flex-col gap-2">
-                 {session ? (
-                    <>
-                        <div className="flex items-center gap-3 px-4 py-2 mb-2">
-                             <div className="h-10 w-10 rounded-full bg-slate-900 flex items-center justify-center overflow-hidden">
-                                {session.user?.image ? (
-                                    <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
-                                ) : (
-                                    <span className="text-white font-bold text-sm">
-                                        {session.user?.name?.substring(0,2).toUpperCase() || "US"}
-                                    </span>
-                                )}
-                             </div>
-                             <div>
-                                <p className="font-bold text-slate-900">{session.user?.name || "User"}</p>
-                                <p className="text-xs text-slate-500">{session.user?.email}</p>
-                             </div>
-                        </div>
-                        
-                        <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                            <Button variant="ghost" className="w-full justify-start gap-2 h-12 text-lg font-bold text-slate-700">
-                                <LayoutDashboard className="h-5 w-5" />
-                                Mon Espace Admin
-                            </Button>
+        <div className="md:hidden fixed inset-0 z-[60] bg-white">
+            <div className="flex flex-col h-full">
+                <div className="flex items-center justify-between px-4 h-20 border-b border-slate-100">
+                     <span className="font-black text-xl tracking-tight text-slate-900">Menu</span>
+                     <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full">
+                        <X className="h-6 w-6" />
+                     </Button>
+                </div>
+                
+                <div className="p-6 flex flex-col gap-6 overflow-y-auto">
+                    <nav className="flex flex-col gap-4">
+                        <Link href="/search" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between py-2 text-xl font-bold text-slate-900 border-b border-slate-100">
+                            Découvrir
                         </Link>
+                        <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between py-2 text-xl font-bold text-slate-900 border-b border-slate-100">
+                            Tarifs
+                        </Link>
+                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between py-2 text-xl font-bold text-slate-900 border-b border-slate-100">
+                            À propos
+                        </Link>
+                    </nav>
 
-                        <Button variant="ghost" className="w-full justify-start gap-2 h-12 text-lg font-bold text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => signOut()}>
-                            <LogOut className="h-5 w-5" />
-                            Se déconnecter
-                        </Button>
-                    </>
-                 ) : (
-                     <Button size="lg" className="w-full rounded-full bg-slate-900 text-white font-bold" asChild>
-                        <Link href="/login">Se connecter</Link>
-                    </Button>
-                 )}
+                    <div className="mt-auto pt-6">
+                        {session ? (
+                            <div className="space-y-4">
+                                <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-4">
+                                    <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
+                                        {session.user?.image ? (
+                                            <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
+                                        ) : (
+                                            <span className="text-slate-500 font-bold">
+                                                {session.user?.name?.substring(0,2).toUpperCase() || "US"}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">{session.user?.name}</p>
+                                        <p className="text-sm text-slate-500">{session.user?.email}</p>
+                                    </div>
+                                </div>
+                                
+                                <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                                    <Button className="w-full justify-start gap-3 h-14 text-lg font-bold bg-slate-900 text-white rounded-xl hover:bg-slate-800">
+                                        <LayoutDashboard className="h-5 w-5" />
+                                        Mon Espace Admin
+                                    </Button>
+                                </Link>
+
+                                <Button variant="outline" className="w-full justify-start gap-3 h-14 text-lg font-bold text-red-600 border-red-100 hover:bg-red-50 hover:text-red-700 rounded-xl" onClick={() => signOut()}>
+                                    <LogOut className="h-5 w-5" />
+                                    Se déconnecter
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button size="lg" className="w-full h-14 rounded-xl bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-lg font-bold text-lg" asChild>
+                                <Link href="/login">Se connecter / S'inscrire</Link>
+                            </Button>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
       )}

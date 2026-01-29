@@ -13,6 +13,8 @@ interface MissionButtonProps {
     freelanceName: string
     hourlyRate?: number | null
     currency?: string
+    className?: string
+    children?: React.ReactNode
 }
 
 export function MissionButton({ 
@@ -20,7 +22,9 @@ export function MissionButton({
     freelanceId, 
     freelanceName,
     hourlyRate,
-    currency
+    currency,
+    className,
+    children
 }: MissionButtonProps) {
     const [showForm, setShowForm] = useState(false)
     const { data: session } = useSession()
@@ -43,10 +47,14 @@ export function MissionButton({
         <>
             <Button 
                 onClick={handleClick}
-                className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-full shadow-lg"
+                className={`w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-full shadow-lg transition-transform active:scale-[0.98] ${className || ''}`}
             >
-                <Send className="h-5 w-5 mr-2" />
-                Demander un devis
+                {children || (
+                    <>
+                        <Send className="h-5 w-5 mr-2" />
+                        Demander un devis
+                    </>
+                )}
             </Button>
 
             {showForm && (

@@ -375,6 +375,30 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
 
         </div>
       </div>
+
+      {/* Mobile Sticky Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 pb-safe z-40 lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)] safe-area-bottom">
+           <div className="flex gap-3 px-1">
+               <Button className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold h-12 w-14 rounded-2xl shrink-0" asChild>
+                   <a href={`tel:${business.phone || ''}`}><Phone className="h-5 w-5" /></a>
+               </Button>
+               <div className="flex-1">
+                    {business.ownerId && (
+                        <MissionButton
+                            businessId={business.id}
+                            freelanceId={business.ownerId}
+                            freelanceName={business.name}
+                            hourlyRate={business.hourlyRate}
+                            currency={business.currency}
+                            className="h-12 rounded-2xl text-base shadow-none w-full"
+                        >
+                            <Send className="h-5 w-5 mr-2" />
+                            Demander un devis
+                        </MissionButton>
+                    )}
+               </div>
+           </div>
+      </div>
     </div>
   )
 }

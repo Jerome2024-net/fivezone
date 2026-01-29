@@ -139,20 +139,21 @@ export function MissionRequestForm({
     }
 
     return (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-100">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center sm:p-4 transition-all animate-in fade-in duration-200">
+            <div className="bg-white w-full h-[95vh] sm:h-auto sm:max-h-[85vh] sm:rounded-3xl rounded-t-3xl sm:max-w-2xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200 border border-slate-100 flex flex-col">
                 {/* Header */}
-                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-6 flex items-center justify-between z-10">
+                <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-6 py-4 sm:px-8 sm:py-6 flex items-center justify-between z-10 shrink-0">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Demande de devis</h2>
-                        <p className="text-base text-slate-500 mt-1">Votre brief pour <span className="font-semibold text-slate-900">{freelanceName}</span></p>
+                        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Demande de devis</h2>
+                        <p className="text-sm sm:text-base text-slate-500 mt-1 line-clamp-1">Pour <span className="font-semibold text-slate-900">{freelanceName}</span></p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors group">
+                    <button onClick={onClose} className="p-2 -mr-2 hover:bg-slate-100 rounded-full transition-colors group">
                         <X className="h-6 w-6 text-slate-400 group-hover:text-slate-900" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 space-y-10">
+                <div className="overflow-y-auto flex-1 overscroll-contain">
+                    <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-8">
                     {error && (
                         <div className="bg-red-50 text-red-700 px-6 py-4 rounded-xl text-base font-medium flex items-center gap-3 animate-in slide-in-from-top-2">
                             <span className="bg-red-200 p-1 rounded-full"><X className="h-4 w-4" /></span>
@@ -286,25 +287,29 @@ export function MissionRequestForm({
                         </div>
                     </div>
 
+                    </form>
+                </div>
+
                     {/* Footer Actions */}
-                    <div className="pt-8 border-t border-slate-100 flex gap-4 sticky bottom-0 bg-white pb-2">
-                        <Button type="button" variant="outline" size="lg" onClick={onClose} className="flex-1 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold">
-                            Annuler
-                        </Button>
-                        <Button 
-                            type="submit" 
-                            size="lg"
-                            disabled={isLoading}
-                            className={`flex-[2] font-bold text-lg rounded-xl shadow-lg transition-all hover:-translate-y-0.5 ${!session ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-[#34E0A1]/20 hover:shadow-xl hover:shadow-[#34E0A1]/30'}`}
-                        >
-                            {isLoading ? (
-                                <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Envoi...</>
-                            ) : (
-                                <>{!session ? 'Se connecter & Envoyer' : 'Envoyer la demande'} <Send className="ml-2 h-5 w-5" /></>
-                            )}
-                        </Button>
+                    <div className="p-4 sm:p-6 border-t border-slate-100 bg-white shrink-0 safe-area-bottom">
+                        <div className="flex gap-4">
+                            <Button type="button" variant="outline" size="lg" onClick={onClose} className="hidden sm:flex flex-1 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold h-12">
+                                Annuler
+                            </Button>
+                            <Button 
+                                type="submit" 
+                                size="lg"
+                                disabled={isLoading}
+                                className={`flex-[2] font-bold text-lg rounded-xl shadow-lg transition-all active:scale-[0.98] h-14 sm:h-12 w-full ${!session ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-[#34E0A1]/20 hover:shadow-xl hover:shadow-[#34E0A1]/30'}`}
+                            >
+                                {isLoading ? (
+                                    <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Envoi...</>
+                                ) : (
+                                    <>{!session ? 'Se connecter & Envoyer' : 'Envoyer la demande'} <Send className="ml-2 h-5 w-5" /></>
+                                )}
+                            </Button>
+                        </div>
                     </div>
-                </form>
             </div>
         </div>
     )

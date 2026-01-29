@@ -28,13 +28,15 @@ export default async function Home() {
          viewCount: b.viewCount,
          rating: b.rating,
          reviewCount: b.reviewCount,
-         imageUrl: b.coverUrl || b.imageUrl || undefined, // Prioritize cover, fallback to logo
+         imageUrl: b.coverUrl || b.imageUrl || undefined,
          hourlyRate: b.hourlyRate || undefined,
          currency: b.currency || 'EUR'
      }));
 
   } catch (error) {
     console.error("Prisma fetch error:", error);
+    // Silent fail for UI - show empty list instead of crashing
+    featuredBusinesses = [];
   }
 
   return (

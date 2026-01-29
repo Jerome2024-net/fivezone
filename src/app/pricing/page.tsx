@@ -11,28 +11,12 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
   const isRegistered = params.registered === 'true';
   const email = typeof params.email === 'string' ? params.email : undefined;
 
-  const allPlans = [
-    {
-      name: "Gratuit",
-      price: "0€",
-      period: "/mois",
-      description: "L'essentiel pour être présent sur FiveZone.",
-      features: [
-        "Fiche profil freelance",
-        "Jusqu'à 3 photos",
-        "Répondre aux avis",
-        "Support par email"
-      ],
-      cta: isRegistered ? "Continuer avec le plan Gratuit" : "Commencer gratuitement",
-      popular: false,
-      href: isRegistered ? "/login" : "/register",
-      available: !isRegistered // Not available during mandatory registration flow
-    },
+  const plans = [
     {
       name: "Pro",
       price: "99.00€",
       period: "/an",
-      description: "Boostez votre visibilité et multipliez vos clients.",
+      description: "La solution complète pour booster votre activité.",
       features: [
         "Mise en avant prioritaire (Top recherches)",
         "Apparition sur la page d’accueil locale",
@@ -48,12 +32,9 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       cta: "Activer le plan Pro",
       popular: true,
       href: `https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`,
-      external: true,
-      available: true
+      external: true
     }
   ];
-
-  const plans = allPlans.filter(plan => plan.available);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
@@ -84,13 +65,13 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </p>
           </div>
 
-          <div className={`grid gap-8 mx-auto ${plans.length === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-3 max-w-6xl'}`}>
+          <div className="flex justify-center">
             {plans.map((plan) => (
               <div 
                 key={plan.name} 
                 className={`relative bg-white rounded-2xl shadow-sm border ${
                   plan.popular ? 'border-[#34E0A1] ring-2 ring-[#34E0A1]/20' : 'border-slate-200'
-                } p-8 flex flex-col`}
+                } p-8 flex flex-col w-full max-w-md`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#34E0A1] text-slate-900 px-4 py-1 rounded-full text-sm font-bold shadow-sm">

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Map, { Marker, NavigationControl } from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin } from 'lucide-react';
 
 interface MapboxMapProps {

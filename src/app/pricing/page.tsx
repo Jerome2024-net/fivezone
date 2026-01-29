@@ -18,6 +18,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       period: "/an",
       description: "La solution complète pour booster votre activité.",
       features: [
+        "0% de commission sur vos missions",
         "Mise en avant prioritaire (Top recherches)",
         "Apparition sur la page d’accueil locale",
         "Badge 'Expert Recommandé'",

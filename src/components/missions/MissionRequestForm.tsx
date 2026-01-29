@@ -303,12 +303,6 @@ export function MissionRequestForm({
                                 <>{!session ? 'Se connecter & Envoyer' : 'Envoyer la demande'} <Send className="ml-2 h-5 w-5" /></>
                             )}
                         </Button>
-                                <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                            ) : (
-                                <Send className="h-5 w-5 mr-3" />
-                            )}
-                            Envoyer ma demande
-                        </Button>
                     </div>
                 </form>
             </div>

@@ -153,7 +153,7 @@ export function MissionRequestForm({
                 </div>
 
                 <div className="overflow-y-auto flex-1 overscroll-contain">
-                    <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-8">
+                    <form id="mission-request-form" onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-8">
                     {error && (
                         <div className="bg-red-50 text-red-700 px-6 py-4 rounded-xl text-base font-medium flex items-center gap-3 animate-in slide-in-from-top-2">
                             <span className="bg-red-200 p-1 rounded-full"><X className="h-4 w-4" /></span>
@@ -245,7 +245,7 @@ export function MissionRequestForm({
                                 <label className="text-base font-semibold text-slate-700 flex items-center gap-2">
                                     Budget estimé
                                 </label>
-                                <div className="flex gap-3">
+                                <div className="flex flex-col sm:flex-row gap-3">
                                     <Input 
                                         type="number"
                                         value={formData.budget}
@@ -253,7 +253,7 @@ export function MissionRequestForm({
                                         placeholder="Montant"
                                         className="flex-1"
                                     />
-                                    <div className="relative w-40">
+                                    <div className="relative w-full sm:w-48">
                                         <select 
                                             value={formData.budgetType}
                                             onChange={(e) => setFormData({ ...formData, budgetType: e.target.value as any })}
@@ -298,6 +298,7 @@ export function MissionRequestForm({
                             </Button>
                             <Button 
                                 type="submit" 
+                                form="mission-request-form"
                                 size="lg"
                                 disabled={isLoading}
                                 className={`flex-[2] font-bold text-lg rounded-xl shadow-lg transition-all active:scale-[0.98] h-14 sm:h-12 w-full ${!session ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-[#34E0A1]/20 hover:shadow-xl hover:shadow-[#34E0A1]/30'}`}

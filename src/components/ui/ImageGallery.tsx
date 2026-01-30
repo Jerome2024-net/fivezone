@@ -67,7 +67,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                {images.length === 1 && (
                    <div 
                         onClick={() => openLightbox(0)}
-                        className="h-[400px] rounded-2xl overflow-hidden relative group cursor-pointer bg-slate-200"
+                        className="h-[250px] md:h-[400px] rounded-2xl overflow-hidden relative group cursor-pointer bg-slate-200"
                     >
                         <img src={images[0]} className="w-full h-full object-cover" alt="Main view" />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
@@ -76,7 +76,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
 
                {/* 2 Images */}
                {images.length === 2 && (
-                   <div className="grid grid-cols-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                   <div className="grid grid-cols-1 md:grid-cols-2 h-[300px] md:h-[400px] gap-2 rounded-2xl overflow-hidden">
                         {images.map((img, idx) => (
                              <div 
                                 key={idx} 
@@ -92,7 +92,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
 
                {/* 3 Images */}
                {images.length === 3 && (
-                   <div className="grid grid-cols-3 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                   <div className="grid grid-cols-2 md:grid-cols-3 grid-rows-2 h-[300px] md:h-[400px] gap-2 rounded-2xl overflow-hidden">
                         <div 
                             onClick={() => openLightbox(0)}
                             className="col-span-2 row-span-2 relative group cursor-pointer bg-slate-200"
@@ -102,14 +102,14 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                         </div>
                         <div 
                             onClick={() => openLightbox(1)}
-                            className="col-span-1 row-span-1 relative group cursor-pointer bg-slate-200"
+                            className="col-span-1 row-span-1 md:col-span-1 md:row-span-1 relative group cursor-pointer bg-slate-200"
                         >
                             <img src={images[1]} className="w-full h-full object-cover" alt="Gallery 1" />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                         </div>
                         <div 
                             onClick={() => openLightbox(2)}
-                            className="col-span-1 row-span-1 relative group cursor-pointer bg-slate-200"
+                            className="col-span-1 row-span-1 md:col-span-1 md:row-span-1 relative group cursor-pointer bg-slate-200"
                         >
                             <img src={images[2]} className="w-full h-full object-cover" alt="Gallery 2" />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
@@ -119,7 +119,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
 
                {/* 4 Images */}
                {images.length === 4 && (
-                   <div className="grid grid-cols-2 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                   <div className="grid grid-cols-2 grid-rows-2 h-[300px] md:h-[400px] gap-2 rounded-2xl overflow-hidden">
                         {images.map((img, idx) => (
                              <div 
                                 key={idx} 
@@ -135,7 +135,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
 
                {/* 5+ Images */}
                {images.length >= 5 && (
-                   <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                   <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 h-[300px] md:h-[400px] gap-2 rounded-2xl overflow-hidden">
                         <div 
                             onClick={() => openLightbox(0)}
                             className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer"
@@ -147,12 +147,21 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                             <div 
                                 key={idx} 
                                 onClick={() => openLightbox(idx + 1)}
-                                className="bg-slate-200 relative group cursor-pointer overflow-hidden"
+                                className={`bg-slate-200 relative group cursor-pointer overflow-hidden ${idx >= 2 ? 'hidden md:block' : ''}`}
                             >
                                 <img src={img} className="w-full h-full object-cover" alt={`Gallery ${idx + 1}`} />
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                                
+                                {/* Mobile Overlay +Counter */}
+                                {idx === 1 && (
+                                     <div className="md:hidden absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
+                                         +{images.length - 3}
+                                     </div>
+                                )}
+
+                                {/* Desktop Overlay +Counter */}
                                 {idx === 3 && images.length > 5 && (
-                                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
+                                     <div className="hidden md:flex absolute inset-0 items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
                                          +{images.length - 5}
                                      </div>
                                  )}

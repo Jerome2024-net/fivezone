@@ -5,7 +5,7 @@ import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer, T
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300 // Revalidate every 5 minutes
 
 export default async function Home() {
   let featuredBusinesses = [];

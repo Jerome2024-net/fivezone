@@ -10,7 +10,7 @@ import { MissionButton } from "@/components/missions/MissionButton"
 import { Suspense } from "react"
 import { ProfileActions } from "@/components/business/ProfileActions"
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60 // Revalidate every minute
 
 export default async function BusinessPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

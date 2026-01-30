@@ -15,7 +15,13 @@ export default async function Home() {
      const businesses = await prisma.business.findMany({
          take: 8,
          orderBy: { createdAt: 'desc' },
-         include: { category: true }
+         include: { 
+            category: true,
+            media: {
+                take: 3,
+                select: { url: true }
+            }
+        }
      });
 
      featuredBusinesses = businesses.map(b => ({
@@ -27,8 +33,10 @@ export default async function Home() {
          rating: b.rating,
          reviewCount: b.reviewCount,
          imageUrl: b.coverUrl || b.imageUrl || undefined,
+         images: [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
          hourlyRate: b.hourlyRate || undefined,
-         currency: b.currency || 'EUR'
+         currency: b.currency || 'EUR',
+         city: b.city
      }));
 
   } catch (error: any) {
@@ -132,10 +140,12 @@ export default async function Home() {
                                 category={business.category.name}
                                 promoted={business.subscriptionTier === 'PRO'}
                                 imageUrl={business.imageUrl}
+                                images={business.images}
                                 rating={business.rating}
                                 reviewCount={business.reviewCount}
                                 hourlyRate={business.hourlyRate}
                                 currency={business.currency}
+                                city={business.city}
                             />
                         </div>
                      ))}

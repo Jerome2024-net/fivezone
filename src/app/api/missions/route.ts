@@ -10,6 +10,7 @@ const createMissionSchema = z.object({
     title: z.string().min(2, "Le titre est trop court"),
     description: z.string().min(5, "La description est trop courte"),
     budget: z.number().optional(),
+    currency: z.string().default('EUR'), 
     budgetType: z.enum(['FIXED', 'HOURLY', 'DAILY', 'TO_DISCUSS']).optional(),
     deadline: z.string().optional(), // ISO date string
     duration: z.string().optional(),
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
                 title: validatedData.title,
                 description: validatedData.description,
                 budget: validatedData.budget,
+                currency: validatedData.currency,
                 budgetType: validatedData.budgetType || 'TO_DISCUSS',
                 deadline: validatedData.deadline ? new Date(validatedData.deadline) : null,
                 duration: validatedData.duration,

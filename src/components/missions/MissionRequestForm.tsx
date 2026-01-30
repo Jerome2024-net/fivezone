@@ -38,6 +38,7 @@ export function MissionRequestForm({
         title: '',
         description: '',
         budget: '',
+        currency: 'EUR',
         budgetType: 'TO_DISCUSS' as 'FIXED' | 'HOURLY' | 'DAILY' | 'TO_DISCUSS',
         deadline: '',
         duration: ''
@@ -246,14 +247,31 @@ export function MissionRequestForm({
                                     Budget estimé
                                 </label>
                                 <div className="flex flex-col sm:flex-row gap-3">
+                                    {/* Currency Select */}
+                                    <div className="relative w-full sm:w-24 shrink-0">
+                                         <select 
+                                            value={formData.currency}
+                                            onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                                            className="w-full h-12 pl-3 pr-8 border border-slate-200 rounded-lg text-base bg-slate-50 appearance-none focus:ring-2 focus:ring-[#34E0A1] focus:outline-none cursor-pointer font-bold text-slate-900"
+                                        >
+                                            <option value="EUR">€ EUR</option>
+                                            <option value="USD">$ USD</option>
+                                            <option value="GBP">£ GBP</option>
+                                            <option value="XOF">FCFA</option>
+                                        </select>
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                        </div>
+                                    </div>
+                                    
                                     <Input 
                                         type="number"
                                         value={formData.budget}
                                         onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                                         placeholder="Montant"
-                                        className="flex-1"
+                                        className="flex-1 min-w-[120px]"
                                     />
-                                    <div className="relative w-full sm:w-48">
+                                    <div className="relative w-full sm:w-48 shrink-0">
                                         <select 
                                             value={formData.budgetType}
                                             onChange={(e) => setFormData({ ...formData, budgetType: e.target.value as any })}

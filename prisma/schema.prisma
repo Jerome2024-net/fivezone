@@ -145,6 +145,7 @@ model MissionRequest {
   title            String
   description      String
   budget           Float?
+  currency         String        @default("EUR")
   budgetType       BudgetType    @default(FIXED)
   deadline         DateTime?
   duration         String?

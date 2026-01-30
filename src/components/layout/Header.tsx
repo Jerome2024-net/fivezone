@@ -149,67 +149,62 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[9999] bg-white animate-in slide-in-from-bottom-5 fade-in duration-300 md:hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 h-20 border-b border-slate-100">
-                 <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2.5 group">
-                    <div className="bg-slate-900 p-2 rounded-xl shadow-md">
-                        <Store className="h-5 w-5 text-[#34E0A1]" />
-                    </div>
-                    <span className="font-[family-name:var(--font-playfair)] font-bold text-2xl tracking-normal text-slate-900">
-                        Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">zone</span>
-                    </span>
-                 </Link>
+        <div className="fixed top-0 left-0 w-full h-[100vh] bg-white z-[9999] flex flex-col md:hidden animate-in fade-in duration-200">
+            {/* Header du Menu */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 h-16 bg-white">
+                 <span className="font-bold text-lg text-slate-900">Menu</span>
                  <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-100">
-                    <X className="h-8 w-8 text-slate-900" />
+                    <X className="h-6 w-6 text-slate-900" />
                  </Button>
             </div>
             
-            <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col justify-center">
-                <nav className="flex flex-col gap-6 items-center">
-                    <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-3xl font-bold text-slate-900 hover:text-[#34E0A1] transition-colors">
+            {/* Contenu du Menu */}
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col">
+                <nav className="flex flex-col gap-6">
+                    <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-[17px] font-medium text-slate-700 hover:text-slate-900 py-1">
                         Découvrir
                     </Link>
-                    <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-3xl font-bold text-slate-900 hover:text-[#34E0A1] transition-colors">
+                    <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-[17px] font-medium text-slate-700 hover:text-slate-900 py-1">
                         Tarifs
                     </Link>
-                    <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-3xl font-bold text-slate-900 hover:text-[#34E0A1] transition-colors">
+                    <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-[17px] font-medium text-slate-700 hover:text-slate-900 py-1">
                         À propos
                     </Link>
                 </nav>
 
-                <div className="mt-12 flex flex-col gap-4 w-full max-w-xs mx-auto">
+                <div className="mt-auto pt-8 border-t border-slate-100 flex flex-col gap-4">
                     {session ? (
                         <>
-                             <div className="flex flex-col items-center gap-2 mb-4">
-                                <div className="h-16 w-16 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-lg">
+                             <div className="flex items-center gap-3 mb-4">
+                                <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
                                     {session.user?.image ? (
                                         <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
                                     ) : (
-                                        <span className="text-slate-500 font-bold text-xl">
+                                        <span className="text-slate-500 font-bold text-sm">
                                             {session.user?.name?.substring(0,2).toUpperCase() || "US"}
                                         </span>
                                     )}
                                 </div>
-                                <div className="text-center">
-                                    <p className="font-bold text-lg text-slate-900">{session.user?.name}</p>
+                                <div>
+                                    <p className="font-bold text-[15px] text-slate-900">{session.user?.name}</p>
                                     <p className="text-sm text-slate-500">{session.user?.email}</p>
                                 </div>
                             </div>
                             
                             <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                                <Button className="w-full h-12 text-lg font-bold bg-slate-900 text-white rounded-full hover:bg-slate-800">
-                                    <LayoutDashboard className="h-5 w-5 mr-2" />
+                                <Button className="w-full h-12 text-[16px] font-medium bg-slate-900 text-white rounded-lg hover:bg-slate-800 justify-start px-4">
+                                    <LayoutDashboard className="h-4 w-4 mr-3" />
                                     Mon Espace Admin
                                 </Button>
                             </Link>
 
-                            <Button variant="outline" className="w-full h-12 text-lg font-bold text-red-600 border-red-200 hover:bg-red-50 rounded-full" onClick={() => signOut()}>
-                                <LogOut className="h-5 w-5 mr-2" />
+                            <Button variant="outline" className="w-full h-12 text-[16px] font-medium text-red-600 border-slate-200 hover:bg-red-50 rounded-lg justify-start px-4" onClick={() => signOut()}>
+                                <LogOut className="h-4 w-4 mr-3" />
                                 Se déconnecter
                             </Button>
                         </>
                     ) : (
-                        <Button size="lg" className="w-full h-14 rounded-full bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-xl font-bold text-xl" asChild>
+                        <Button size="lg" className="w-full h-12 rounded-lg bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-[16px]" asChild>
                             <Link href="/login">Se connecter</Link>
                         </Button>
                     )}

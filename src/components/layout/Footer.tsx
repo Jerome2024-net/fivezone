@@ -9,11 +9,13 @@ export function Footer() {
             
           {/* Logo Column */}
           <div className="md:col-span-1">
-             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="bg-[#34E0A1] p-1.5 rounded-full">
-                <Store className="h-6 w-6 text-slate-900" />
+             <Link href="/" className="flex items-center space-x-2.5 mb-6 group">
+              <div className="bg-slate-900 p-2 rounded-xl shadow-md group-hover:scale-105 transition-transform duration-200">
+                  <Store className="h-5 w-5 text-[#34E0A1]" />
               </div>
-              <span className="font-black text-xl tracking-tight">FiveZone</span>
+              <span className="font-black text-2xl tracking-tighter text-slate-900">
+                  Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">Zone</span>
+              </span>
             </Link>
              <div className="flex space-x-4 mt-6">
                 <Facebook className="h-5 w-5 hover:text-[#34E0A1] cursor-pointer transition-colors" />
@@ -35,8 +37,8 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-bold text-sm uppercase tracking-wider text-slate-900">Explorer</h3>
             <ul className="space-y-2 text-sm text-slate-600">
-              <li><Link href="#" className="hover:underline">Recommander un freelance</Link></li>
-              <li><Link href="/register" className="hover:underline">S'inscrire comme Freelance</Link></li>
+              <li><Link href="#" className="hover:underline">Recommander un expert</Link></li>
+              <li><Link href="/register" className="hover:underline">S'inscrire comme Travailleur Indépendant</Link></li>
               <li><Link href="#" className="hover:underline">Rejoindre la communauté</Link></li>
               <li><Link href="#" className="hover:underline">Choix des voyageurs</Link></li>
             </ul>

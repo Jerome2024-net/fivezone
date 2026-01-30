@@ -30,13 +30,13 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200/50 shadow-sm transition-all duration-300">
       <div className="container flex h-20 items-center justify-between px-4 md:px-6 mx-auto">
         <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center space-x-2">
-            <div className="bg-[#34E0A1] p-1.5 rounded-full">
-                <Store className="h-6 w-6 text-slate-900" />
-            </div>
-            <span className="font-black text-xl md:text-2xl tracking-tight text-slate-900">
-                FiveZone
-            </span>
+            <Link href="/" className="flex items-center space-x-2.5 group">
+              <div className="bg-slate-900 p-2 rounded-xl shadow-md group-hover:scale-105 transition-transform duration-200">
+                  <Store className="h-5 w-5 text-[#34E0A1]" />
+              </div>
+              <span className="font-black text-2xl tracking-tighter text-slate-900">
+                  Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">Zone</span>
+              </span>
             </Link>
             
             {/* Desktop Navigation */}

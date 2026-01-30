@@ -136,43 +136,79 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
          </div>
       </div>
 
-      {/* Photo Mosaic Gallery - Only show if images exist */}
+      {/* Photo Mosaic Gallery - Dynamic Layout */}
       {allImages.length > 0 && (
           <div className="container mx-auto px-4 md:px-6 mb-8">
-               {allImages.length === 1 ? (
+               
+               {/* 1 Image */}
+               {allImages.length === 1 && (
                    <div className="h-[400px] rounded-2xl overflow-hidden relative group cursor-pointer bg-slate-200">
                         <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                    </div>
-               ) : (
-               <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
-                    {/* Main Large Image */}
-                    <div className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer">
-                        {allImages[0] && (
-                            <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
-                        )}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                    </div>
+               )}
 
-                    {/* Secondary Images */}
-                    {[1, 2, 3, 4].map((idx) => (
-                        <div key={idx} className="bg-slate-200 relative group cursor-pointer overflow-hidden">
-                             {allImages[idx] ? (
-                                <img src={allImages[idx]} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
-                             ) : (
-                                <div className="absolute inset-0 bg-slate-100" />
-                             )}
-                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                             
-                             {/* Show "+X photos" on the last cell if there are more */}
-                             {idx === 4 && allImages.length > 5 && (
-                                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
-                                     +{allImages.length - 5} photos
-                                 </div>
-                             )}
+               {/* 2 Images */}
+               {allImages.length === 2 && (
+                   <div className="grid grid-cols-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                        {allImages.map((img, idx) => (
+                             <div key={idx} className="relative group cursor-pointer bg-slate-200 h-full">
+                                <img src={img} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                             </div>
+                        ))}
+                   </div>
+               )}
+
+               {/* 3 Images */}
+               {allImages.length === 3 && (
+                   <div className="grid grid-cols-3 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                        <div className="col-span-2 row-span-2 relative group cursor-pointer bg-slate-200">
+                            <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                         </div>
-                    ))}
-               </div>
+                        <div className="col-span-1 row-span-1 relative group cursor-pointer bg-slate-200">
+                            <img src={allImages[1]} className="w-full h-full object-cover" alt="Gallery 1" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        </div>
+                        <div className="col-span-1 row-span-1 relative group cursor-pointer bg-slate-200">
+                            <img src={allImages[2]} className="w-full h-full object-cover" alt="Gallery 2" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        </div>
+                   </div>
+               )}
+
+               {/* 4 Images */}
+               {allImages.length === 4 && (
+                   <div className="grid grid-cols-2 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                        {allImages.map((img, idx) => (
+                             <div key={idx} className="relative group cursor-pointer bg-slate-200 h-full">
+                                <img src={img} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                             </div>
+                        ))}
+                   </div>
+               )}
+
+               {/* 5+ Images */}
+               {allImages.length >= 5 && (
+                   <div className="grid grid-cols-4 grid-rows-2 h-[400px] gap-2 rounded-2xl overflow-hidden">
+                        <div className="col-span-2 row-span-2 bg-slate-200 relative group cursor-pointer">
+                            <img src={allImages[0]} className="w-full h-full object-cover" alt="Main view" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        </div>
+                        {allImages.slice(1, 5).map((img, idx) => (
+                            <div key={idx} className="bg-slate-200 relative group cursor-pointer overflow-hidden">
+                                <img src={img} className="w-full h-full object-cover" alt={`Gallery ${idx + 1}`} />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                                {idx === 3 && allImages.length > 5 && (
+                                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-lg backdrop-blur-[2px]">
+                                         +{allImages.length - 5}
+                                     </div>
+                                 )}
+                            </div>
+                        ))}
+                   </div>
                )}
           </div>
       )}

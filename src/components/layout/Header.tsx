@@ -149,9 +149,9 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed top-0 left-0 w-full h-[100vh] bg-white z-[9999] flex flex-col md:hidden animate-in fade-in duration-200">
+        <div className="fixed top-0 left-0 w-full h-[100dvh] bg-white z-[9999] flex flex-col md:hidden animate-in fade-in duration-200">
             {/* Header du Menu */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 h-16 bg-white">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 h-16 bg-white shrink-0">
                  <span className="font-bold text-lg text-slate-900">Menu</span>
                  <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-100">
                     <X className="h-6 w-6 text-slate-900" />
@@ -172,7 +172,7 @@ export function Header() {
                     </Link>
                 </nav>
 
-                <div className="mt-auto pt-8 border-t border-slate-100 flex flex-col gap-4">
+                <div className="mt-auto pt-8 pb-8 border-t border-slate-100 flex flex-col gap-4">
                     {session ? (
                         <>
                              <div className="flex items-center gap-3 mb-4">
@@ -204,9 +204,11 @@ export function Header() {
                             </Button>
                         </>
                     ) : (
-                        <Button size="lg" className="w-full h-12 rounded-lg bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-[16px]" asChild>
-                            <Link href="/login">Se connecter</Link>
-                        </Button>
+                        <div className="flexflex-col gap-3">
+                            <Button size="lg" className="w-full h-12 rounded-lg bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-[16px]" asChild>
+                                <Link href="/login">Se connecter / S'inscrire</Link>
+                            </Button>
+                        </div>
                     )}
                 </div>
             </div>

@@ -149,33 +149,35 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-[100] bg-white animate-in slide-in-from-top-[10%] fade-in duration-200">
-            <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between px-4 h-20 border-b border-slate-100">
-                     <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2.5 group">
-                        <div className="bg-slate-900 p-2 rounded-xl shadow-md">
-                            <Store className="h-5 w-5 text-[#34E0A1]" />
-                        </div>
-                        <span className="font-[family-name:var(--font-playfair)] font-bold text-2xl tracking-normal text-slate-900">
-                            Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">zone</span>
-                        </span>
-                     </Link>
-                     <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full">
-                        <X className="h-6 w-6" />
+        <div className="md:hidden fixed inset-0 z-[100] flex justify-end">
+            {/* Backdrop */}
+            <div 
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" 
+                onClick={toggleMenu}
+            />
+            
+            {/* Menu Panel */}
+            <div className="relative w-[85%] max-w-[350px] h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col border-l border-slate-100">
+                <div className="flex items-center justify-between px-6 h-20 border-b border-slate-100 bg-white/50 backdrop-blur-sm">
+                     <span className="font-[family-name:var(--font-playfair)] font-bold text-xl text-slate-900">
+                        Menu
+                     </span>
+                     <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-100 -mr-2">
+                        <X className="h-6 w-6 text-slate-900" />
                      </Button>
                 </div>
                 
-                <div className="p-6 flex flex-col gap-6 overflow-y-auto">
-                    <nav className="flex flex-col gap-4">
-                        <Link href="/search" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 text-xl font-medium text-slate-600 hover:text-slate-900 hover:pl-2 transition-all border-b border-slate-50">
+                <div className="flex-1 p-6 flex flex-col gap-8 overflow-y-auto">
+                    <nav className="flex flex-col gap-2">
+                        <Link href="/search" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 px-2 text-lg font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all">
                             Découvrir
                             <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
                         </Link>
-                        <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 text-xl font-medium text-slate-600 hover:text-slate-900 hover:pl-2 transition-all border-b border-slate-50">
+                        <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 px-2 text-lg font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all">
                             Tarifs
                             <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
                         </Link>
-                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 text-xl font-medium text-slate-600 hover:text-slate-900 hover:pl-2 transition-all border-b border-slate-50">
+                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 px-2 text-lg font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all">
                             À propos
                             <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
                         </Link>

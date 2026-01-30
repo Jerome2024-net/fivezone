@@ -20,7 +20,7 @@ export function BusinessCard({ id, name, category, imageUrl, promoted = false, r
     const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€';
 
     return (
-        <Link href={`/business/${id}`} className="group cursor-pointer relative block">
+        <Link href={`/business/${id}`} className="group cursor-pointer relative block transition-all duration-300 hover:-translate-y-1 hover:shadow-lg rounded-xl bg-white p-2 border border-transparent hover:border-slate-100">
             {/* Image Card */}
             <div className={`relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-100 mb-3 ${promoted ? 'ring-2 ring-[#34E0A1] ring-offset-2' : ''}`}>
                     <div className="absolute inset-0 bg-slate-200 group-hover:scale-105 transition-transform duration-700 ease-in-out">

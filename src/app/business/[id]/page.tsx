@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { MissionButton } from "@/components/missions/MissionButton"
 import { Suspense } from "react"
+import { ProfileActions } from "@/components/business/ProfileActions"
 
 export const dynamic = 'force-dynamic'
 
@@ -127,12 +128,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ id: s
              </div>
              
              <div className="flex gap-2">
-                 <Button variant="outline" className="rounded-full font-bold border-slate-300 hover:bg-slate-100 hover:text-slate-900">
-                     <Share2 className="h-4 w-4 mr-2" /> Partager
-                 </Button>
-                 <Button variant="outline" className="rounded-full font-bold border-slate-300 hover:bg-slate-100 hover:text-slate-900">
-                     <Heart className="h-4 w-4 mr-2" /> Enregistrer
-                 </Button>
+                 <ProfileActions businessId={id} businessName={businessName} />
              </div>
          </div>
       </div>

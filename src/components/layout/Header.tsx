@@ -15,6 +15,18 @@ export function Header() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
 
+  // Prevent scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMenuOpen])
+
   // Close user menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -64,8 +76,8 @@ export function Header() {
              </div>
 
             {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <Button variant="ghost" size="icon" className="md:hidden text-slate-900" onClick={toggleMenu}>
+                <Menu className="h-6 w-6" />
             </Button>
 
             <div className="hidden md:block">
@@ -137,7 +149,7 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-[60] bg-white animate-in slide-in-from-top-5 fade-in duration-200">
+        <div className="md:hidden fixed inset-0 z-[100] bg-white animate-in slide-in-from-top-[10%] fade-in duration-200">
             <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between px-4 h-20 border-b border-slate-100">
                      <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2.5 group">

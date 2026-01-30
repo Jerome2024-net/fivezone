@@ -14,7 +14,7 @@ export function Footer() {
                   <Store className="h-5 w-5 text-[#34E0A1]" />
               </div>
               <span className="font-[family-name:var(--font-playfair)] font-bold text-2xl tracking-normal text-slate-900">
-                  Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">Zone</span>
+                  Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">zone</span>
               </span>
             </Link>
              <div className="flex space-x-4 mt-6">

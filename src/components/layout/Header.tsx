@@ -34,7 +34,7 @@ export function Header() {
               <div className="bg-slate-900 p-2 rounded-xl shadow-md group-hover:scale-105 transition-transform duration-200">
                   <Store className="h-5 w-5 text-[#34E0A1]" />
               </div>
-              <span className="font-black text-2xl tracking-tighter text-slate-900">
+              <span className="font-[family-name:var(--font-playfair)] font-bold text-2xl tracking-normal text-slate-900">
                   Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">Zone</span>
               </span>
             </Link>

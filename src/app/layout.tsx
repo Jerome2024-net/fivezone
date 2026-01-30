@@ -15,15 +15,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FiveZone - Freelances & Services Locaux",
-  description: "Accédez aux meilleurs freelances, experts et services locaux. Développeurs, Créatifs, Artisans, Consultants.",
+  title: "FiveZone - Travailleurs Indépendants & Services Locaux",
+  description: "Accédez aux meilleurs travailleurs indépendants, experts et services locaux. Développeurs, Créatifs, Artisans, Consultants.",
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "FiveZone - Freelances & Services Locaux",
-    description: "Trouvez les meilleurs freelances et experts pour vos projets en quelques clics.",
+    title: "FiveZone - Travailleurs Indépendants & Services Locaux",
+    description: "Trouvez les meilleurs travailleurs indépendants et experts pour vos projets en quelques clics.",
     siteName: "FiveZone",
     images: [
       {

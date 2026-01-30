@@ -66,7 +66,7 @@ export default async function Home() {
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
-            Trouvez le freelance idéal.
+            Trouvez le travailleur indépendant idéal.
           </h1>
           <p className="text-slate-600 text-center mb-8 text-lg md:text-2xl font-medium max-w-2xl">
              Experts vérifiés • Local ou à distance
@@ -83,7 +83,7 @@ export default async function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mt-2">
              <Button className="h-12 px-8 text-lg font-bold rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20" asChild>
-                <Link href="/search">Trouvez un freelance</Link>
+                <Link href="/search">Trouvez un indépendant</Link>
              </Button>
              <Button variant="outline" className="h-12 px-8 text-lg font-bold rounded-full border-2 border-slate-900 text-slate-900 hover:bg-slate-50" asChild>
                 <Link href="/register">Je veux proposer mes services</Link>
@@ -122,7 +122,7 @@ export default async function Home() {
             <div className="flex items-end justify-between mb-6 md:mb-8">
                 <div>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Experts à la une</h2>
-                    <p className="text-slate-500 mt-2 text-base md:text-lg">Les freelances recommandés par la communauté.</p>
+                    <p className="text-slate-500 mt-2 text-base md:text-lg">Les travailleurs indépendants recommandés par la communauté.</p>
                 </div>
                 {/* Lien "Voir tout" style TripAdvisor */}
                 <Link href="/search" className="hidden md:block text-sm font-bold underline decoration-2 decoration-slate-200 hover:decoration-[#34E0A1] transition-all">
@@ -168,7 +168,7 @@ export default async function Home() {
                 href="/pricing"
                 className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex flex-col sm:flex-row items-center gap-1 md:gap-2 group px-6 py-3 rounded-xl hover:bg-slate-50 text-center"
              >
-                <span>Vous êtes Freelance ?</span>
+                <span>Vous êtes travailleur indépendant ?</span>
                 <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
                     Créez votre profil gratuitement
                 </span>

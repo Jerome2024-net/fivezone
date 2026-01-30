@@ -149,77 +149,70 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-[100] flex justify-end">
-            {/* Backdrop */}
-            <div 
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" 
-                onClick={toggleMenu}
-            />
-            
-            {/* Menu Panel */}
-            <div className="relative w-[85%] max-w-[350px] h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col border-l border-slate-100">
-                <div className="flex items-center justify-between px-6 h-20 border-b border-slate-100 bg-white/50 backdrop-blur-sm">
-                     <span className="font-[family-name:var(--font-playfair)] font-bold text-xl text-slate-900">
-                        Menu
-                     </span>
-                     <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-100 -mr-2">
-                        <X className="h-6 w-6 text-slate-900" />
-                     </Button>
-                </div>
-                
-                <div className="flex-1 p-6 flex flex-col gap-8 overflow-y-auto">
-                    <nav className="flex flex-col gap-2">
-                        <Link href="/search" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 px-2 text-lg font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all">
-                            Découvrir
-                            <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
-                        </Link>
-                        <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 px-2 text-lg font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all">
-                            Tarifs
-                            <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
-                        </Link>
-                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 px-2 text-lg font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all">
-                            À propos
-                            <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
-                        </Link>
-                    </nav>
-
-                    <div className="mt-auto pt-6">
-                        {session ? (
-                            <div className="space-y-4">
-                                <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-4">
-                                    <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
-                                        {session.user?.image ? (
-                                            <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
-                                        ) : (
-                                            <span className="text-slate-500 font-bold">
-                                                {session.user?.name?.substring(0,2).toUpperCase() || "US"}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-slate-900">{session.user?.name}</p>
-                                        <p className="text-sm text-slate-500">{session.user?.email}</p>
-                                    </div>
-                                </div>
-                                
-                                <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                                    <Button className="w-full justify-start gap-3 h-14 text-lg font-bold bg-slate-900 text-white rounded-xl hover:bg-slate-800">
-                                        <LayoutDashboard className="h-5 w-5" />
-                                        Mon Espace Admin
-                                    </Button>
-                                </Link>
-
-                                <Button variant="outline" className="w-full justify-start gap-3 h-14 text-lg font-bold text-red-600 border-red-100 hover:bg-red-50 hover:text-red-700 rounded-xl" onClick={() => signOut()}>
-                                    <LogOut className="h-5 w-5" />
-                                    Se déconnecter
-                                </Button>
-                            </div>
-                        ) : (
-                            <Button size="lg" className="w-full h-14 rounded-xl bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-lg font-bold text-lg" asChild>
-                                <Link href="/login">Se connecter / S'inscrire</Link>
-                            </Button>
-                        )}
+        <div className="fixed inset-0 z-[9999] bg-white animate-in slide-in-from-bottom-5 fade-in duration-300 md:hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 h-20 border-b border-slate-100">
+                 <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2.5 group">
+                    <div className="bg-slate-900 p-2 rounded-xl shadow-md">
+                        <Store className="h-5 w-5 text-[#34E0A1]" />
                     </div>
+                    <span className="font-[family-name:var(--font-playfair)] font-bold text-2xl tracking-normal text-slate-900">
+                        Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">zone</span>
+                    </span>
+                 </Link>
+                 <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-100">
+                    <X className="h-8 w-8 text-slate-900" />
+                 </Button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col justify-center">
+                <nav className="flex flex-col gap-6 items-center">
+                    <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-3xl font-bold text-slate-900 hover:text-[#34E0A1] transition-colors">
+                        Découvrir
+                    </Link>
+                    <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-3xl font-bold text-slate-900 hover:text-[#34E0A1] transition-colors">
+                        Tarifs
+                    </Link>
+                    <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-3xl font-bold text-slate-900 hover:text-[#34E0A1] transition-colors">
+                        À propos
+                    </Link>
+                </nav>
+
+                <div className="mt-12 flex flex-col gap-4 w-full max-w-xs mx-auto">
+                    {session ? (
+                        <>
+                             <div className="flex flex-col items-center gap-2 mb-4">
+                                <div className="h-16 w-16 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-lg">
+                                    {session.user?.image ? (
+                                        <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
+                                    ) : (
+                                        <span className="text-slate-500 font-bold text-xl">
+                                            {session.user?.name?.substring(0,2).toUpperCase() || "US"}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="text-center">
+                                    <p className="font-bold text-lg text-slate-900">{session.user?.name}</p>
+                                    <p className="text-sm text-slate-500">{session.user?.email}</p>
+                                </div>
+                            </div>
+                            
+                            <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                                <Button className="w-full h-12 text-lg font-bold bg-slate-900 text-white rounded-full hover:bg-slate-800">
+                                    <LayoutDashboard className="h-5 w-5 mr-2" />
+                                    Mon Espace Admin
+                                </Button>
+                            </Link>
+
+                            <Button variant="outline" className="w-full h-12 text-lg font-bold text-red-600 border-red-200 hover:bg-red-50 rounded-full" onClick={() => signOut()}>
+                                <LogOut className="h-5 w-5 mr-2" />
+                                Se déconnecter
+                            </Button>
+                        </>
+                    ) : (
+                        <Button size="lg" className="w-full h-14 rounded-full bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-xl font-bold text-xl" asChild>
+                            <Link href="/login">Se connecter</Link>
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>

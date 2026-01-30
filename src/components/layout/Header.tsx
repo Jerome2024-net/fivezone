@@ -204,9 +204,9 @@ export function Header() {
                             </Button>
                         </>
                     ) : (
-                        <div className="flexflex-col gap-3">
+                        <div className="flex flex-col gap-3">
                             <Button size="lg" className="w-full h-12 rounded-lg bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-[16px]" asChild>
-                                <Link href="/login">Se connecter / S'inscrire</Link>
+                                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Se connecter / S'inscrire</Link>
                             </Button>
                         </div>
                     )}

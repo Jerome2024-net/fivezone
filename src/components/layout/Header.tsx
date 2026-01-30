@@ -137,10 +137,17 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-[60] bg-white">
+        <div className="md:hidden fixed inset-0 z-[60] bg-white animate-in slide-in-from-top-5 fade-in duration-200">
             <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between px-4 h-20 border-b border-slate-100">
-                     <span className="font-black text-xl tracking-tight text-slate-900">Menu</span>
+                     <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2.5 group">
+                        <div className="bg-slate-900 p-2 rounded-xl shadow-md">
+                            <Store className="h-5 w-5 text-[#34E0A1]" />
+                        </div>
+                        <span className="font-[family-name:var(--font-playfair)] font-bold text-2xl tracking-normal text-slate-900">
+                            Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">zone</span>
+                        </span>
+                     </Link>
                      <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full">
                         <X className="h-6 w-6" />
                      </Button>
@@ -148,14 +155,17 @@ export function Header() {
                 
                 <div className="p-6 flex flex-col gap-6 overflow-y-auto">
                     <nav className="flex flex-col gap-4">
-                        <Link href="/search" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between py-2 text-xl font-bold text-slate-900 border-b border-slate-100">
+                        <Link href="/search" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 text-xl font-medium text-slate-600 hover:text-slate-900 hover:pl-2 transition-all border-b border-slate-50">
                             Découvrir
+                            <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
                         </Link>
-                        <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between py-2 text-xl font-bold text-slate-900 border-b border-slate-100">
+                        <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 text-xl font-medium text-slate-600 hover:text-slate-900 hover:pl-2 transition-all border-b border-slate-50">
                             Tarifs
+                            <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
                         </Link>
-                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between py-2 text-xl font-bold text-slate-900 border-b border-slate-100">
+                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="group flex items-center justify-between py-3 text-xl font-medium text-slate-600 hover:text-slate-900 hover:pl-2 transition-all border-b border-slate-50">
                             À propos
+                            <span className="opacity-0 group-hover:opacity-100 text-[#34E0A1] transition-opacity">→</span>
                         </Link>
                     </nav>
 

@@ -34,34 +34,26 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
                 return;
             }
 
-            const { data, error: uploadError } = await supabase.storage
-                .from('uploads')
-                .upload(filename, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
+            // LOCAL UPLOAD STRATEGY
+            const formData = new FormData();
+            formData.append('file', file);
 
-            if (uploadError) {
-                console.error("Supabase Upload Error:", uploadError);
-                // Check for common errors
-                if (uploadError.message.includes("row-level security")) {
-                    throw new Error("Permissions manquantes. Vérifiez les politiques du bucket 'uploads' sur Supabase.");
-                } else if (uploadError.message.includes("duplicate key")) {
-                    throw new Error("Fichier déjà existant.");
-                } else {
-                    throw uploadError;
-                }
+            const res = await fetch('/api/upload-local', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!res.ok) {
+                 const errorData = await res.json().catch(() => ({}));
+                 throw new Error(errorData.error || "Erreur lors de l'upload serveur");
             }
+            
+            const data = await res.json();
+            onChange(data.url);
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('uploads')
-                .getPublicUrl(filename);
-
-            onChange(publicUrl);
         } catch (error: any) {
             console.error("Upload failed:", error);
-            setError("Erreur lors de l'upload. Vérifiez votre connexion.");
+            setError(error.message || "Erreur lors de l'upload.");
         } finally {
             setUploading(false);
         }

@@ -28,27 +28,21 @@ export function MediaUpload() {
                 continue;
             }
 
-             const { error: uploadError } = await supabase.storage
-                .from('uploads')
-                .upload(filename, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
-
-             if (uploadError) {
-                 console.error("Supabase Upload Error for " + file.name, uploadError);
-                 if (uploadError.message.includes("row-level security")) {
-                     alert("Erreur de permission. Avez-vous configuré les politiques Supabase ?");
-                 }
-                 throw uploadError;
+             // Local Upload
+             const formData = new FormData();
+             formData.append('file', file);
+ 
+             const res = await fetch('/api/upload-local', {
+                 method: 'POST',
+                 body: formData
+             });
+ 
+             if (!res.ok) {
+                 throw new Error("Erreur upload " + file.name);
              }
-
-             const { data: { publicUrl } } = supabase.storage
-                .from('uploads')
-                .getPublicUrl(filename);
-                
-             newUrls.push(publicUrl);
+             
+             const data = await res.json();
+             newUrls.push(data.url);
         }
 
         setFiles(prev => [...prev, ...newUrls]);

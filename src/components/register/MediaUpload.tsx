@@ -38,27 +38,21 @@ export function MediaUpload({ onChange, maxFiles, className }: MediaUploadProps)
                  continue;
              }
              
-             const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-             
-             const { error: uploadError } = await supabase.storage
-                .from('uploads')
-                .upload(filename, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
+             // Local Upload
+             const formData = new FormData();
+             formData.append('file', file);
 
-             if (uploadError) {
-                 console.error("Supabase Upload Error:", uploadError);
-                 if (uploadError.message.includes("row-level security")) {
-                    alert("Erreur de droits : Vérifiez les politiques Supabase.");
-                 }
-                 throw uploadError;
+             const res = await fetch('/api/upload-local', {
+                 method: 'POST',
+                 body: formData
+             });
+
+             if (!res.ok) { 
+                 throw new Error("Upload failed"); 
              }
 
-             const { data: { publicUrl } } = supabase.storage
-                .from('uploads')
-                .getPublicUrl(filename);
+             const data = await res.json();
+             const publicUrl = data.url;
                 
              newUrls.push(publicUrl);
         }

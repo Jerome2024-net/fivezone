@@ -1,15 +1,13 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import path from 'path'
-import * as dotenv from 'dotenv'
 
-// Force load env vars from file system to fallback if Next.js loader misses them
-dotenv.config({ path: path.join(process.cwd(), '.env') });
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
-
-// Force dynamic to prevent static caching of env vars
+// Force dynamic to prevent static caching
 export const dynamic = 'force-dynamic'
+
+// Fallback values (NEXT_PUBLIC are safe to expose)
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://klvquwlfknonzjczrljp.supabase.co'
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ODKqeznVSqBKwHe78jjBnQ__jLAmMT1'
 
 export async function POST(request: Request) {
   try {
@@ -20,23 +18,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Aucun fichier fourni' }, { status: 400 })
     }
 
-    // Ensure we have credentials
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-    // Debug Log (will show in terminal)
-    console.log("Supabase Config Check:", { 
-        hasUrl: !!supabaseUrl, 
-        hasKey: !!supabaseKey, 
-        urlStart: supabaseUrl ? supabaseUrl.substring(0, 10) : 'N/A' 
-    });
-
-    if (!supabaseUrl || !supabaseKey) {
-        console.error("Missing Supabase Credentials in API Route")
-        return NextResponse.json({ error: 'Configuration serveur manquante (Supabase). Vérifiez les logs serveur.' }, { status: 500 })
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
     
     // Sanitize filename
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`

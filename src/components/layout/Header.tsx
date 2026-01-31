@@ -149,67 +149,86 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed top-0 left-0 w-full h-[100dvh] bg-white z-[9999] flex flex-col md:hidden animate-in fade-in duration-200">
+        <div className="fixed top-0 left-0 w-full h-[100dvh] bg-white z-[9999] flex flex-col md:hidden animate-in fade-in duration-300">
             {/* Header du Menu */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 h-16 bg-white shrink-0">
-                 <span className="font-bold text-lg text-slate-900">Menu</span>
-                 <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-100">
+            <div className="flex items-center justify-between px-6 py-6 h-20 bg-white shrink-0">
+                 <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 group">
+                      <div className="bg-slate-900 p-1.5 rounded-lg shadow-sm">
+                          <Store className="h-4 w-4 text-[#34E0A1]" />
+                      </div>
+                      <span className="font-[family-name:var(--font-playfair)] font-bold text-xl text-slate-900">
+                          Five<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">zone</span>
+                      </span>
+                 </Link>
+                 <Button variant="ghost" size="icon" onClick={toggleMenu} className="rounded-full hover:bg-slate-50 h-10 w-10">
                     <X className="h-6 w-6 text-slate-900" />
                  </Button>
             </div>
             
             {/* Contenu du Menu */}
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col">
-                <nav className="flex flex-col gap-6">
-                    <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-[17px] font-medium text-slate-700 hover:text-slate-900 py-1">
+            <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col">
+                <nav className="flex flex-col gap-6 mt-4">
+                    <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black tracking-tight text-slate-900 hover:text-[#34E0A1] transition-colors animate-in slide-in-from-bottom-2 fade-in duration-500 delay-100 fill-mode-both">
                         Découvrir
                     </Link>
-                    <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-[17px] font-medium text-slate-700 hover:text-slate-900 py-1">
+                    <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black tracking-tight text-slate-900 hover:text-[#34E0A1] transition-colors animate-in slide-in-from-bottom-2 fade-in duration-500 delay-150 fill-mode-both">
                         Tarifs
                     </Link>
-                    <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-[17px] font-medium text-slate-700 hover:text-slate-900 py-1">
+                    <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black tracking-tight text-slate-900 hover:text-[#34E0A1] transition-colors animate-in slide-in-from-bottom-2 fade-in duration-500 delay-200 fill-mode-both">
                         À propos
                     </Link>
                 </nav>
 
-                <div className="mt-auto pt-8 pb-8 border-t border-slate-100 flex flex-col gap-4">
+                <div className="mt-auto pt-10 pb-10 flex flex-col gap-6 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300 fill-mode-both">
+                    <div className="h-px w-full bg-slate-100" />
+                    
                     {session ? (
-                        <>
-                             <div className="flex items-center gap-3 mb-4">
-                                <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
+                        <div className="flex flex-col gap-4">
+                             <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                                <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
                                     {session.user?.image ? (
                                         <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
                                     ) : (
-                                        <span className="text-slate-500 font-bold text-sm">
+                                        <span className="text-slate-500 font-bold text-lg">
                                             {session.user?.name?.substring(0,2).toUpperCase() || "US"}
                                         </span>
                                     )}
                                 </div>
                                 <div>
-                                    <p className="font-bold text-[15px] text-slate-900">{session.user?.name}</p>
+                                    <p className="font-bold text-lg text-slate-900">{session.user?.name}</p>
                                     <p className="text-sm text-slate-500">{session.user?.email}</p>
                                 </div>
                             </div>
                             
-                            <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                                <Button className="w-full h-12 text-[16px] font-medium bg-slate-900 text-white rounded-lg hover:bg-slate-800 justify-start px-4">
-                                    <LayoutDashboard className="h-4 w-4 mr-3" />
-                                    Mon Espace Admin
+                            <div className="grid grid-cols-2 gap-3">
+                                <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="col-span-1">
+                                    <Button className="w-full h-14 text-base font-bold bg-slate-900 text-white rounded-xl hover:bg-slate-800 shadow-lg shadow-slate-200/50">
+                                        <LayoutDashboard className="h-5 w-5 mr-2" />
+                                        Admin
+                                    </Button>
+                                </Link>
+                                
+                                <Button variant="outline" className="h-14 text-base font-bold text-red-600 border-red-100 bg-red-50/50 hover:bg-red-50 hover:border-red-200 rounded-xl" onClick={() => signOut()}>
+                                    <LogOut className="h-5 w-5 mr-2" />
+                                    Sortir
                                 </Button>
-                            </Link>
-
-                            <Button variant="outline" className="w-full h-12 text-[16px] font-medium text-red-600 border-slate-200 hover:bg-red-50 rounded-lg justify-start px-4" onClick={() => signOut()}>
-                                <LogOut className="h-4 w-4 mr-3" />
-                                Se déconnecter
-                            </Button>
-                        </>
+                            </div>
+                        </div>
                     ) : (
-                        <div className="flex flex-col gap-3">
-                            <Button size="lg" className="w-full h-12 rounded-lg bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-[16px]" asChild>
-                                <Link href="/login" onClick={() => setIsMenuOpen(false)}>Se connecter / S'inscrire</Link>
+                        <div className="flex flex-col gap-4">
+                            <p className="text-slate-500 font-medium">Rejoignez la communauté Fivezone</p>
+                            <Button size="lg" className="w-full h-14 rounded-2xl bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg shadow-lg shadow-[#34E0A1]/20 transition-all hover:scale-[1.02]" asChild>
+                                <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                                    Se connecter / S'inscrire
+                                </Link>
                             </Button>
                         </div>
                     )}
+                    
+                    <div className="flex gap-6 mt-2 text-slate-400">
+                        <Link href="#" className="text-sm font-medium hover:text-slate-900">Confidentialité</Link>
+                        <Link href="#" className="text-sm font-medium hover:text-slate-900">Aide</Link>
+                    </div>
                 </div>
             </div>
         </div>

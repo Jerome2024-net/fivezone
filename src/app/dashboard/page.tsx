@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
+import { stripe } from "@/lib/stripe"
 import { DashboardClient } from "@/components/dashboard/DashboardClient"
 
 export const dynamic = 'force-dynamic'
@@ -54,6 +55,29 @@ export default async function DashboardPage() {
         .reduce((acc, m) => acc + m._count, 0)
   }
 
+  // Fetch Stripe Balance if business has account
+  let walletBalance = null;
+  if (business?.stripeAccountId) {
+    try {
+        const balance = await stripe.balance.retrieve({
+            stripeAccount: business.stripeAccountId
+        });
+        
+        // Sum up available balance (usually 1 currency)
+        const available = balance.available.reduce((acc, curr) => acc + curr.amount, 0) / 100;
+        const pending = balance.pending.reduce((acc, curr) => acc + curr.amount, 0) / 100;
+        const currency = balance.available[0]?.currency.toUpperCase() || 'EUR';
+
+        walletBalance = {
+            available,
+            pending,
+            currency
+        };
+    } catch (error) {
+        console.error("Error fetching stripe balance:", error);
+    }
+  }
+
   return (
     <DashboardClient 
       initialBusiness={business} 
@@ -61,6 +85,7 @@ export default async function DashboardPage() {
       isPro={isPro} 
       pendingMissions={pendingMissions}
       userName={user.name || "Client"}
+      walletBalance={walletBalance}
     />
   )
 }

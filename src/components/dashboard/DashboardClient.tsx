@@ -46,6 +46,11 @@ interface DashboardClientProps {
     pendingMissions?: number;
     userType: 'client' | 'freelancer';
     userName?: string;
+    walletBalance?: {
+        available: number;
+        pending: number;
+        currency: string;
+    } | null;
 }
 
 export function DashboardClient({ 
@@ -53,7 +58,8 @@ export function DashboardClient({
     isPro, 
     pendingMissions = 0, 
     userType,
-    userName = "Utilisateur"
+    userName = "Utilisateur",
+    walletBalance
 }: DashboardClientProps) {
     const [isEditing, setIsEditing] = useState(false);
     // Unified active tab state
@@ -618,13 +624,40 @@ export function DashboardClient({
                             </h3>
                             
                             {business.stripeAccountId ? (
-                                <div className="space-y-3">
+                                <div className="space-y-4">
                                     <div className="flex items-center gap-2 text-green-600 font-bold text-sm bg-green-50 p-3 rounded-lg border border-green-100">
                                         <Check className="h-4 w-4" /> Compte connecté
                                     </div>
-                                    <p className="text-xs text-slate-500">
-                                        Vous pouvez recevoir des paiements pour vos missions.
-                                    </p>
+
+                                    {walletBalance && (
+                                        <div className="space-y-3 pt-2">
+                                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Solde Disponible</p>
+                                                <p className="text-3xl font-black text-slate-900 tracking-tight">
+                                                    {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: walletBalance.currency }).format(walletBalance.available)}
+                                                </p>
+                                            </div>
+                                            
+                                            {walletBalance.pending > 0 && (
+                                                <div className="flex justify-between items-center text-sm px-2 py-1">
+                                                    <span className="text-slate-500 flex items-center gap-1">
+                                                        <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                                                        En cours
+                                                    </span>
+                                                    <span className="font-bold text-slate-700">
+                                                        {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: walletBalance.currency }).format(walletBalance.pending)}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {!walletBalance && (
+                                        <p className="text-xs text-slate-500">
+                                            Vous pouvez recevoir des paiements pour vos missions.
+                                        </p>
+                                    )}
+
                                     <a 
                                         href="https://dashboard.stripe.com/" 
                                         target="_blank" 

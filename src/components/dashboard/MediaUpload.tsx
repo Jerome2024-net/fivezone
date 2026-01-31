@@ -28,35 +28,29 @@ export function MediaUpload() {
                 continue;
             }
 
-             // SUPABASE UPLOAD STRATEGY
-             const { error: uploadError } = await supabase.storage
-                .from('uploads')
-                .upload(filename, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
-
-             if (uploadError) {
-                 console.error("Supabase Upload Error for " + file.name, uploadError);
-                 if (uploadError.message.includes("row-level security")) {
-                     alert("Erreur de permission (RLS) sur Supabase.");
-                 }
-                 throw uploadError;
+             // PROXY UPLOAD
+             const formData = new FormData();
+             formData.append('file', file);
+ 
+             const res = await fetch('/api/upload-supabase', {
+                 method: 'POST',
+                 body: formData
+             });
+ 
+             if (!res.ok) {
+                 const err = await res.json().catch(() => ({}));
+                 throw new Error(err.error || "Erreur upload " + file.name);
              }
-
-             const { data: { publicUrl } } = supabase.storage
-                .from('uploads')
-                .getPublicUrl(filename);
-                
-             newUrls.push(publicUrl);
+             
+             const data = await res.json();
+             newUrls.push(data.url);
         }
 
         setFiles(prev => [...prev, ...newUrls]);
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error uploading:', error);
-        alert("Une erreur est survenue lors de l'upload. Vérifiez la console pour plus de détails.");
+        alert(error.message || "Une erreur est survenue lors de l'upload.");
     } finally {
         setUploading(false);
     }

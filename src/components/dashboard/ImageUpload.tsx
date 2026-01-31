@@ -34,40 +34,22 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
                 return;
             }
 
-            // SUPABASE UPLOAD STRATEGY
-            const { data, error: uploadError } = await supabase.storage
-                .from('uploads')
-                .upload(filename, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
+            // PROXY UPLOAD VIA NEXT.JS API (Fixes CORS/Network issues)
+            const formData = new FormData();
+            formData.append('file', file);
 
-            if (uploadError) {
-                console.error("Supabase Upload Error FULL:", uploadError);
-                
-                let errorMessage = "Erreur inconnue lors de l'upload.";
-                
-                if (typeof uploadError === 'object' && uploadError !== null) {
-                    errorMessage = (uploadError as any).message || JSON.stringify(uploadError);
-                } else {
-                    errorMessage = String(uploadError);
-                }
+            const res = await fetch('/api/upload-supabase', {
+                method: 'POST',
+                body: formData
+            });
 
-                if (errorMessage.includes("row-level security")) {
-                    alert(`Erreur de permissions (RLS).\n\nDétails: ${errorMessage}\n\nSolution: Activez les politiques d'insertion publique dans Supabase.`);
-                } else {
-                    alert(`Erreur d'upload: ${errorMessage}`);
-                }
-                
-                throw uploadError;
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || "Échec de l'upload vers le serveur");
             }
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('uploads')
-                .getPublicUrl(filename);
-
-            onChange(publicUrl);
+            const data = await res.json();
+            onChange(data.url);
 
         } catch (error: any) {
             console.error("Upload failed:", error);

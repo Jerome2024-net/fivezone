@@ -38,28 +38,22 @@ export function MediaUpload({ onChange, maxFiles, className }: MediaUploadProps)
                  continue;
              }
              
-             // SUPABASE UPLOAD STRATEGY
-             const { error: uploadError } = await supabase.storage
-                .from('uploads')
-                .upload(filename, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
-
-             if (uploadError) {
-                 console.error("Supabase Upload Error:", uploadError);
-                 if (uploadError.message.includes("row-level security")) {
-                    alert("Erreur de droits (RLS).");
-                 }
-                 throw uploadError;
+             // PROXY UPLOAD
+             const formData = new FormData();
+             formData.append('file', file);
+ 
+             const res = await fetch('/api/upload-supabase', {
+                 method: 'POST',
+                 body: formData
+             });
+ 
+             if (!res.ok) {
+                 const err = await res.json().catch(() => ({}));
+                 throw new Error(err.error || "Erreur upload " + file.name);
              }
-
-             const { data: { publicUrl } } = supabase.storage
-                .from('uploads')
-                .getPublicUrl(filename);
              
-             newUrls.push(publicUrl);
+             const data = await res.json();
+             newUrls.push(data.url);
         }
 
         let updatedFiles = [];
@@ -72,9 +66,9 @@ export function MediaUpload({ onChange, maxFiles, className }: MediaUploadProps)
         setFiles(updatedFiles);
         onChange(updatedFiles);
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error uploading:', error);
-        alert("Une erreur est survenue lors de l'upload. Veuillez réessayer.");
+        alert(error.message || "Une erreur est survenue lors de l'upload. Veuillez réessayer.");
     } finally {
         setUploading(false);
     }

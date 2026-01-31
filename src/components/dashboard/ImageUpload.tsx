@@ -44,15 +44,23 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
                 });
 
             if (uploadError) {
-                console.error("Supabase Upload Error:", uploadError);
-                // Check for common errors
-                if (uploadError.message.includes("row-level security")) {
-                    throw new Error("Erreur de permissions (RLS). Vérifiez la configuration Supabase.");
-                } else if (uploadError.message.includes("duplicate key")) {
-                    throw new Error("Fichier déjà existant.");
+                console.error("Supabase Upload Error FULL:", uploadError);
+                
+                let errorMessage = "Erreur inconnue lors de l'upload.";
+                
+                if (typeof uploadError === 'object' && uploadError !== null) {
+                    errorMessage = (uploadError as any).message || JSON.stringify(uploadError);
                 } else {
-                    throw uploadError;
+                    errorMessage = String(uploadError);
                 }
+
+                if (errorMessage.includes("row-level security")) {
+                    alert(`Erreur de permissions (RLS).\n\nDétails: ${errorMessage}\n\nSolution: Activez les politiques d'insertion publique dans Supabase.`);
+                } else {
+                    alert(`Erreur d'upload: ${errorMessage}`);
+                }
+                
+                throw uploadError;
             }
 
             const { data: { publicUrl } } = supabase.storage

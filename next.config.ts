@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Forced restart trigger for env vars text-config
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: true, 

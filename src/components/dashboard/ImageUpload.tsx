@@ -34,22 +34,32 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio = "
                 return;
             }
 
-            // LOCAL UPLOAD STRATEGY
-            const formData = new FormData();
-            formData.append('file', file);
+            // SUPABASE UPLOAD STRATEGY
+            const { data, error: uploadError } = await supabase.storage
+                .from('uploads')
+                .upload(filename, file, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    contentType: file.type
+                });
 
-            const res = await fetch('/api/upload-local', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!res.ok) {
-                 const errorData = await res.json().catch(() => ({}));
-                 throw new Error(errorData.error || "Erreur lors de l'upload serveur");
+            if (uploadError) {
+                console.error("Supabase Upload Error:", uploadError);
+                // Check for common errors
+                if (uploadError.message.includes("row-level security")) {
+                    throw new Error("Erreur de permissions (RLS). Vérifiez la configuration Supabase.");
+                } else if (uploadError.message.includes("duplicate key")) {
+                    throw new Error("Fichier déjà existant.");
+                } else {
+                    throw uploadError;
+                }
             }
-            
-            const data = await res.json();
-            onChange(data.url);
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('uploads')
+                .getPublicUrl(filename);
+
+            onChange(publicUrl);
 
         } catch (error: any) {
             console.error("Upload failed:", error);

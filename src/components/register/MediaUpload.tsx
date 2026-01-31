@@ -38,22 +38,27 @@ export function MediaUpload({ onChange, maxFiles, className }: MediaUploadProps)
                  continue;
              }
              
-             // Local Upload
-             const formData = new FormData();
-             formData.append('file', file);
+             // SUPABASE UPLOAD STRATEGY
+             const { error: uploadError } = await supabase.storage
+                .from('uploads')
+                .upload(filename, file, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    contentType: file.type
+                });
 
-             const res = await fetch('/api/upload-local', {
-                 method: 'POST',
-                 body: formData
-             });
-
-             if (!res.ok) { 
-                 throw new Error("Upload failed"); 
+             if (uploadError) {
+                 console.error("Supabase Upload Error:", uploadError);
+                 if (uploadError.message.includes("row-level security")) {
+                    alert("Erreur de droits (RLS).");
+                 }
+                 throw uploadError;
              }
 
-             const data = await res.json();
-             const publicUrl = data.url;
-                
+             const { data: { publicUrl } } = supabase.storage
+                .from('uploads')
+                .getPublicUrl(filename);
+             
              newUrls.push(publicUrl);
         }
 

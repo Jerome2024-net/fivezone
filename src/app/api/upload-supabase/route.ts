@@ -1,6 +1,12 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import path from 'path'
+import * as dotenv from 'dotenv'
+
+// Force load env vars from file system to fallback if Next.js loader misses them
+dotenv.config({ path: path.join(process.cwd(), '.env') });
+dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 
 // Force dynamic to prevent static caching of env vars
 export const dynamic = 'force-dynamic'
@@ -18,9 +24,16 @@ export async function POST(request: Request) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+    // Debug Log (will show in terminal)
+    console.log("Supabase Config Check:", { 
+        hasUrl: !!supabaseUrl, 
+        hasKey: !!supabaseKey, 
+        urlStart: supabaseUrl ? supabaseUrl.substring(0, 10) : 'N/A' 
+    });
+
     if (!supabaseUrl || !supabaseKey) {
         console.error("Missing Supabase Credentials in API Route")
-        return NextResponse.json({ error: 'Configuration serveur manquante (Supabase)' }, { status: 500 })
+        return NextResponse.json({ error: 'Configuration serveur manquante (Supabase). Vérifiez les logs serveur.' }, { status: 500 })
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey)

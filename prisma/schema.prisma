@@ -61,6 +61,8 @@ model Business {
   languages                String[]           @default([])
   stripeAccountId          String?            @unique
   stripeOnboardingComplete Boolean            @default(false)
+  ctaAction                String?            @default("none")
+  ctaUrl                   String?
   bookings                 Booking[]
   category                 Category           @relation(fields: [categoryId], references: [id])
   owner                    User?              @relation(fields: [ownerId], references: [id])

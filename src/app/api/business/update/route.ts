@@ -71,6 +71,16 @@ export async function PUT(req: Request) {
         }
     }
 
+    // Sanitize category slug (remove spaces, special chars, lowercase)
+    const categorySlug = validatedData.category
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .substring(0, 50); // Limit length
+    const categoryName = validatedData.category;
+
+    console.log("Category processing:", { original: validatedData.category, slug: categorySlug });
+
     // Update Business
     await prisma.business.update({
         where: { id: businessId },
@@ -91,11 +101,10 @@ export async function PUT(req: Request) {
             available: validatedData.available,
             ctaAction: validatedData.ctaAction,
             ctaUrl: validatedData.ctaUrl,
-            // category: need to handle relation update if category changed
             category: { 
                 connectOrCreate: {
-                    where: { slug: validatedData.category },
-                    create: { name: validatedData.category, slug: validatedData.category }
+                    where: { slug: categorySlug },
+                    create: { name: categoryName, slug: categorySlug }
                 }
             }
         }

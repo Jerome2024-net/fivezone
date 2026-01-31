@@ -29,6 +29,8 @@ const registrationSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json()
+    console.log("Registration Request Body:", JSON.stringify(body, null, 2));
+    
     const { email, password, name, businessName, category, country, address, city, phone, website, siret, linkedinUrl, logoUrl, media, latitude, longitude } = registrationSchema.parse(body)
 
     // CHECK EXISTING USER IN PRISMA
@@ -45,6 +47,12 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 10);
     
+    // Sanitize category slug
+    const categorySlug = (category || 'other').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const categoryName = category || 'Autre';
+    
+    console.log("Category processing:", { categorySlug, categoryName });
+
     // Create User and Business in Transaction
     const newUser = await prisma.user.create({
         data: {
@@ -56,10 +64,10 @@ export async function POST(req: Request) {
                    name: businessName || `${name}'s Business`,
                    category: {
                        connectOrCreate: {
-                           where: { slug: category || 'other' }, // Make sure category exists or defaults
+                           where: { slug: categorySlug },
                            create: { 
-                               name: category || 'Autre',
-                               slug: category || 'other'
+                               name: categoryName,
+                               slug: categorySlug
                            }
                        }
                    },
@@ -90,6 +98,8 @@ export async function POST(req: Request) {
             businesses: true
         }
     });
+
+    console.log("User created successfully:", newUser.id);
 
     // Send Meta CAPI Event
     const headersList = await headers();
@@ -122,10 +132,25 @@ export async function POST(req: Request) {
         message: "Compte créé avec succès" 
     }, { status: 201 })
     
-  } catch(error) {
+  } catch(error: any) {
       console.error("Registration Error:", error);
+      console.error("Error details:", error?.message, error?.code, error?.meta);
+      
+      let userMessage = "Une erreur est survenue lors de l'inscription";
+      
+      // Prisma specific errors
+      if (error?.code === 'P2002') {
+          userMessage = "Un utilisateur avec cet email existe déjà.";
+      } else if (error?.code === 'P2003') {
+          userMessage = "Erreur de référence (catégorie invalide).";
+      } else if (error?.name === 'ZodError') {
+          userMessage = "Données du formulaire invalides. Vérifiez tous les champs.";
+      } else if (error?.message) {
+          userMessage = error.message;
+      }
+      
       return NextResponse.json(
-        { user: null, message: "Une erreur est survenue lors de l'inscription" },
+        { user: null, message: userMessage },
         { status: 500 }
       )
   }

@@ -126,19 +126,28 @@ export function DashboardClient({
     const onSubmit = async (values: z.infer<typeof EditSchema>) => {
         setIsLoading(true);
         try {
+            console.log("Submitting business update:", values);
+            
             const res = await fetch('/api/business/update', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(values)
             });
 
-            if (!res.ok) throw new Error("Erreur");
+            const data = await res.json().catch(() => ({ message: "Erreur de parsing" }));
+            console.log("Update response:", res.status, data);
+
+            if (!res.ok) {
+                alert(`Erreur: ${data.message || "Impossible de sauvegarder"}`);
+                throw new Error(data.message || "Erreur");
+            }
 
             setBusiness({ ...business, ...values });
             setIsEditing(false);
             router.refresh();
-        } catch (error) {
-            console.error(error);
+            alert("Profil mis à jour avec succès !");
+        } catch (error: any) {
+            console.error("Update error:", error);
         } finally {
             setIsLoading(false);
         }

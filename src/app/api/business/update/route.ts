@@ -28,12 +28,17 @@ const updateSchema = z.object({
 export async function PUT(req: Request) {
   try {
     const session = await getServerSession(authOptions)
+    console.log("Update session check:", session?.user?.email);
+    
     if (!session?.user?.email) {
-        return NextResponse.json({ message: "Non autorisé" }, { status: 401 })
+        return NextResponse.json({ message: "Non autorisé - veuillez vous reconnecter" }, { status: 401 })
     }
 
     const body = await req.json()
+    console.log("Update body received:", JSON.stringify(body, null, 2));
+    
     const validatedData = updateSchema.parse(body)
+    console.log("Validated data:", validatedData);
 
     // Find User & Business in Prisma
     const user = await prisma.user.findUnique({
@@ -42,10 +47,11 @@ export async function PUT(req: Request) {
     });
 
     if (!user || user.businesses.length === 0) {
-        return NextResponse.json({ message: "Entreprise introuvable" }, { status: 404 })
+        return NextResponse.json({ message: "Entreprise introuvable pour cet utilisateur" }, { status: 404 })
     }
 
     const businessId = user.businesses[0].id;
+    console.log("Updating business ID:", businessId);
 
     let skillsUpdate: string[] | undefined = undefined;
     if (validatedData.skills) {
@@ -96,11 +102,24 @@ export async function PUT(req: Request) {
     });
 
     return NextResponse.json({ message: "Mise à jour réussie" })
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ message: "Données invalides", errors: error.errors }, { status: 400 })
-    }
+  } catch (error: any) {
     console.error("Update Error:", error);
-    return NextResponse.json({ message: "Erreur serveur" }, { status: 500 })
+    console.error("Error name:", error?.name);
+    console.error("Error message:", error?.message);
+    console.error("Error code:", error?.code);
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ message: "Données invalides: " + error.errors.map(e => e.message).join(', '), errors: error.errors }, { status: 400 })
+    }
+    
+    // Prisma errors
+    if (error?.code === 'P2002') {
+        return NextResponse.json({ message: "Conflit de données (doublon)" }, { status: 409 })
+    }
+    if (error?.code === 'P2025') {
+        return NextResponse.json({ message: "Enregistrement non trouvé" }, { status: 404 })
+    }
+    
+    return NextResponse.json({ message: error?.message || "Erreur serveur lors de la mise à jour" }, { status: 500 })
   }
 }

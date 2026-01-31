@@ -69,11 +69,15 @@ export default function RegisterPage() {
   const selectedCategory = form.watch("category");
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    setError(null);
+    
     try {
         const payload = {
             ...values,
             category: values.category === "other" ? values.customCategory : values.category
         };
+
+        console.log("Submitting registration payload:", payload);
 
         const response = await fetch("/api/register", {
             method: "POST",
@@ -83,8 +87,11 @@ export default function RegisterPage() {
             body: JSON.stringify(payload),
         })
 
+        const data = await response.json().catch(() => ({ message: "Erreur serveur - réponse invalide" }));
+        
+        console.log("Registration response:", response.status, data);
+
         if (!response.ok) {
-            const data = await response.json().catch(() => ({ message: "Erreur serveur" }));
             throw new Error(data.message || "Une erreur est survenue")
         }
 
@@ -92,7 +99,8 @@ export default function RegisterPage() {
         router.push(`/pricing?registered=true&email=${encodeURIComponent(values.email)}`);
         
     } catch (err: any) {
-        setError(err.message)
+        console.error("Registration form error:", err);
+        setError(err.message || "Une erreur inattendue s'est produite")
     }
   }
 

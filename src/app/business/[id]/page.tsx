@@ -1,370 +1,336 @@
-import { Button } from "@/components/ui/button"
-import MapLoader from "@/components/ui/MapLoader"
-import { ImageGallery } from "@/components/ui/ImageGallery"
-import { Card, CardContent } from "@/components/ui/card"
-import { MapPin, Phone, Globe, Clock, Star, Share2, Heart, MessageSquare, Menu, Check, User, BadgeCheck, Tag, ExternalLink, Euro, Calendar, Zap, Globe2, Send } from "lucide-react"
-import Link from "next/link"
+
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
-import { MissionButton } from "@/components/missions/MissionButton"
-import { Suspense } from "react"
-import { ProfileActions } from "@/components/business/ProfileActions"
+import { headers } from "next/headers"
+import { Metadata } from "next"
+import ProfileActions from "@/components/business/ProfileActions"
+import { 
+  MapPin, 
+  CheckCircle2, 
+  Star, 
+  Clock, 
+  ShieldCheck, 
+  Languages, 
+  Briefcase
+} from "lucide-react"
 
-export const revalidate = 60 // Revalidate every minute
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 
-export default async function BusinessPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+// Generate Metadata for SEO
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params
   const business = await prisma.business.findUnique({
-      where: { id },
-      include: {
-          category: true,
-          owner: true,
-          services: true,
-          media: true
-      }
+    where: { id },
+    include: {
+        category: true
+    }
   });
-  
+
+  if (!business) return { title: 'Profil introuvable' }
+
+  return {
+    title: `${business.name} - ${business.category.name} | FiveZone`,
+    description: business.description?.substring(0, 160) || `Découvrez les services de ${business.name} sur FiveZone.`,
+  }
+}
+
+export default async function BusinessProfilePage({ params }: PageProps) {
+  const { id } = await params
+  const headersList = await headers();
+  // Simple view tracking (could be improved)
+  try {
+     await prisma.business.update({
+         where: { id },
+         data: { viewCount: { increment: 1 } }
+     });
+  } catch(e) {}
+
+  const business = await prisma.business.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      services: true,
+      reviews: {
+        include: { user: true },
+        orderBy: { createdAt: 'desc' },
+        take: 3
+      },
+      media: true,
+      owner: {
+          select: {
+              name: true,
+              email: true,
+              createdAt: true
+          }
+      }
+    }
+  });
+
   if (!business) {
-    return (
-        <div className="flex flex-col min-h-screen bg-slate-50 items-center justify-center">
-            <h1 className="text-3xl font-bold text-slate-900 mb-4">Profil non trouvé</h1>
-            <Link href="/">
-                <Button>Retour à l'accueil</Button>
-            </Link>
-        </div>
-    )
-  }
-  
-  const isPro = business.subscriptionTier === 'PRO' || business.subscriptionTier === 'ENTERPRISE';
-  const recommended = isPro;
-  
-  const businessName = business.name;
-  const categoryType = business.category.name;
-
-  const getCTA = (type: string) => {
-    const lower = type.toLowerCase();
-    if (lower.includes('restaurant')) return "Réserver une table";
-    if (lower.includes('hotel')) return "Réserver une chambre";
-    if (lower.includes('service')) return "Prendre Rendez-vous";
-    if (lower.includes('shop') || lower.includes('boutique')) return "Commander en ligne";
-    return "Contacter";
+    notFound();
   }
 
-  const primaryCTA = getCTA(categoryType);
-  const currencySymbol = business.currency === 'USD' ? '$' : business.currency === 'GBP' ? '£' : business.currency === 'XOF' ? 'FCFA' : '€';
-
-  // Collect all available images
-  const allImages = [
-    business.coverUrl,
-    business.imageUrl,
-    ...(business.media || []).map((m: any) => m.url)
-  ].filter(Boolean) as string[];
+  // Determine availability status display
+  const isAvailable = business.available;
+  const memberSince = new Date(business.createdAt).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      {/* Title Header Section */}
-      <div className="container mx-auto px-4 md:px-6 pt-6 pb-6">
-         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-             <div>
-                 <div className="flex items-center gap-3 flex-wrap">
-                    <h1 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight">{businessName}</h1>
-                    {business.verificationStatus === 'VERIFIED' ? (
-                        <span className="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-blue-200" title="Identité et Légalité Vérifiée">
-                             <BadgeCheck className="h-4 w-4" />
-                             Profil Vérifié
-                        </span>
-                    ) : (
-                        <span className="bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1" title="En attente de validation">
-                             En attente de validation
-                        </span>
-                    )}
-                    {recommended && (
-                      <span className="bg-[#34E0A1] text-slate-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                        <BadgeCheck className="h-4 w-4" /> Recommandé
-                      </span>
-                    )}
-                    {business.available && (
-                      <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                        <Zap className="h-4 w-4" /> Disponible
-                      </span>
-                    )}
-                 </div>
-                 <div className="flex items-center gap-2 mt-3 text-slate-600 font-medium">
-                     <span className="flex items-center gap-1">
-                        {[1,2,3,4,5].map(star => (
-                           <div key={star} className={`w-3.5 h-3.5 rounded-full ${star <= (business.rating || 0) ? 'bg-[#34E0A1]' : 'border border-[#34E0A1] bg-transparent'}`} />
-                        ))}
-                     </span>
-                     <span className="text-slate-900 underline font-bold cursor-pointer">{business.reviewCount} avis</span>
-                     <span>•</span>
-                     <span className="text-slate-900 underline cursor-pointer">{categoryType}, {business.city}</span>
-                     <span>•</span>
-                     <span className="text-slate-900 underline cursor-pointer">Disponible</span>
-                 </div>
-                 
-                 {business.hourlyRate && (
-                     <div className="mt-4 inline-block">
-                        <div className="bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-lg shadow-md flex items-center gap-2">
-                            <span>{business.hourlyRate} {currencySymbol}</span>
-                            <span className="text-slate-400 text-sm font-medium">/ jour (TJM)</span>
-                        </div>
-                     </div>
-                 )}
+    <div className="min-h-screen bg-white pb-20 md:pb-0">
+      
+      {/* -----------------------------------------------------
+          SECTION 1: HERO (MOBILE FIRST)
+         ----------------------------------------------------- */}
+      <div className="relative">
+          {/* Cover Image (Background) */}
+          <div className="h-48 md:h-64 w-full bg-slate-100 overflow-hidden relative">
+              {business.coverUrl ? (
+                  <img 
+                    src={business.coverUrl} 
+                    alt="Cover" 
+                    className="w-full h-full object-cover opacity-90"
+                  />
+              ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-slate-200 to-slate-100" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          </div>
 
-                   {business.linkedinUrl && (
-                       <div className="mt-4">
-                       <a href={business.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-slate-600 hover:text-[#0077b5] font-bold text-sm bg-slate-50 px-3 py-1 rounded-full border border-slate-200 transition-colors">
-                           <Globe className="h-3 w-3" />
-                           LinkedIn / Portfolio
-                       </a>
-                       </div>
-                   )}
-                 <div className="flex items-center gap-1 mt-4 text-slate-500 text-sm">
-                    <MapPin className="h-4 w-4" />
-                    <span>{business.address}, {business.city}</span>
-                 </div>
-                 {business.siret && <p className="text-xs text-slate-400 mt-1 font-mono">SIRET: {business.siret}</p>}
-             </div>
-             
-             <div className="flex gap-2">
-                 <ProfileActions businessId={id} businessName={businessName} />
-             </div>
-         </div>
-      </div>
-
-      {/* Photo Mosaic Gallery - Dynamic Layout */}
-      {allImages.length > 0 && (
-          <ImageGallery images={allImages} />
-      )}
-
-      {/* Main Content Layout */}
-      <div className="container mx-auto px-4 md:px-6 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* Left Column: Details, Menu, Reviews */}
-          <div className="lg:col-span-2 space-y-12">
-            
-            {/* Skills / Expertise */}
-            {(business.skills.length > 0 || business.yearsOfExperience) && (
-                <section className="space-y-4 pb-8 border-b border-slate-200">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-bold text-slate-900">Compétences & Expertises</h2>
-                        {business.yearsOfExperience && (
-                            <span className="bg-slate-900 text-white text-sm font-bold px-3 py-1 rounded-full">
-                                {business.yearsOfExperience} an{business.yearsOfExperience > 1 ? 's' : ''} d'expérience
-                            </span>
-                        )}
-                    </div>
-                    {business.skills.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                            {business.skills.map((skill: string) => (
-                                <div key={skill} className="bg-slate-100 text-slate-800 px-4 py-2 rounded-full font-medium text-sm border border-slate-200">
-                                    {skill}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-            )}
-
-            {/* Languages */}
-            {business.languages && business.languages.length > 0 && (
-                <section className="space-y-4 pb-8 border-b border-slate-200">
-                    <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                        <Globe2 className="h-6 w-6" /> Langues parlées
-                    </h2>
-                    <div className="flex flex-wrap gap-2">
-                        {business.languages.map((lang: string) => (
-                            <div key={lang} className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-medium text-sm border border-blue-200">
-                                {lang}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {/* About / Description */}
-            <section className="space-y-4 pb-8 border-b border-slate-200">
-               <h2 className="text-2xl font-bold text-slate-900">À propos</h2>
-               <p className="text-lg text-slate-700 leading-relaxed">
-                   {business?.description || "Aucune description détaillée disponible pour ce profil."}
-               </p>
-               <div className="flex flex-wrap gap-4 pt-4">
-                  {(business.features || []).map((feat: string) => (
-                      <div key={feat} className="flex items-center gap-2 text-slate-700 font-medium">
-                          <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center">
-                              <Check className="h-4 w-4 text-green-600" />
+          <div className="container mx-auto px-4 -mt-16 relative z-10">
+              <div className="flex flex-col md:flex-row items-center md:items-end gap-4">
+                  
+                  {/* Avatar / Logo */}
+                  <div className="h-32 w-32 rounded-2xl border-4 border-white shadow-xl bg-white overflow-hidden flex-shrink-0">
+                      {business.imageUrl ? (
+                          <img 
+                            src={business.imageUrl} 
+                            alt={business.name} 
+                            className="w-full h-full object-cover"
+                          />
+                      ) : (
+                          <div className="w-full h-full bg-slate-100 flex items-center justify-center text-4xl font-bold text-slate-300">
+                             {business.name.charAt(0)}
                           </div>
-                          {feat}
-                      </div>
-                  ))}
-               </div>
-            </section>
-            
-            {/* Services / Menu / Rooms Section - HIDDEN FOR MVP
-            {business.services.length > 0 && (
-                <section className="space-y-6 pb-8 border-b border-slate-200">
-                    <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                        {business.category.slug === 'hotel' ? 'Chambres & Hébergements' : 
-                         business.category.slug === 'restaurant' ? 'Menu & Table' : 'Nos Prestations'}
-                    </h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {business.services.map(service => (
-                            <div key={service.id} className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-                                <div>
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="font-bold text-lg text-slate-900">{service.name}</h3>
-                                        <div className="font-black text-slate-900 bg-slate-100 px-2 py-1 rounded text-sm">
-                                            {service.price}€
-                                        </div>
-                                    </div>
-                                    {service.description && <p className="text-slate-600 text-sm mb-4 leading-relaxed">{service.description}</p>}
-                                    <div className="flex gap-3 text-xs font-bold text-slate-500 mb-4">
-                                        {service.duration && <span className="flex items-center"><Clock className="w-3 h-3 mr-1"/> {service.duration} min</span>}
-                                        <span className="uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{service.type}</span>
-                                    </div>
-                                </div>
-                                
-                                <Button className="w-full bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold">
-                                    <Calendar className="w-4 h-4 mr-2" />
-                                    {service.type === 'RESERVATION' ? 'Réserver' : 
-                                     service.type === 'ROOM' ? 'Voir dispo' : 
-                                     service.type === 'TICKET' ? 'Acheter' : 'Choisir'}
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            )}
-            */}
+                      )}
+                  </div>
 
-            {/* Reviews Section */}
-            <section className="space-y-8">
-               <div className="flex items-center justify-between">
-                  {/* <h2 className="text-2xl font-bold text-slate-900">Avis ({business.reviewCount || 0})</h2> */}
-                  {/* <Button className="rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800">Écrire un avis</Button> */}
-               </div>
-               
-               {/* Reviews hidden as requested for MVP */}
-               {/* 
-               <div className="flex flex-col md:flex-row gap-8 bg-slate-50 p-6 rounded-xl">
-                   <div className="flex-1 space-y-2">
-                       <div className="text-center text-slate-500 py-4">
-                            Aucun avis pour le moment
+                  {/* Identity Block */}
+                  <div className="text-center md:text-left flex-1 pb-2">
+                       {/* Availability Badge */}
+                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-700 text-xs font-bold mb-2 shadow-sm">
+                           <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                           {isAvailable ? "Disponible pour missions" : "Indisponible"}
                        </div>
-                   </div>
-               </div>
-               */}
-            </section>
+
+                       <h1 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight mb-1">
+                           {business.name}
+                       </h1>
+                       
+                       <p className="text-slate-600 font-medium text-lg mb-2">
+                           {business.category.name}
+                       </p>
+
+                       <div className="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm">
+                           <MapPin className="h-4 w-4 text-slate-400" />
+                           <span>{business.city}, {business.country}</span>
+                           <span className="text-slate-300">•</span>
+                           <span>Membre depuis {memberSince}</span>
+                       </div>
+                  </div>
+
+                  {/* CTA Desktop (Hidden on Mobile, shown in sticky bottom bar on mobile) */}
+                  <div className="hidden md:block pb-4">
+                      <ProfileActions business={business} />
+                  </div>
+              </div>
           </div>
+      </div>
+
+      {/* -----------------------------------------------------
+          SECTION 2: PROOF & TRUST
+         ----------------------------------------------------- */}
+      <div className="container mx-auto px-4 mt-8 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center">
+                  <div className="flex justify-center mb-2">
+                      <div className="flex gap-0.5">
+                          {[1,2,3,4,5].map((s) => (
+                              <Star key={s} className={`h-4 w-4 ${s <= Math.round(business.rating) ? "text-yellow-400 fill-yellow-400" : "text-slate-300"}`} />
+                          ))}
+                      </div>
+                  </div>
+                  <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">
+                      {business.reviewCount > 0 ? `${business.reviewCount} Avis` : "Nouveau"}
+                  </p>
+              </div>
+
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center">
+                   <ShieldCheck className="h-5 w-5 text-green-600 mb-2" />
+                   <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Identité Vérifiée</p>
+              </div>
+
+              {business.hourlyRate && (
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center col-span-2 md:col-span-1">
+                      <p className="text-lg font-black text-slate-900">
+                        {business.hourlyRate.toLocaleString()} {business.currency}
+                      </p>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Par jour</p>
+                  </div>
+              )}
+          </div>
+      </div>
+
+      <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">
           
-          <div className="lg:col-span-1">
-             <div className="sticky top-24 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 space-y-4">
-                 
-                 {/* Mission Request Button - Primary CTA */}
-                 {business.ownerId && (
-                    <Suspense fallback={<Button disabled className="w-full h-14 rounded-full">Chargement...</Button>}>
-                        <MissionButton
-                            businessId={business.id}
-                            freelanceId={business.ownerId}
-                            freelanceName={business.name}
-                            hourlyRate={business.hourlyRate}
-                            currency={business.currency}
-                        />
-                    </Suspense>
-                 )}
+          {/* LEFT COLUMN (MAIN CONTENT) */}
+          <div className="md:col-span-2 space-y-10">
 
-                 {/* Contact Button */}
-                 <Button className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-full" asChild>
-                    <a href={`tel:${business.phone}`} className="flex items-center justify-center gap-2">
-                        <Phone className="h-5 w-5" />
-                        Appeler directement
-                    </a>
-                 </Button>
+              {/* -----------------------------------------------------
+                  SECTION 3: ABOUT
+                 ----------------------------------------------------- */}
+              <section>
+                  <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                      <Briefcase className="h-5 w-5 text-slate-400" />
+                      À propos
+                  </h2>
+                  <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-[15px]">
+                      {business.description ? (
+                          business.description.split('\n').map((para, i) => (
+                              <p key={i} className="mb-2">{para}</p>
+                          ))
+                      ) : (
+                          <p className="italic text-slate-400">Ce prestataire n&apos;a pas encore ajouté de description.</p>
+                      )}
+                  </div>
+              </section>
 
-                 {/* Map Integration (Mapbox) */}
-                 <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[250px] relative z-0">
-                    <MapLoader address={business.address} city={business.city} />
-                 </div>
+              {/* -----------------------------------------------------
+                  SECTION 4: SKILLS & SERVICES
+                 ----------------------------------------------------- */}
+              <section>
+                  <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                       <CheckCircle2 className="h-5 w-5 text-slate-400" />
+                       Compétences & Services
+                  </h2>
+                  
+                  {business.skills.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                          {business.skills.map((skill: string, i: number) => (
+                              <div key={i} className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium border border-slate-200">
+                                  {skill}
+                              </div>
+                          ))}
+                      </div>
+                  ) : (
+                      <div className="bg-slate-50 rounded-lg p-6 text-center text-slate-500 text-sm border border-dashed border-slate-200">
+                          Aucune compétence listée spécifiquement.
+                      </div>
+                  )}
 
-                 {/* Directions Button */}
-                 <Button className="w-full bg-white border border-slate-200 text-slate-900 font-bold hover:bg-slate-50" asChild>
-                    <a 
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address + ", " + business.city)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <MapPin className="mr-2 h-4 w-4" />
-                        Itinéraire
-                    </a>
-                 </Button>
-                 
-                 <div className="space-y-4 pt-4 border-t border-slate-100">
-                    <div className="flex items-start gap-4">
-                        <MapPin className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
-                        <div>
-                            <p className="font-bold text-slate-900">{business?.address}</p>
-                            <p className="text-slate-600">{business?.city}, {business?.country || business?.country || "France"}</p>
-                        </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-4">
-                        <Clock className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
-                        <div>
-                            <p className="font-bold text-slate-900">Horaires</p>
-                            <p className="text-slate-600 text-sm">Sur rendez-vous ou contactez le professionnel</p>
-                        </div>
-                    </div>
+                  {/* Structured Services List if any */}
+                  {business.services.length > 0 && (
+                      <div className="mt-6 space-y-3">
+                          {business.services.map((service) => (
+                              <div key={service.id} className="flex justify-between items-center p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+                                  <div>
+                                      <h4 className="font-bold text-slate-900">{service.name}</h4>
+                                      {service.description && <p className="text-sm text-slate-500 mt-0.5">{service.description}</p>}
+                                  </div>
+                                  <div className="text-right">
+                                      <span className="block font-bold text-slate-900">{service.price} {business.currency}</span>
+                                      {service.duration && <span className="text-xs text-slate-400">{service.duration} min</span>}
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  )}
+              </section>
 
-                    <div className="flex items-start gap-4">
-                         <Globe className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
-                          {business?.website ? (
-                             <a href={business.website} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 hover:underline cursor-pointer">
-                                {business.website.replace(/^https?:\/\//, '')}
-                             </a>
-                          ) : (
-                             <p className="text-slate-500 italic">Site web non renseigné</p>
-                          )}
-                    </div>
+              {/* -----------------------------------------------------
+                  SECTION 6: GALLERY (CLEAN GRID)
+                 ----------------------------------------------------- */}
+              {business.media.length > 0 && (
+                  <section>
+                      <h2 className="text-lg font-bold text-slate-900 mb-4">Portfolio</h2>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {business.media.slice(0, 6).map((item, i) => (
+                              <div key={i} className="aspect-square bg-slate-100 rounded-lg overflow-hidden border border-slate-200 relative group">
+                                  {item.type === 'IMAGE' ? (
+                                      <img 
+                                        src={item.url} 
+                                        alt={`Portfolio ${i}`} 
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                      />
+                                  ) : (
+                                       <video src={item.url} className="w-full h-full object-cover" controls playsInline muted />
+                                  )}
+                              </div>
+                          ))}
+                      </div>
+                  </section>
+              )}
 
-                    <div className="flex items-start gap-4">
-                         <Phone className="h-5 w-5 text-slate-900 mt-1 shrink-0" />
-                         <p className="font-bold text-slate-900 hover:underline cursor-pointer">{business?.phone || '+33 1 23 45 67 89'}</p>
-                    </div>
-                 </div>
-             </div>
           </div>
 
-        </div>
+          {/* RIGHT COLUMN (DETAILS & SIDEBAR) */}
+          <div className="space-y-6">
+
+              {/* -----------------------------------------------------
+                  SECTION 7: PRACTICAL INFO
+                 ----------------------------------------------------- */}
+              <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 space-y-5 sticky top-24">
+                  <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2">Informations</h3>
+                  
+                  <div className="space-y-4 text-sm">
+                      <div className="flex items-start gap-3">
+                          <MapPin className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
+                          <div>
+                              <p className="font-bold text-slate-700">Zone d&apos;intervention</p>
+                              <p className="text-slate-500">{business.city} et alentours</p>
+                          </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                          <Languages className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
+                          <div>
+                              <p className="font-bold text-slate-700">Langues parlées</p>
+                              <p className="text-slate-500">
+                                  {business.languages.length > 0 ? business.languages.join(", ") : "Français"}
+                              </p>
+                          </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                          <Clock className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
+                          <div>
+                              <p className="font-bold text-slate-700">Temps de réponse</p>
+                              <p className="text-slate-500">Moins de 24h (habituellement)</p>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100">
+                      <div className="bg-slate-50 p-3 rounded-lg text-xs text-slate-500 text-center">
+                          Membre vérifié par FiveZone
+                      </div>
+                  </div>
+              </div>
+
+          </div>
       </div>
 
-      {/* Mobile Sticky Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 pb-safe z-40 lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)] safe-area-bottom">
-           <div className="flex gap-3 px-1">
-               <Button className="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold h-12 w-14 rounded-2xl shrink-0" asChild>
-                   <a href={`tel:${business.phone || ''}`}><Phone className="h-5 w-5" /></a>
-               </Button>
-               <div className="flex-1">
-                    {business.ownerId && (
-                        <Suspense fallback={<div className="h-12 w-full bg-slate-100 rounded-2xl animate-pulse" />}>
-                            <MissionButton
-                                businessId={business.id}
-                                freelanceId={business.ownerId}
-                                freelanceName={business.name}
-                                hourlyRate={business.hourlyRate}
-                                currency={business.currency}
-                                className="h-12 rounded-2xl text-base shadow-none w-full"
-                            >
-                                <Send className="h-5 w-5 mr-2" />
-                                Demander un devis
-                            </MissionButton>
-                        </Suspense>
-                    )}
-               </div>
-           </div>
+      {/* MOBILE STICKY CTA BAR */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 md:hidden z-50">
+          <ProfileActions business={business} isMobile={true} />
       </div>
+
     </div>
   )
 }

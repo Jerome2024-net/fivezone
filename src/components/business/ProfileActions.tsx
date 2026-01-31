@@ -20,13 +20,12 @@ export default function ProfileActions({ business, isMobile = false }: ProfileAc
         // Track click if needed
         // Then route
         if (type === 'booking') {
-            // Check specific CTA logic
-            if (business.ctaAction === 'booking' && business.ctaUrl) {
-                window.open(business.ctaUrl, '_blank');
-            } else if (business.ctaAction === 'website' && business.ctaUrl) {
+            // Only external redirect if action is explicitly 'website'
+            if (business.ctaAction === 'website' && business.ctaUrl) {
                 window.open(business.ctaUrl, '_blank');
             } else {
-               // Default internal flow
+               // Force internal flow for 'Demander un devis' (even if ctaAction is 'booking')
+               // This ensures users stay on platform for quotes
                router.push(`/mission/request?businessId=${business.id}`);
             }
         } else if (type === 'contact') {

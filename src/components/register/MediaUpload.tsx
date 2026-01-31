@@ -33,13 +33,28 @@ export function MediaUpload({ onChange, maxFiles, className }: MediaUploadProps)
     
     try {
         for (const file of filesToUpload) {
+             if (file.size > 5 * 1024 * 1024) {
+                 alert(`Le fichier ${file.name} est trop volumineux (max 5MB).`);
+                 continue;
+             }
+             
              const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
              
              const { error: uploadError } = await supabase.storage
                 .from('uploads')
-                .upload(filename, file);
+                .upload(filename, file, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    contentType: file.type
+                });
 
-             if (uploadError) throw uploadError;
+             if (uploadError) {
+                 console.error("Supabase Upload Error:", uploadError);
+                 if (uploadError.message.includes("row-level security")) {
+                    alert("Erreur de droits : Vérifiez les politiques Supabase.");
+                 }
+                 throw uploadError;
+             }
 
              const { data: { publicUrl } } = supabase.storage
                 .from('uploads')

@@ -22,11 +22,27 @@ export function MediaUpload() {
         for (const file of filesToUpload) {
              const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
              
+             // Check size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`Le fichier ${file.name} est trop volumineux (max 5MB).`);
+                continue;
+            }
+
              const { error: uploadError } = await supabase.storage
                 .from('uploads')
-                .upload(filename, file);
+                .upload(filename, file, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    contentType: file.type
+                });
 
-             if (uploadError) throw uploadError;
+             if (uploadError) {
+                 console.error("Supabase Upload Error for " + file.name, uploadError);
+                 if (uploadError.message.includes("row-level security")) {
+                     alert("Erreur de permission. Avez-vous configuré les politiques Supabase ?");
+                 }
+                 throw uploadError;
+             }
 
              const { data: { publicUrl } } = supabase.storage
                 .from('uploads')

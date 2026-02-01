@@ -32,8 +32,11 @@ export default async function Home() {
          viewCount: b.viewCount,
          rating: b.rating,
          reviewCount: b.reviewCount,
-         imageUrl: b.coverUrl || b.imageUrl || undefined,
-         images: [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
+         isAIAgent: b.isAIAgent,
+         imageUrl: b.isAIAgent ? (b.imageUrl || b.coverUrl || undefined) : (b.coverUrl || b.imageUrl || undefined),
+         images: b.isAIAgent 
+           ? [b.imageUrl, b.coverUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[]
+           : [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
          hourlyRate: b.hourlyRate || undefined,
          currency: b.currency || 'EUR',
          city: b.city

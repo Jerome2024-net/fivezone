@@ -5,6 +5,7 @@ import { Metadata } from "next"
 import Image from "next/image"
 import { cache } from "react"
 import ProfileActions from "@/components/business/ProfileActions"
+import { AIChat } from "@/components/ai/AIChat"
 import { 
   MapPin, 
   CheckCircle2, 
@@ -436,6 +437,16 @@ export default async function BusinessProfilePage({ params }: PageProps) {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 md:hidden z-50">
           <ProfileActions business={business} isMobile={true} />
       </div>
+
+      {/* AI CHAT (Only for AI Agents) */}
+      {business.isAIAgent && business.aiAgentType && (
+        <AIChat 
+          agentId={business.id}
+          agentName={business.name}
+          agentType={business.aiAgentType}
+          pricePerTask={business.aiPricePerTask || undefined}
+        />
+      )}
 
     </div>
   )

@@ -45,6 +45,9 @@ model User {
   invoices                Invoice[]        @relation("InvoiceOwner")
   documents               Document[]       @relation("DocumentOwner")
   calendarEvents          CalendarEvent[]  @relation("EventOwner")
+  
+  // AI Conversations
+  aiConversations         AIConversation[] @relation("UserAIConversations")
 }
 
 model Business {
@@ -102,6 +105,9 @@ model Business {
   promotions               Promotion[]
   reviews                  Review[]
   services                 Service[]
+  
+  // AI Conversations
+  aiConversations          AIConversation[] @relation("AIAgentConversations")
 }
 
 model Service {
@@ -498,4 +504,28 @@ enum DocumentType {
   BRIEF
   DELIVERABLE
   OTHER
+}
+
+// ========== AI CONVERSATION MODELS ==========
+model AIConversation {
+  id         String      @id @default(cuid())
+  title      String?
+  agentId    String
+  userId     String?     // Optional for guest users
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  
+  agent      Business    @relation("AIAgentConversations", fields: [agentId], references: [id])
+  user       User?       @relation("UserAIConversations", fields: [userId], references: [id])
+  messages   AIMessage[]
+}
+
+model AIMessage {
+  id             String         @id @default(cuid())
+  role           String         // 'user' | 'assistant'
+  content        String
+  conversationId String
+  createdAt      DateTime       @default(now())
+  
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }

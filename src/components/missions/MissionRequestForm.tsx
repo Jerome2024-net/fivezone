@@ -133,47 +133,49 @@ export function MissionRequestForm({
     // ====== SUCCESS SCREEN ======
     if (success) {
         return (
-            <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center p-6">
-                <div className="max-w-md w-full text-center">
-                    {/* Success Animation */}
-                    <div className="relative mb-8">
-                        <div className="w-24 h-24 bg-[#34E0A1]/20 rounded-full flex items-center justify-center mx-auto animate-in zoom-in duration-300">
-                            <div className="w-16 h-16 bg-[#34E0A1] rounded-full flex items-center justify-center animate-in zoom-in duration-500 delay-150">
-                                <CheckCircle2 className="h-10 w-10 text-white" />
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4 transition-all animate-in fade-in duration-200">
+                 <div className="bg-white w-full h-full sm:h-auto sm:max-h-[min(85vh,700px)] sm:rounded-3xl sm:max-w-md overflow-hidden shadow-xl animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-200 flex flex-col justify-center relative">
+                    <div className="p-8 text-center flex flex-col items-center justify-center h-full sm:h-auto">
+                        {/* Success Animation */}
+                        <div className="relative mb-8">
+                            <div className="w-24 h-24 bg-[#34E0A1]/20 rounded-full flex items-center justify-center mx-auto animate-in zoom-in duration-300">
+                                <div className="w-16 h-16 bg-[#34E0A1] rounded-full flex items-center justify-center animate-in zoom-in duration-500 delay-150">
+                                    <CheckCircle2 className="h-10 w-10 text-white" />
+                                </div>
+                            </div>
+                            <div className="absolute inset-0 w-24 h-24 mx-auto bg-[#34E0A1]/30 rounded-full animate-ping opacity-20" />
+                        </div>
+
+                        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+                            Demande envoyée ! 🎉
+                        </h2>
+                        
+                        <p className="text-slate-600 text-lg mb-8 max-w-[280px] mx-auto">
+                            <strong>{freelanceName}</strong> va recevoir votre message et vous répondra très vite.
+                        </p>
+
+                        <div className="bg-slate-50 rounded-2xl p-5 mb-8 text-left space-y-3 w-full">
+                            <div className="flex items-center gap-3 text-slate-700">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                                    <MessageCircle className="h-4 w-4 text-blue-600" />
+                                </div>
+                                <span className="text-sm">Vous serez notifié par email dès qu&apos;il répond</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-700">
+                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                                    <Shield className="h-4 w-4 text-green-600" />
+                                </div>
+                                <span className="text-sm">Paiement sécurisé, vous ne payez qu&apos;après validation</span>
                             </div>
                         </div>
-                        <div className="absolute inset-0 w-24 h-24 mx-auto bg-[#34E0A1]/30 rounded-full animate-ping opacity-20" />
+
+                        <Button 
+                            onClick={onClose}
+                            className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-2xl"
+                        >
+                            Retour au profil
+                        </Button>
                     </div>
-
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
-                        Demande envoyée ! 🎉
-                    </h2>
-                    
-                    <p className="text-slate-600 text-lg mb-8">
-                        <strong>{freelanceName}</strong> va recevoir votre message et vous répondra très vite.
-                    </p>
-
-                    <div className="bg-slate-50 rounded-2xl p-5 mb-8 text-left space-y-3">
-                        <div className="flex items-center gap-3 text-slate-700">
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
-                                <MessageCircle className="h-4 w-4 text-blue-600" />
-                            </div>
-                            <span className="text-sm">Vous serez notifié par email dès qu&apos;il répond</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-slate-700">
-                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
-                                <Shield className="h-4 w-4 text-green-600" />
-                            </div>
-                            <span className="text-sm">Paiement sécurisé, vous ne payez qu&apos;après validation</span>
-                        </div>
-                    </div>
-
-                    <Button 
-                        onClick={onClose}
-                        className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-2xl"
-                    >
-                        Retour au profil
-                    </Button>
                 </div>
             </div>
         )
@@ -181,28 +183,30 @@ export function MissionRequestForm({
 
     // ====== MAIN FORM ======
     return (
-        <div className="fixed inset-0 bg-white z-[100] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4 transition-all animate-in fade-in duration-200">
+            <div className="bg-white w-full h-[100dvh] sm:h-auto sm:max-h-[min(85vh,800px)] sm:rounded-3xl sm:max-w-xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200 flex flex-col">
             
-            {/* ====== HEADER ====== */}
-            <header className="shrink-0 px-4 py-4 sm:px-6 flex items-center justify-between border-b border-slate-100 bg-white">
-                <button 
-                    onClick={onClose} 
-                    className="p-2 -ml-2 hover:bg-slate-100 rounded-full transition-colors"
-                    aria-label="Fermer"
-                >
-                    <X className="h-6 w-6 text-slate-500" />
-                </button>
-                
-                <div className="text-center flex-1">
-                    <p className="text-sm text-slate-500">Demande pour</p>
-                    <p className="font-bold text-slate-900 truncate">{freelanceName}</p>
-                </div>
+                {/* ====== HEADER ====== */}
+                <header className="shrink-0 px-4 py-4 sm:px-6 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+                    <button 
+                        onClick={onClose} 
+                        className="p-2 -ml-2 hover:bg-slate-100 rounded-full transition-colors"
+                        aria-label="Fermer"
+                    >
+                        <X className="h-6 w-6 text-slate-500" />
+                    </button>
+                    
+                    <div className="text-center flex-1">
+                        <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">Demande pour</p>
+                        <p className="font-bold text-slate-900 truncate text-sm">{freelanceName}</p>
+                    </div>
 
-                <div className="w-10" /> {/* Spacer for centering */}
-            </header>
+                    <div className="w-10" /> {/* Spacer for centering */}
+                </header>
+            
+                {/* ====== SCROLLABLE CONTENT ====== */}
+                <div className="flex-1 overflow-y-auto overscroll-contain">
 
-            {/* ====== SCROLLABLE CONTENT ====== */}
-            <div className="flex-1 overflow-y-auto overscroll-contain">
                 <form id="mission-form" onSubmit={handleSubmit} className="p-5 sm:p-8 max-w-lg mx-auto">
                     
                     {/* ====== HERO MESSAGE ====== */}
@@ -368,7 +372,7 @@ export function MissionRequestForm({
                         type="submit" 
                         form="mission-form"
                         disabled={isLoading || !formData.description.trim()}
-                        className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-2xl shadow-lg shadow-[#34E0A1]/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-2xl shadow-lg shadow-[#34E0A1]/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
                     >
                         {isLoading ? (
                             <>
@@ -376,27 +380,27 @@ export function MissionRequestForm({
                                 Envoi en cours...
                             </>
                         ) : (
-                            <>
+                            <span className="flex items-center gap-2">
                                 Envoyer ma demande
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </>
+                                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </span>
                         )}
                     </Button>
                     
                     {/* Micro-réassurance */}
-                    <div className="flex items-center justify-center gap-4 mt-4 text-xs text-slate-400">
-                        <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
+                    <div className="flex items-center justify-center gap-4 mt-4 text-xs text-slate-400 font-medium">
+                        <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 rounded-full">
+                            <Clock className="h-3.5 w-3.5 text-slate-500" />
                             Réponse sous 24h
                         </span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                            <Shield className="h-3 w-3" />
+                        <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 rounded-full">
+                            <Shield className="h-3.5 w-3.5 text-[#34E0A1]" />
                             100% gratuit
                         </span>
                     </div>
                 </div>
             </footer>
         </div>
+    </div>
     )
 }

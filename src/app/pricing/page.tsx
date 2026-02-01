@@ -36,7 +36,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
         "Mise en avant en tête des recherches",
         "Apparition sur la page d'accueil locale",
         "Badge 'Expert Recommandé' sur votre profil",
-        "Bouton WhatsApp / Appel en un clic",
+        "Messagerie intégrée avec les clients",
         "Photos & Vidéos illimitées",
       ]
     },

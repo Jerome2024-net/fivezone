@@ -386,7 +386,7 @@ export default async function SearchPage({
                       category={business.category.name}
                       rating={business.rating}
                       reviewCount={business.reviewCount}
-                      imageUrl={business.coverUrl || business.imageUrl || undefined}
+                      imageUrl={business.isAIAgent ? (business.imageUrl || business.coverUrl || undefined) : (business.coverUrl || business.imageUrl || undefined)}
                       city={business.city}
                       hourlyRate={business.hourlyRate || undefined}
                       currency={business.currency || 'EUR'}

@@ -1,8 +1,9 @@
 
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
-import { headers } from "next/headers"
 import { Metadata } from "next"
+import Image from "next/image"
+import { cache } from "react"
 import ProfileActions from "@/components/business/ProfileActions"
 import { 
   MapPin, 
@@ -14,22 +15,64 @@ import {
   Briefcase
 } from "lucide-react"
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
+// ISR: Revalidate every 60 seconds for fresh data
+export const revalidate = 60
 
 interface PageProps {
   params: Promise<{ id: string }>
 }
 
+// Cached fetch function - deduplicated across metadata and page
+const getBusiness = cache(async (id: string) => {
+  return prisma.business.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      services: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          duration: true,
+        }
+      },
+      reviews: {
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          user: { select: { name: true } }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 3
+      },
+      media: {
+        select: { id: true, url: true, type: true },
+        take: 6
+      },
+      owner: {
+        select: { name: true, createdAt: true }
+      }
+    }
+  })
+})
+
+// Track view in background (non-blocking)
+const trackView = async (id: string) => {
+  try {
+    await prisma.business.update({
+      where: { id },
+      data: { viewCount: { increment: 1 } }
+    })
+  } catch {}
+}
+
 // Generate Metadata for SEO
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params
-  const business = await prisma.business.findUnique({
-    where: { id },
-    include: {
-        category: true
-    }
-  });
+  const business = await getBusiness(id)
 
   if (!business) return { title: 'Profil introuvable' }
 
@@ -41,35 +84,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BusinessProfilePage({ params }: PageProps) {
   const { id } = await params
-  const headersList = await headers();
-  // Simple view tracking (could be improved)
-  try {
-     await prisma.business.update({
-         where: { id },
-         data: { viewCount: { increment: 1 } }
-     });
-  } catch(e) {}
+  
+  // Non-blocking view tracking
+  trackView(id)
 
-  const business = await prisma.business.findUnique({
-    where: { id },
-    include: {
-      category: true,
-      services: true,
-      reviews: {
-        include: { user: true },
-        orderBy: { createdAt: 'desc' },
-        take: 3
-      },
-      media: true,
-      owner: {
-          select: {
-              name: true,
-              email: true,
-              createdAt: true
-          }
-      }
-    }
-  });
+  const business = await getBusiness(id);
 
   if (!business) {
     notFound();
@@ -89,10 +108,13 @@ export default async function BusinessProfilePage({ params }: PageProps) {
           {/* Cover Image (Background) */}
           <div className="h-48 md:h-64 w-full bg-slate-100 overflow-hidden relative">
               {business.coverUrl ? (
-                  <img 
+                  <Image 
                     src={business.coverUrl} 
                     alt="Cover" 
-                    className="w-full h-full object-cover opacity-90"
+                    fill
+                    sizes="100vw"
+                    priority
+                    className="object-cover opacity-90"
                   />
               ) : (
                   <div className="w-full h-full bg-gradient-to-r from-slate-200 to-slate-100" />
@@ -104,12 +126,14 @@ export default async function BusinessProfilePage({ params }: PageProps) {
               <div className="flex flex-col md:flex-row items-center md:items-end gap-4">
                   
                   {/* Avatar / Logo */}
-                  <div className="h-32 w-32 rounded-2xl border-4 border-white shadow-xl bg-white overflow-hidden flex-shrink-0">
+                  <div className="h-32 w-32 rounded-2xl border-4 border-white shadow-xl bg-white overflow-hidden flex-shrink-0 relative">
                       {business.imageUrl ? (
-                          <img 
+                          <Image 
                             src={business.imageUrl} 
-                            alt={business.name} 
-                            className="w-full h-full object-cover"
+                            alt={business.name}
+                            fill
+                            sizes="128px"
+                            className="object-cover"
                           />
                       ) : (
                           <div className="w-full h-full bg-slate-100 flex items-center justify-center text-4xl font-bold text-slate-300">
@@ -261,12 +285,14 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                       <h2 className="text-lg font-bold text-slate-900 mb-4">Portfolio</h2>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                           {business.media.slice(0, 6).map((item, i) => (
-                              <div key={i} className="aspect-square bg-slate-100 rounded-lg overflow-hidden border border-slate-200 relative group">
+                              <div key={item.id} className="aspect-square bg-slate-100 rounded-lg overflow-hidden border border-slate-200 relative group">
                                   {item.type === 'IMAGE' ? (
-                                      <img 
+                                      <Image 
                                         src={item.url} 
-                                        alt={`Portfolio ${i}`} 
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        alt={`Portfolio ${i + 1}`}
+                                        fill
+                                        sizes="(max-width: 768px) 50vw, 33vw"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                                       />
                                   ) : (
                                        <video src={item.url} className="w-full h-full object-cover" controls playsInline muted />

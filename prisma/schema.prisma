@@ -23,6 +23,15 @@ model User {
   messages                Message[]        @relation("UserMessages")
   paymentsMade            Payment[]        @relation("Payer")
   reviews                 Review[]
+  
+  // Workspace relations
+  projects                Project[]        @relation("ProjectOwner")
+  clients                 Client[]         @relation("ClientOwner")
+  tasks                   Task[]           @relation("TaskOwner")
+  timeEntries             TimeEntry[]      @relation("TimeEntryOwner")
+  invoices                Invoice[]        @relation("InvoiceOwner")
+  documents               Document[]       @relation("DocumentOwner")
+  calendarEvents          CalendarEvent[]  @relation("EventOwner")
 }
 
 model Business {
@@ -274,4 +283,197 @@ enum DisputeStatus {
   UNDER_REVIEW
   RESOLVED_REFUND
   RESOLVED_PAYOUT
+}
+
+// ==========================================
+// WORKSPACE - Productivity Tools for Freelancers
+// ==========================================
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  color       String        @default("#6366f1")
+  budget      Float?
+  currency    String        @default("EUR")
+  deadline    DateTime?
+  ownerId     String
+  clientId    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  owner       User          @relation("ProjectOwner", fields: [ownerId], references: [id])
+  client      Client?       @relation(fields: [clientId], references: [id])
+  tasks       Task[]
+  timeEntries TimeEntry[]
+  invoices    Invoice[]
+  documents   Document[]
+}
+
+model Client {
+  id          String    @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  address     String?
+  city        String?
+  country     String    @default("France")
+  notes       String?
+  ownerId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  owner       User      @relation("ClientOwner", fields: [ownerId], references: [id])
+  projects    Project[]
+  invoices    Invoice[]
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+  projectId   String?
+  ownerId     String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  project     Project?   @relation(fields: [projectId], references: [id])
+  owner       User       @relation("TaskOwner", fields: [ownerId], references: [id])
+  timeEntries TimeEntry[]
+}
+
+model TimeEntry {
+  id          String    @id @default(cuid())
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?      // in minutes
+  billable    Boolean   @default(true)
+  hourlyRate  Float?
+  projectId   String?
+  taskId      String?
+  ownerId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  project     Project?  @relation(fields: [projectId], references: [id])
+  task        Task?     @relation(fields: [taskId], references: [id])
+  owner       User      @relation("TimeEntryOwner", fields: [ownerId], references: [id])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  number        String
+  status        InvoiceStatus @default(DRAFT)
+  issueDate     DateTime      @default(now())
+  dueDate       DateTime?
+  subtotal      Float
+  taxRate       Float         @default(20)
+  taxAmount     Float
+  total         Float
+  currency      String        @default("EUR")
+  notes         String?
+  terms         String?
+  paidAt        DateTime?
+  projectId     String?
+  clientId      String?
+  ownerId       String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  project       Project?      @relation(fields: [projectId], references: [id])
+  client        Client?       @relation(fields: [clientId], references: [id])
+  owner         User          @relation("InvoiceOwner", fields: [ownerId], references: [id])
+  items         InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  description String
+  quantity    Float
+  unitPrice   Float
+  total       Float
+  invoiceId   String
+  createdAt   DateTime @default(now())
+  
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  name        String
+  type        DocumentType @default(OTHER)
+  url         String
+  size        Int?         // in bytes
+  projectId   String?
+  ownerId     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  project     Project?     @relation(fields: [projectId], references: [id])
+  owner       User         @relation("DocumentOwner", fields: [ownerId], references: [id])
+}
+
+model CalendarEvent {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  allDay      Boolean   @default(false)
+  color       String    @default("#6366f1")
+  reminder    Int?      // minutes before
+  ownerId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  owner       User      @relation("EventOwner", fields: [ownerId], references: [id])
+}
+
+// Workspace Enums
+enum ProjectStatus {
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  VIEWED
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum DocumentType {
+  CONTRACT
+  QUOTE
+  INVOICE
+  RECEIPT
+  BRIEF
+  DELIVERABLE
+  OTHER
 }

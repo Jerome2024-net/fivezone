@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Store, Search, User, LogOut, PenLine, Heart, Bell, Menu, X, LayoutDashboard, Settings } from "lucide-react"
+import { Store, Search, User, LogOut, PenLine, Heart, Bell, Menu, X, LayoutDashboard, Settings, Briefcase } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSession, signOut } from "next-auth/react"
 import { useState, useRef, useEffect } from "react"
@@ -115,6 +115,13 @@ export function Header() {
                                 <div className="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 cursor-pointer text-slate-700 hover:text-slate-900">
                                     <LayoutDashboard className="h-4 w-4" />
                                     <span className="font-medium">Mon Espace Admin</span>
+                                </div>
+                            </Link>
+
+                            <Link href="/workspace" onClick={() => setIsUserMenuOpen(false)}>
+                                <div className="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 cursor-pointer text-slate-700 hover:text-slate-900">
+                                    <Briefcase className="h-4 w-4" />
+                                    <span className="font-medium">Espace de Travail</span>
                                 </div>
                             </Link>
 

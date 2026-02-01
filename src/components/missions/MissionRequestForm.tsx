@@ -4,9 +4,8 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { X, Send, Loader2, Calendar, Briefcase, Euro, Clock, User, Mail, Phone, Building } from "lucide-react"
+import { X, Loader2, CheckCircle2, ArrowRight, ChevronDown, Clock, Shield, MessageCircle } from "lucide-react"
 
 interface MissionRequestFormProps {
     businessId: string
@@ -30,18 +29,18 @@ export function MissionRequestForm({
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
+    const [showOptional, setShowOptional] = useState(false)
     const { data: session } = useSession()
     const router = useRouter()
     
     const [formData, setFormData] = useState({
-        // Project info
-        title: '',
         description: '',
+        urgency: 'ASAP' as 'ASAP' | 'THIS_WEEK' | 'LATER',
+        // Champs optionnels (cachés par défaut)
         budget: '',
         currency: 'EUR',
         budgetType: 'TO_DISCUSS' as 'FIXED' | 'HOURLY' | 'DAILY' | 'TO_DISCUSS',
         deadline: '',
-        duration: ''
     })
 
     // Load draft from storage if exists
@@ -50,7 +49,7 @@ export function MissionRequestForm({
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft)
-                setFormData(parsed)
+                setFormData(prev => ({ ...prev, ...parsed }))
             } catch (e) {
                 console.error("Failed to load draft")
             }
@@ -59,14 +58,25 @@ export function MissionRequestForm({
 
     const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€'
 
+    const urgencyOptions = [
+        { value: 'ASAP', label: 'Dès que possible', icon: '⚡' },
+        { value: 'THIS_WEEK', label: 'Cette semaine', icon: '📅' },
+        { value: 'LATER', label: 'Plus tard / Pas urgent', icon: '🕐' },
+    ]
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         
+        // Validation minimale
+        if (!formData.description.trim() || formData.description.length < 10) {
+            setError("Décrivez votre besoin en quelques mots (minimum 10 caractères)")
+            return
+        }
+
         // If not logged in, save draft and redirect
         if (!session) {
             sessionStorage.setItem(`mission_draft_${businessId}`, JSON.stringify(formData))
-            // Redirect to register/login with callback
-            const callbackUrl = encodeURIComponent(window.location.pathname)
+            const callbackUrl = encodeURIComponent(window.location.href)
             router.push(`/login?callbackUrl=${callbackUrl}`)
             return
         }
@@ -79,10 +89,15 @@ export function MissionRequestForm({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...formData,
+                    title: formData.description.substring(0, 60),
+                    description: formData.description,
+                    urgency: formData.urgency,
+                    budget: formData.budget ? parseFloat(formData.budget) : undefined,
+                    budgetType: formData.budgetType,
+                    currency: formData.currency,
+                    deadline: formData.deadline || undefined,
                     clientName: session?.user?.name || 'Client',
                     clientEmail: session?.user?.email,
-                    budget: formData.budget ? parseFloat(formData.budget) : undefined,
                     businessId,
                     freelanceId
                 })
@@ -95,11 +110,11 @@ export function MissionRequestForm({
                 data = JSON.parse(text);
             } catch (e) {
                 console.error("Non-JSON Response:", text);
-                throw new Error(`Erreur serveur (${res.status}): La réponse n'est pas au format valide. Réessayez.`);
+                throw new Error(`Erreur serveur. Réessayez dans quelques instants.`);
             }
 
             if (!res.ok) {
-                throw new Error(data.message || `Erreur (${res.status}): Une erreur est survenue`)
+                throw new Error(data.message || `Une erreur est survenue. Réessayez.`)
             }
 
             // Clear draft after success
@@ -107,11 +122,6 @@ export function MissionRequestForm({
             
             setSuccess(true)
             onSuccess?.()
-            
-            // Close after showing success message
-            setTimeout(() => {
-                onClose()
-            }, 3000)
 
         } catch (err: any) {
             setError(err.message)
@@ -120,216 +130,273 @@ export function MissionRequestForm({
         }
     }
 
+    // ====== SUCCESS SCREEN ======
     if (success) {
         return (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Send className="h-8 w-8 text-green-600" />
+            <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center p-6">
+                <div className="max-w-md w-full text-center">
+                    {/* Success Animation */}
+                    <div className="relative mb-8">
+                        <div className="w-24 h-24 bg-[#34E0A1]/20 rounded-full flex items-center justify-center mx-auto animate-in zoom-in duration-300">
+                            <div className="w-16 h-16 bg-[#34E0A1] rounded-full flex items-center justify-center animate-in zoom-in duration-500 delay-150">
+                                <CheckCircle2 className="h-10 w-10 text-white" />
+                            </div>
+                        </div>
+                        <div className="absolute inset-0 w-24 h-24 mx-auto bg-[#34E0A1]/30 rounded-full animate-ping opacity-20" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Demande envoyée !</h2>
-                    <p className="text-slate-600 mb-2">
-                        Votre demande a été envoyée à <strong>{freelanceName}</strong>.
+
+                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+                        Demande envoyée ! 🎉
+                    </h2>
+                    
+                    <p className="text-slate-600 text-lg mb-8">
+                        <strong>{freelanceName}</strong> va recevoir votre message et vous répondra très vite.
                     </p>
-                    <p className="text-sm text-slate-500">
-                        Vous recevrez une réponse par email à <strong>{formData.clientEmail}</strong>
-                    </p>
+
+                    <div className="bg-slate-50 rounded-2xl p-5 mb-8 text-left space-y-3">
+                        <div className="flex items-center gap-3 text-slate-700">
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                                <MessageCircle className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <span className="text-sm">Vous serez notifié par email dès qu&apos;il répond</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-slate-700">
+                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                                <Shield className="h-4 w-4 text-green-600" />
+                            </div>
+                            <span className="text-sm">Paiement sécurisé, vous ne payez qu&apos;après validation</span>
+                        </div>
+                    </div>
+
+                    <Button 
+                        onClick={onClose}
+                        className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-2xl"
+                    >
+                        Retour au profil
+                    </Button>
                 </div>
             </div>
         )
     }
 
+    // ====== MAIN FORM ======
     return (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center sm:p-4 transition-all animate-in fade-in duration-200">
-            <div className="bg-white w-full h-[95vh] sm:h-auto sm:max-h-[85vh] sm:rounded-3xl rounded-t-3xl sm:max-w-2xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200 border border-slate-100 flex flex-col">
-                {/* Header */}
-                <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-6 py-4 sm:px-8 sm:py-6 flex items-center justify-between z-10 shrink-0">
-                    <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Demande de devis</h2>
-                        <p className="text-sm sm:text-base text-slate-500 mt-1 line-clamp-1">Pour <span className="font-semibold text-slate-900">{freelanceName}</span></p>
-                    </div>
-                    <button onClick={onClose} className="p-2 -mr-2 hover:bg-slate-100 rounded-full transition-colors group">
-                        <X className="h-6 w-6 text-slate-400 group-hover:text-slate-900" />
-                    </button>
+        <div className="fixed inset-0 bg-white z-[100] flex flex-col overflow-hidden">
+            
+            {/* ====== HEADER ====== */}
+            <header className="shrink-0 px-4 py-4 sm:px-6 flex items-center justify-between border-b border-slate-100 bg-white">
+                <button 
+                    onClick={onClose} 
+                    className="p-2 -ml-2 hover:bg-slate-100 rounded-full transition-colors"
+                    aria-label="Fermer"
+                >
+                    <X className="h-6 w-6 text-slate-500" />
+                </button>
+                
+                <div className="text-center flex-1">
+                    <p className="text-sm text-slate-500">Demande pour</p>
+                    <p className="font-bold text-slate-900 truncate">{freelanceName}</p>
                 </div>
 
-                <div className="overflow-y-auto flex-1 overscroll-contain">
-                    <form id="mission-request-form" onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-8">
+                <div className="w-10" /> {/* Spacer for centering */}
+            </header>
+
+            {/* ====== SCROLLABLE CONTENT ====== */}
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+                <form id="mission-form" onSubmit={handleSubmit} className="p-5 sm:p-8 max-w-lg mx-auto">
+                    
+                    {/* ====== HERO MESSAGE ====== */}
+                    <div className="text-center mb-8">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+                            Décrivez votre besoin
+                        </h1>
+                        <p className="text-slate-500">
+                            Rapide, gratuit et sans engagement
+                        </p>
+                    </div>
+
+                    {/* ====== ERROR MESSAGE ====== */}
                     {error && (
-                        <div className="bg-red-50 text-red-700 px-6 py-4 rounded-xl text-base font-medium flex items-center gap-3 animate-in slide-in-from-top-2">
-                            <span className="bg-red-200 p-1 rounded-full"><X className="h-4 w-4" /></span>
+                        <div className="bg-red-50 text-red-700 px-4 py-3 rounded-xl text-sm font-medium mb-6 animate-in slide-in-from-top-2">
                             {error}
                         </div>
                     )}
 
-                    {/* Logged User Info */}
-                    {session ? (
-                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                                <span className="font-bold text-blue-700 text-lg">
-                                    {session?.user?.name?.[0]?.toUpperCase() || 'U'}
-                                </span>
-                            </div>
-                            <div>
-                                <p className="font-medium text-slate-900">Demande envoyée par</p>
-                                <p className="text-slate-600">{session?.user?.name} ({session?.user?.email})</p>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                                <User className="h-5 w-5 text-amber-700" />
-                            </div>
-                            <div>
-                                <p className="font-medium text-slate-900">Mode invité</p>
-                                <p className="text-slate-600 text-sm">Vous pourrez vous connecter ou créer un compte à l'étape suivante pour valider l'envoi.</p>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="h-px bg-slate-100" />
-
-                    {/* Freelance Rate Info */}
+                    {/* ====== TJM INFO (si disponible) ====== */}
                     {hourlyRate && (
-                        <div className="bg-[#34E0A1]/10 border border-[#34E0A1]/20 rounded-xl p-5 flex items-start gap-4">
-                            <div className="p-2 bg-[#34E0A1]/20 rounded-full shrink-0">
-                                <Euro className="h-5 w-5 text-[#2bc98e]" />
-                            </div>
+                        <div className="bg-[#34E0A1]/10 rounded-2xl p-4 mb-6 flex items-center gap-3">
+                            <div className="text-2xl">💰</div>
                             <div>
-                                <p className="font-bold text-slate-900 text-lg">TJM Indicatif : {hourlyRate} {currencySymbol} / jour</p>
-                                <p className="text-slate-600 mt-1 text-sm">Ce tarif est donné à titre indicatif et peut varier selon la complexité.</p>
+                                <p className="font-bold text-slate-900">{hourlyRate} {currencySymbol} / jour</p>
+                                <p className="text-xs text-slate-600">Tarif indicatif de base pour votre devis</p>
                             </div>
                         </div>
                     )}
 
-                    {/* Project Details Section */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 text-lg font-bold text-slate-900">
-                            <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center">
-                                <Briefcase className="h-5 w-5 text-purple-600" />
-                            </div>
-                            <h3>Votre projet</h3>
-                        </div>
+                    {/* ====== CHAMP 1: DESCRIPTION (OBLIGATOIRE) ====== */}
+                    <div className="mb-6">
+                        <label className="block text-base font-semibold text-slate-900 mb-3">
+                            En quelques mots, que recherchez-vous ? <span className="text-red-500">*</span>
+                        </label>
+                        <Textarea 
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            placeholder="Ex: J'ai besoin d'un logo moderne pour ma nouvelle entreprise..."
+                            rows={4}
+                            required
+                            className="resize-none text-base rounded-xl border-slate-200 focus:border-[#34E0A1] focus:ring-[#34E0A1] placeholder:text-slate-400"
+                        />
+                        <p className="text-xs text-slate-400 mt-2">
+                            Pas besoin d&apos;être exhaustif, le freelance vous recontactera pour les détails.
+                        </p>
+                    </div>
 
-                        {/* Title */}
-                        <div className="space-y-2">
-                            <label className="text-base font-semibold text-slate-700">Titre du projet <span className="text-red-500">*</span></label>
-                            <Input 
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                placeholder="Ex: Refonte complète de site e-commerce"
-                                required
-                                className="font-medium"
-                            />
+                    {/* ====== CHAMP 2: URGENCY (OBLIGATOIRE) ====== */}
+                    <div className="mb-6">
+                        <label className="block text-base font-semibold text-slate-900 mb-3">
+                            Quand souhaitez-vous être contacté ?
+                        </label>
+                        <div className="grid grid-cols-1 gap-3">
+                            {urgencyOptions.map((option) => (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, urgency: option.value as any })}
+                                    className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+                                        formData.urgency === option.value 
+                                            ? 'border-[#34E0A1] bg-[#34E0A1]/5' 
+                                            : 'border-slate-200 hover:border-slate-300 bg-white'
+                                    }`}
+                                >
+                                    <span className="text-xl">{option.icon}</span>
+                                    <span className={`font-medium ${formData.urgency === option.value ? 'text-slate-900' : 'text-slate-700'}`}>
+                                        {option.label}
+                                    </span>
+                                    {formData.urgency === option.value && (
+                                        <CheckCircle2 className="h-5 w-5 text-[#34E0A1] ml-auto" />
+                                    )}
+                                </button>
+                            ))}
                         </div>
+                    </div>
 
-                        {/* Description */}
-                        <div className="space-y-2">
-                            <label className="text-base font-semibold text-slate-700">Description détaillée <span className="text-red-500">*</span></label>
-                            <Textarea 
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                placeholder="Décrivez le contexte, vos objectifs, les livrables attendus et les contraintes techniques..."
-                                rows={6}
-                                required
-                                className="resize-none"
-                            />
-                            <div className="flex justify-between text-sm text-slate-500 px-1">
-                                <span>Minimum 20 caractères</span>
-                                <span>Plus c'est précis, mieux c'est</span>
-                            </div>
-                        </div>
+                    {/* ====== TOGGLE OPTIONNEL ====== */}
+                    <button
+                        type="button"
+                        onClick={() => setShowOptional(!showOptional)}
+                        className="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-slate-700 text-sm py-3 mb-4 transition-colors"
+                    >
+                        <span>{showOptional ? 'Masquer les options' : 'Ajouter des précisions (optionnel)'}</span>
+                        <ChevronDown className={`h-4 w-4 transition-transform ${showOptional ? 'rotate-180' : ''}`} />
+                    </button>
 
-                        {/* Budget */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-base font-semibold text-slate-700 flex items-center gap-2">
+                    {/* ====== CHAMPS OPTIONNELS ====== */}
+                    {showOptional && (
+                        <div className="space-y-5 p-5 bg-slate-50 rounded-2xl mb-6 animate-in slide-in-from-top-2">
+                            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">Informations complémentaires</p>
+                            
+                            {/* Budget */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">
                                     Budget estimé
                                 </label>
-                                <div className="flex flex-col sm:flex-row gap-3">
-                                    {/* Currency Select */}
-                                    <div className="relative w-full sm:w-24 shrink-0">
-                                         <select 
-                                            value={formData.currency}
-                                            onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                                            className="w-full h-12 pl-3 pr-8 border border-slate-200 rounded-lg text-base bg-slate-50 appearance-none focus:ring-2 focus:ring-[#34E0A1] focus:outline-none cursor-pointer font-bold text-slate-900"
-                                        >
-                                            <option value="EUR">€ EUR</option>
-                                            <option value="USD">$ USD</option>
-                                            <option value="GBP">£ GBP</option>
-                                            <option value="XOF">FCFA</option>
-                                        </select>
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
-                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                        </div>
-                                    </div>
-                                    
-                                    <Input 
+                                <div className="flex gap-2">
+                                    <select 
+                                        value={formData.currency}
+                                        onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                                        className="h-12 px-3 border border-slate-200 rounded-xl text-sm bg-white font-medium"
+                                    >
+                                        <option value="EUR">€</option>
+                                        <option value="USD">$</option>
+                                        <option value="XOF">FCFA</option>
+                                    </select>
+                                    <input 
                                         type="number"
                                         value={formData.budget}
                                         onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                                         placeholder="Montant"
-                                        className="flex-1 min-w-[120px]"
+                                        className="flex-1 h-12 px-4 border border-slate-200 rounded-xl text-sm"
                                     />
-                                    <div className="relative w-full sm:w-48 shrink-0">
-                                        <select 
-                                            value={formData.budgetType}
-                                            onChange={(e) => setFormData({ ...formData, budgetType: e.target.value as any })}
-                                            className="w-full h-12 pl-3 pr-8 border border-slate-200 rounded-lg text-base bg-white appearance-none focus:ring-2 focus:ring-[#34E0A1] focus:outline-none cursor-pointer font-medium text-slate-700"
-                                        >
-                                            <option value="FIXED">Forfait total</option>
-                                            <option value="DAILY">Par jour</option>
-                                            <option value="HOURLY">Par heure</option>
-                                            <option value="TO_DISCUSS">À définir</option>
-                                        </select>
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
-                                            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                        </div>
-                                    </div>
+                                    <select 
+                                        value={formData.budgetType}
+                                        onChange={(e) => setFormData({ ...formData, budgetType: e.target.value as any })}
+                                        className="h-12 px-3 border border-slate-200 rounded-xl text-sm bg-white"
+                                    >
+                                        <option value="TO_DISCUSS">À définir</option>
+                                        <option value="FIXED">Forfait</option>
+                                        <option value="DAILY">/jour</option>
+                                    </select>
                                 </div>
                             </div>
 
-                            {/* Duration */}
-                            <div className="space-y-2">
-                                <label className="text-base font-semibold text-slate-700 flex items-center gap-2">
-                                    Date limite
+                            {/* Date limite */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                    Date limite souhaitée
                                 </label>
-                                <Input 
+                                <input 
                                     type="date"
                                     value={formData.deadline}
                                     onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
                                     min={new Date().toISOString().split('T')[0]}
-                                    className="w-full"
+                                    className="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm"
                                 />
                             </div>
                         </div>
-                    </div>
+                    )}
 
-                    </form>
-                </div>
-
-                    {/* Footer Actions */}
-                    <div className="p-4 sm:p-6 border-t border-slate-100 bg-white shrink-0 safe-area-bottom">
-                        <div className="flex gap-4">
-                            <Button type="button" variant="outline" size="lg" onClick={onClose} className="hidden sm:flex flex-1 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold h-12">
-                                Annuler
-                            </Button>
-                            <Button 
-                                type="submit" 
-                                form="mission-request-form"
-                                size="lg"
-                                disabled={isLoading}
-                                className={`flex-[2] font-bold text-lg rounded-xl shadow-lg transition-all active:scale-[0.98] h-14 sm:h-12 w-full ${!session ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 shadow-[#34E0A1]/20 hover:shadow-xl hover:shadow-[#34E0A1]/30'}`}
-                            >
-                                {isLoading ? (
-                                    <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Envoi...</>
-                                ) : (
-                                    <>{!session ? 'Se connecter & Envoyer' : 'Envoyer la demande'} <Send className="ml-2 h-5 w-5" /></>
-                                )}
-                            </Button>
+                    {/* ====== REASSURANCE ====== */}
+                    {!session && (
+                        <div className="bg-blue-50 rounded-2xl p-4 mb-6 flex items-start gap-3">
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                <Shield className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">Demande rapide et sans engagement</p>
+                                <p className="text-slate-600 text-xs mt-1">Créez un compte à l&apos;étape suivante pour recevoir la réponse.</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                </form>
             </div>
+
+            {/* ====== FOOTER CTA ====== */}
+            <footer className="shrink-0 p-4 sm:p-6 border-t border-slate-100 bg-white safe-area-bottom">
+                <div className="max-w-lg mx-auto">
+                    <Button 
+                        type="submit" 
+                        form="mission-form"
+                        disabled={isLoading || !formData.description.trim()}
+                        className="w-full h-14 bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg rounded-2xl shadow-lg shadow-[#34E0A1]/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                Envoi en cours...
+                            </>
+                        ) : (
+                            <>
+                                Envoyer ma demande
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </>
+                        )}
+                    </Button>
+                    
+                    {/* Micro-réassurance */}
+                    <div className="flex items-center justify-center gap-4 mt-4 text-xs text-slate-400">
+                        <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            Réponse sous 24h
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                            <Shield className="h-3 w-3" />
+                            100% gratuit
+                        </span>
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 }

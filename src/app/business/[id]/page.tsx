@@ -12,7 +12,9 @@ import {
   Clock, 
   ShieldCheck, 
   Languages, 
-  Briefcase
+  Briefcase,
+  Bot,
+  Zap
 } from "lucide-react"
 
 // ISR: Revalidate every 60 seconds for fresh data
@@ -26,7 +28,30 @@ interface PageProps {
 const getBusiness = cache(async (id: string) => {
   return prisma.business.findUnique({
     where: { id },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      address: true,
+      city: true,
+      country: true,
+      phone: true,
+      website: true,
+      imageUrl: true,
+      coverUrl: true,
+      rating: true,
+      reviewCount: true,
+      createdAt: true,
+      hourlyRate: true,
+      skills: true,
+      currency: true,
+      available: true,
+      languages: true,
+      viewCount: true,
+      isAIAgent: true,
+      aiAgentType: true,
+      aiPricePerTask: true,
+      aiResponseTime: true,
       category: true,
       services: {
         select: {
@@ -53,7 +78,7 @@ const getBusiness = cache(async (id: string) => {
         take: 6
       },
       owner: {
-        select: { name: true, createdAt: true }
+        select: { id: true, name: true, createdAt: true }
       }
     }
   })
@@ -140,18 +165,35 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                              {business.name.charAt(0)}
                           </div>
                       )}
+                      {/* AI Badge on Avatar */}
+                      {business.isAIAgent && (
+                          <div className="absolute -bottom-1 -right-1 w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-white">
+                              <Bot className="h-5 w-5 text-white" />
+                          </div>
+                      )}
                   </div>
 
                   {/* Identity Block */}
                   <div className="text-center md:text-left flex-1 pb-2">
-                       {/* Availability Badge */}
-                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-700 text-xs font-bold mb-2 shadow-sm">
-                           <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                            </span>
-                           {isAvailable ? "Disponible pour missions" : "Indisponible"}
-                       </div>
+                       {/* AI Agent Badge or Availability Badge */}
+                       {business.isAIAgent ? (
+                           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold mb-2 shadow-lg">
+                               <Bot className="h-4 w-4" />
+                               <span>Agent IA</span>
+                               <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">
+                                   <Zap className="h-3 w-3 inline mr-0.5" />
+                                   Réponse {business.aiResponseTime ? `${business.aiResponseTime}s` : 'instantanée'}
+                               </span>
+                           </div>
+                       ) : (
+                           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-700 text-xs font-bold mb-2 shadow-sm">
+                               <span className="relative flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                               {isAvailable ? "Disponible pour missions" : "Indisponible"}
+                           </div>
+                       )}
 
                        <h1 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight mb-1">
                            {business.name}
@@ -178,37 +220,75 @@ export default async function BusinessProfilePage({ params }: PageProps) {
       </div>
 
       {/* -----------------------------------------------------
-          SECTION 2: PROOF & TRUST
+          SECTION 2: PROOF & TRUST (différent pour IA)
          ----------------------------------------------------- */}
       <div className="container mx-auto px-4 mt-8 mb-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center">
-                  <div className="flex justify-center mb-2">
-                      <div className="flex gap-0.5">
+          {business.isAIAgent ? (
+              /* ==== AI AGENT STATS ==== */
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 border border-violet-100 text-center">
+                      <Zap className="h-6 w-6 text-violet-600 mx-auto mb-2" />
+                      <p className="text-lg font-black text-slate-900">&lt; 1 min</p>
+                      <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Temps de réponse</p>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 border border-violet-100 text-center">
+                       <Clock className="h-6 w-6 text-violet-600 mx-auto mb-2" />
+                       <p className="text-lg font-black text-slate-900">24/7</p>
+                       <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Disponibilité</p>
+                  </div>
+
+                  {business.aiPricePerTask && (
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 text-center">
+                          <p className="text-2xl font-black text-slate-900">
+                            {business.aiPricePerTask}€
+                          </p>
+                          <p className="text-xs font-bold text-green-600 uppercase tracking-wide">Par tâche</p>
+                      </div>
+                  )}
+
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100 text-center">
+                      <div className="flex justify-center mb-2 gap-0.5">
                           {[1,2,3,4,5].map((s) => (
                               <Star key={s} className={`h-4 w-4 ${s <= Math.round(business.rating) ? "text-yellow-400 fill-yellow-400" : "text-slate-300"}`} />
                           ))}
                       </div>
-                  </div>
-                  <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">
-                      {business.reviewCount > 0 ? `${business.reviewCount} Avis` : "Nouveau"}
-                  </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center">
-                   <ShieldCheck className="h-5 w-5 text-green-600 mb-2" />
-                   <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Identité Vérifiée</p>
-              </div>
-
-              {business.hourlyRate && (
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center col-span-2 md:col-span-1">
-                      <p className="text-lg font-black text-slate-900">
-                        {business.hourlyRate.toLocaleString()} {business.currency}
+                      <p className="text-xs font-bold text-blue-600 uppercase tracking-wide">
+                          {business.reviewCount > 0 ? `${business.reviewCount} Avis` : "Nouveau"}
                       </p>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Par jour</p>
                   </div>
-              )}
-          </div>
+              </div>
+          ) : (
+              /* ==== HUMAN FREELANCER STATS ==== */
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center">
+                      <div className="flex justify-center mb-2">
+                          <div className="flex gap-0.5">
+                              {[1,2,3,4,5].map((s) => (
+                                  <Star key={s} className={`h-4 w-4 ${s <= Math.round(business.rating) ? "text-yellow-400 fill-yellow-400" : "text-slate-300"}`} />
+                              ))}
+                          </div>
+                      </div>
+                      <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">
+                          {business.reviewCount > 0 ? `${business.reviewCount} Avis` : "Nouveau"}
+                      </p>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center">
+                       <ShieldCheck className="h-5 w-5 text-green-600 mb-2" />
+                       <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Identité Vérifiée</p>
+                  </div>
+
+                  {business.hourlyRate && (
+                      <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center col-span-2 md:col-span-1">
+                          <p className="text-lg font-black text-slate-900">
+                            {business.hourlyRate.toLocaleString()} {business.currency}
+                          </p>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Par jour</p>
+                      </div>
+                  )}
+              </div>
+          )}
       </div>
 
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">

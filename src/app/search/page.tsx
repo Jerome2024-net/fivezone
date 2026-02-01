@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Filter, MapPin, Clock, Star, Globe2, Zap, ChevronDown } from "lucide-react"
+import { Filter, MapPin, Clock, Star, Globe2, Zap, ChevronDown, Bot } from "lucide-react"
 import Link from "next/link"
 import { SearchResultCard } from "@/components/search/SearchResultCard"
 import { prisma } from "@/lib/prisma"
@@ -28,7 +28,7 @@ export default async function SearchPage({
   let dbError = null;
 
   const resolvedParams = await searchParams;
-  const { q, category, loc, minRate, maxRate, exp, rating, lang, available } = resolvedParams;
+  const { q, category, loc, minRate, maxRate, exp, rating, lang, available, ai } = resolvedParams;
   
   const searchTerm = (typeof q === 'string' ? q : '').toLowerCase();
   const categoryTerm = (typeof category === 'string' ? category : '').toLowerCase();
@@ -39,6 +39,7 @@ export default async function SearchPage({
   const ratingNum = typeof rating === 'string' ? parseInt(rating) : undefined;
   const langTerm = (typeof lang === 'string' ? lang : '').toLowerCase();
   const availableOnly = available === 'true';
+  const aiOnly = ai === 'true';
   
   // Current params for building filter URLs
   const currentParams: Record<string, string> = {};
@@ -51,6 +52,7 @@ export default async function SearchPage({
   if (rating) currentParams.rating = String(rating);
   if (lang) currentParams.lang = String(lang);
   if (available) currentParams.available = String(available);
+  if (ai) currentParams.ai = String(ai);
   
   try {
   // Build filters array
@@ -122,6 +124,11 @@ export default async function SearchPage({
     filters.push({ available: true });
   }
   
+  // AI Agent filter
+  if (aiOnly) {
+    filters.push({ isAIAgent: true });
+  }
+  
   // Fetch From Prisma
   businesses = await prisma.business.findMany({
     where: filters.length > 0 ? { AND: filters } : {},
@@ -146,7 +153,7 @@ export default async function SearchPage({
   else if (locationTerm) title = `Experts à ${locationTerm}`;
 
   // Count active filters
-  const activeFilterCount = [categoryTerm, minRateNum !== undefined || maxRateNum !== undefined, expNum, ratingNum, langTerm, availableOnly].filter(Boolean).length;
+  const activeFilterCount = [categoryTerm, minRateNum !== undefined || maxRateNum !== undefined, expNum, ratingNum, langTerm, availableOnly, aiOnly].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -225,6 +232,19 @@ export default async function SearchPage({
                     className={`block w-full py-2 px-3 text-sm font-medium rounded-lg border transition-colors ${availableOnly ? 'bg-[#34E0A1] text-slate-900 border-[#34E0A1]' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}
                   >
                     ✓ Disponible immédiatement
+                  </Link>
+                </div>
+
+                {/* AI Agent Filter */}
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Bot className="h-4 w-4 text-violet-500" /> Type de freelance
+                  </label>
+                  <Link 
+                    href={buildFilterUrl(currentParams, 'ai', 'true')}
+                    className={`block w-full py-2 px-3 text-sm font-medium rounded-lg border transition-colors ${aiOnly ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white border-violet-500' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}
+                  >
+                    🤖 Agents IA uniquement
                   </Link>
                 </div>
 
@@ -372,6 +392,8 @@ export default async function SearchPage({
                       currency={business.currency || 'EUR'}
                       available={business.available}
                       yearsOfExperience={business.yearsOfExperience || undefined}
+                      isAIAgent={business.isAIAgent}
+                      aiPricePerTask={business.aiPricePerTask || undefined}
                    />
                  ))}
                </div>

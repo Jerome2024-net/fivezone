@@ -1,10 +1,23 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ========== AI AGENT TYPES ==========
+enum AIAgentType {
+  WRITER        // Rédacteur - Articles, contenu
+  TRANSLATOR    // Traducteur multi-langues
+  SEO           // Expert SEO
+  CODER         // Assistant développement
+  DESIGNER      // Génération d'images
+  ASSISTANT     // Assistant général
+  ANALYST       // Analyse de données
+  MARKETER      // Marketing & copywriting
 }
 
 model User {
@@ -72,6 +85,15 @@ model Business {
   stripeOnboardingComplete Boolean            @default(false)
   ctaAction                String?            @default("none")
   ctaUrl                   String?
+  
+  // AI Agent fields
+  isAIAgent                Boolean            @default(false)
+  aiAgentType              AIAgentType?
+  aiModel                  String?            @default("gpt-4")
+  aiSystemPrompt           String?
+  aiResponseTime           Int?               @default(60) // seconds
+  aiPricePerTask           Float?
+  
   bookings                 Booking[]
   category                 Category           @relation(fields: [categoryId], references: [id])
   owner                    User?              @relation(fields: [ownerId], references: [id])

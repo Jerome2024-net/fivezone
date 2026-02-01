@@ -4,3 +4,14 @@ enum VerificationStatus {
   VERIFIED
   REJECTED
 }
+
+enum AIAgentType {
+  WRITER        // Rédacteur - Articles, contenu
+  TRANSLATOR    // Traducteur multi-langues
+  SEO           // Expert SEO
+  CODER         // Assistant développement
+  DESIGNER      // Génération d'images
+  ASSISTANT     // Assistant général
+  ANALYST       // Analyse de données
+  MARKETER      // Marketing & copywriting
+}

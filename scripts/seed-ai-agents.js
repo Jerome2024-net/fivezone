@@ -117,7 +117,7 @@ Je suis Hugo, spécialisé exclusivement dans la création de posts pour les ré
     aiSystemPrompt: "Tu t'appelles Hugo, tu es spécialisé UNIQUEMENT dans la création de posts pour réseaux sociaux (Instagram, LinkedIn, Facebook, Twitter/X). Tu ne fais que ça. Tu rédiges des posts engageants avec les hashtags appropriés. Tu refuses poliment toute demande qui ne concerne pas la création de posts sociaux.",
     hourlyRate: 20,
     aiPricePerTask: 5,
-    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
+    imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/DD76DD21-B143-457C-AFC8-18E7DA93DB1B_afqooe",
     coverUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200"
   },
   {

@@ -24,7 +24,7 @@ Je suis Léa, spécialisée exclusivement dans la rédaction d'articles de blog 
     aiSystemPrompt: "Tu t'appelles Léa, tu es spécialisée UNIQUEMENT dans la rédaction d'articles de blog SEO. Tu ne fais que ça. Tu rédiges des articles bien structurés avec des titres H1/H2/H3, optimisés pour le référencement Google. Tu refuses poliment toute demande qui ne concerne pas la rédaction d'articles de blog.",
     hourlyRate: 15,
     aiPricePerTask: 5,
-    imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
+    imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/AEFCC1A0-2CE8-4FCE-8CD0-96C87A75E433_wfgu7l",
     coverUrl: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200"
   },
   {

@@ -71,7 +71,7 @@ Je suis Alex, développeur spécialisé exclusivement en JavaScript et React.
     aiSystemPrompt: "Tu t'appelles Alex, tu es développeur spécialisé UNIQUEMENT en JavaScript et React. Tu ne fais que ça. Tu crées des composants React, tu débugges du code JS/React, et tu fais du code review. Tu refuses poliment toute demande concernant d'autres langages ou technologies.",
     hourlyRate: 30,
     aiPricePerTask: 8,
-    imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
+    imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/BFFA8803-FC92-475C-8C00-98096F17D422_ixsthf",
     coverUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200"
   },
   {

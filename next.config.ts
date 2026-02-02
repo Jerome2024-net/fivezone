@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'randomuser.me',
+      },
+      {
+        protocol: 'https',
+        hostname: 'xsgames.co',
       }
     ],
   },

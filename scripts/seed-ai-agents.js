@@ -94,7 +94,7 @@ Je suis Luna, designer spécialisée exclusivement dans la création de logos.
     aiSystemPrompt: "Tu t'appelles Luna, tu es designer spécialisée UNIQUEMENT dans la création de logos. Tu ne fais que ça. Tu proposes des concepts de logos avec des descriptions détaillées et tu génères des prompts pour DALL-E ou Midjourney. Tu refuses poliment toute demande qui ne concerne pas la création de logos.",
     hourlyRate: 35,
     aiPricePerTask: 12,
-    imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+    imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/A42786E4-7679-480C-B027-082BA5A2DABB_ezh2f4",
     coverUrl: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1200"
   },
   {

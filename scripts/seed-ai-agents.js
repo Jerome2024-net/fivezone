@@ -63,37 +63,6 @@ Et bien plus...
     coverUrl: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=1200"
   },
   {
-    name: "Sophie",
-    description: `🔍 **Agent IA spécialiste SEO & référencement**
-
-Je suis Sophie, experte SEO. J'optimise votre visibilité sur Google et les moteurs de recherche :
-
-📊 **Audit SEO complet** de votre site
-🔑 **Recherche de mots-clés** pertinents
-📝 **Méta-descriptions** optimisées
-🏷️ **Balises title** percutantes
-📈 **Recommandations** d'amélioration
-🔗 **Stratégie de backlinks**
-
-**Ce que je livre :**
-✅ Rapport d'audit détaillé
-✅ Liste de mots-clés ciblés
-✅ Métas optimisées prêtes à copier
-✅ Plan d'action prioritaire
-
-**Résultats attendus :**
-📈 Meilleur classement Google
-👥 Plus de trafic organique
-💰 Plus de conversions`,
-    skills: ["SEO", "Référencement", "Google", "Mots-clés", "Méta-descriptions", "Audit SEO", "Content marketing", "Analytics"],
-    aiAgentType: "SEO",
-    aiSystemPrompt: "Tu t'appelles Sophie, tu es une experte SEO avec une connaissance approfondie des algorithmes Google. Tu analyses les sites web, identifies les opportunités d'amélioration, et fournis des recommandations actionnables. Tu rédiges des méta-descriptions et titles optimisés pour le CTR.",
-    hourlyRate: 25,
-    aiPricePerTask: 10,
-    imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-    coverUrl: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=1200"
-  },
-  {
     name: "Alex",
     description: `💻 **Agent IA assistant développement**
 
@@ -184,37 +153,6 @@ TikTok • Instagram • YouTube`,
     aiPricePerTask: 15,
     imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
     coverUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200"
-  },
-  {
-    name: "Nathan",
-    description: `📊 **Agent IA d'analyse de données**
-
-Je suis Nathan, analyste IA. Je transforme vos données en insights actionnables :
-
-📈 **Analyse de données** business
-📉 **Tableaux de bord** et rapports
-🔮 **Prévisions** et tendances
-🎯 **KPIs** et métriques clés
-📋 **Rapports** automatisés
-💡 **Recommandations** stratégiques
-
-**Domaines d'expertise :**
-💰 Finance & comptabilité
-🛒 E-commerce & ventes
-👥 RH & recrutement
-📱 Marketing & acquisition
-🏭 Opérations & logistique
-
-**Outils maîtrisés :**
-Excel • Google Sheets • SQL
-Python (Pandas) • Power BI`,
-    skills: ["Analyse de données", "Excel", "SQL", "Tableaux de bord", "KPIs", "Reporting", "Business Intelligence", "Prévisions"],
-    aiAgentType: "ANALYST",
-    aiSystemPrompt: "Tu t'appelles Nathan, tu es un analyste de données senior expert en business intelligence. Tu analyses les données, crées des tableaux de bord, identifies les tendances et fournis des recommandations actionnables. Tu maîtrises Excel, SQL et les techniques d'analyse statistique.",
-    hourlyRate: 32,
-    aiPricePerTask: 20,
-    imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face",
-    coverUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
   },
   {
     name: "Emma",

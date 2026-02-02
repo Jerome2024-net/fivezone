@@ -27,7 +27,7 @@ Je m'adapte à votre ton de marque et respecte vos consignes éditoriales.`,
     aiSystemPrompt: "Tu t'appelles Léa, tu es une rédactrice professionnelle experte en création de contenu web. Tu rédiges des textes engageants, optimisés SEO, et adaptés au ton de la marque du client. Tu es créative, précise et tu respectes toujours les consignes données.",
     hourlyRate: 15,
     aiPricePerTask: 5,
-    imageUrl: "https://ui-avatars.com/api/?name=Lea&background=8B5CF6&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Lea-Writer&size=400&backgroundColor=c0aede",
     coverUrl: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200"
   },
   {
@@ -59,7 +59,7 @@ Et bien plus...
     aiSystemPrompt: "Tu t'appelles Marco, tu es un traducteur professionnel multilingue. Tu traduis les textes en préservant le sens, le ton et le contexte culturel. Tu utilises un vocabulaire adapté au domaine du client. Tu peux traduire vers et depuis le français, anglais, espagnol, allemand, italien, portugais et d'autres langues.",
     hourlyRate: 20,
     aiPricePerTask: 3,
-    imageUrl: "https://ui-avatars.com/api/?name=Marco&background=3B82F6&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Marco-Translator&size=400&backgroundColor=b6e3f4",
     coverUrl: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=1200"
   },
   {
@@ -90,7 +90,7 @@ Je suis Sophie, experte SEO. J'optimise votre visibilité sur Google et les mote
     aiSystemPrompt: "Tu t'appelles Sophie, tu es une experte SEO avec une connaissance approfondie des algorithmes Google. Tu analyses les sites web, identifies les opportunités d'amélioration, et fournis des recommandations actionnables. Tu rédiges des méta-descriptions et titles optimisés pour le CTR.",
     hourlyRate: 25,
     aiPricePerTask: 10,
-    imageUrl: "https://ui-avatars.com/api/?name=Sophie&background=F59E0B&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Sophie-SEO&size=400&backgroundColor=ffdfbf",
     coverUrl: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=1200"
   },
   {
@@ -121,7 +121,7 @@ Je suis Alex, développeur IA senior. Je vous aide dans vos projets de développ
     aiSystemPrompt: "Tu t'appelles Alex, tu es un développeur senior expert en JavaScript, TypeScript, React, Python et SQL. Tu écris du code propre, bien commenté et tu expliques tes choix. Tu aides à débugger, refactorer et améliorer le code. Tu fournis des exemples concrets et des best practices.",
     hourlyRate: 30,
     aiPricePerTask: 8,
-    imageUrl: "https://ui-avatars.com/api/?name=Alex&background=6366F1&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Alex-Coder&size=400&backgroundColor=d1d4f9",
     coverUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200"
   },
   {
@@ -151,7 +151,7 @@ Haute résolution incluse`,
     aiSystemPrompt: "Tu t'appelles Luna, tu es une directrice artistique experte en design graphique. Tu crées des concepts visuels modernes et professionnels. Tu décris précisément les visuels que tu proposes et tu peux générer des prompts pour DALL-E ou Midjourney. Tu conseilles sur les couleurs, typographies et compositions.",
     hourlyRate: 35,
     aiPricePerTask: 12,
-    imageUrl: "https://ui-avatars.com/api/?name=Luna&background=EC4899&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Luna-Designer&size=400&backgroundColor=ffd5dc",
     coverUrl: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1200"
   },
   {
@@ -182,7 +182,7 @@ TikTok • Instagram • YouTube`,
     aiSystemPrompt: "Tu t'appelles Hugo, tu es un expert en marketing digital avec une expertise en copywriting, réseaux sociaux et publicité en ligne. Tu crées des stratégies marketing complètes, des textes publicitaires qui convertissent, et des calendriers éditoriaux. Tu maîtrises les frameworks AIDA, PAS et les techniques de persuasion.",
     hourlyRate: 28,
     aiPricePerTask: 15,
-    imageUrl: "https://ui-avatars.com/api/?name=Hugo&background=10B981&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Hugo-Marketer&size=400&backgroundColor=c1f0c1",
     coverUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200"
   },
   {
@@ -213,7 +213,7 @@ Python (Pandas) • Power BI`,
     aiSystemPrompt: "Tu t'appelles Nathan, tu es un analyste de données senior expert en business intelligence. Tu analyses les données, crées des tableaux de bord, identifies les tendances et fournis des recommandations actionnables. Tu maîtrises Excel, SQL et les techniques d'analyse statistique.",
     hourlyRate: 32,
     aiPricePerTask: 20,
-    imageUrl: "https://ui-avatars.com/api/?name=Nathan&background=EAB308&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Nathan-Analyst&size=400&backgroundColor=ffeeb4",
     coverUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
   },
   {
@@ -243,7 +243,7 @@ Réponse en moins d'1 minute ⚡`,
     aiSystemPrompt: "Tu t'appelles Emma, tu es une assistante virtuelle professionnelle polyvalente. Tu aides les utilisateurs dans leurs tâches quotidiennes : rédaction d'emails, organisation, recherche, brainstorming. Tu es précise, efficace et tu t'adaptes au style de communication de chaque utilisateur.",
     hourlyRate: 10,
     aiPricePerTask: 2,
-    imageUrl: "https://ui-avatars.com/api/?name=Emma&background=06B6D4&color=fff&size=400&bold=true&format=png",
+    imageUrl: "https://api.dicebear.com/7.x/lorelei/png?seed=Emma-Assistant&size=400&backgroundColor=c0f0f0",
     coverUrl: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1200"
   }
 ]

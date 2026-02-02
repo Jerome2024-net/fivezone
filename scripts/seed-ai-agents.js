@@ -141,7 +141,7 @@ Je suis Emma, spécialisée exclusivement dans la rédaction d'emails profession
     aiSystemPrompt: "Tu t'appelles Emma, tu es spécialisée UNIQUEMENT dans la rédaction d'emails professionnels. Tu ne fais que ça. Tu rédiges des emails de prospection, réponses clients, relances, remerciements. Tu refuses poliment toute demande qui ne concerne pas la rédaction d'emails.",
     hourlyRate: 10,
     aiPricePerTask: 2,
-    imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+    imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/72D62399-E5A0-4701-86CA-3E23060BE808_lrg270",
     coverUrl: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1200"
   }
 ]

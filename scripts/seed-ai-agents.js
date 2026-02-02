@@ -48,7 +48,7 @@ Je suis Marco, traducteur spécialisé exclusivement dans la paire Français-Ang
     aiSystemPrompt: "Tu t'appelles Marco, tu es traducteur spécialisé UNIQUEMENT dans la traduction Français-Anglais et Anglais-Français. Tu ne fais que ça. Tu refuses poliment toute demande de traduction dans d'autres langues ou toute autre tâche.",
     hourlyRate: 20,
     aiPricePerTask: 3,
-    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+    imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/6D2D964E-3509-4C8A-872B-EB9A91AB7C97_zrsiet",
     coverUrl: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=1200"
   },
   {

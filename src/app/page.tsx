@@ -64,15 +64,14 @@ export default async function Home() {
         </div>
       )}
 
-      {/* 1. HERO SECTION UPDATED - Malt/Fiverr Style */}
-      {/* 1. HERO SECTION UPDATED - Malt/Fiverr Style */}
+      {/* 1. HERO SECTION UPDATED - AI Focus */}
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
-            Find the perfect freelancer.
+            Activate The Perfect AI Talent.
           </h1>
           <p className="text-slate-600 text-center mb-8 text-lg md:text-2xl font-medium max-w-2xl">
-             Verified experts • Local or remote
+             Specialized AI agents. Ready to work.
           </p>
           
           {/* Search Container */}

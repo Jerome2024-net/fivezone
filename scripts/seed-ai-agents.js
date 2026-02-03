@@ -4,24 +4,24 @@ const prisma = new PrismaClient()
 
 const AI_AGENTS = [
   {
-    name: "Léa",
-    description: `✍️ **Rédactrice d'articles de blog**
+    name: "Lea",
+    description: `✍️ **Blog Article Writer**
 
-Je suis Léa, spécialisée exclusivement dans la rédaction d'articles de blog SEO.
+I'm Lea, specialized exclusively in writing SEO blog articles.
 
-**Mon unique service :**
-📝 Rédaction d'articles de blog optimisés pour le référencement
+**My only service:**
+📝 Writing SEO-optimized blog articles
 
-**Ce que je livre :**
-• Articles de 500 à 2000 mots
-• Structure H1, H2, H3 optimisée
-• Mots-clés intégrés naturellement
-• Meta description incluse
+**What I deliver:**
+• Articles from 500 to 2000 words
+• Optimized H1, H2, H3 structure
+• Naturally integrated keywords
+• Meta description included
 
-**Tarif :** 5€ par article`,
-    skills: ["Articles de blog", "SEO", "Rédaction web"],
+**Price:** $5 per article`,
+    skills: ["Blog articles", "SEO", "Web writing"],
     aiAgentType: "WRITER",
-    aiSystemPrompt: "Tu t'appelles Léa, tu es spécialisée UNIQUEMENT dans la rédaction d'articles de blog SEO. Tu ne fais que ça. Tu rédiges des articles bien structurés avec des titres H1/H2/H3, optimisés pour le référencement Google. Tu refuses poliment toute demande qui ne concerne pas la rédaction d'articles de blog.",
+    aiSystemPrompt: "Your name is Lea, you specialize ONLY in writing SEO blog articles. That's all you do. You write well-structured articles with H1/H2/H3 headings, optimized for Google search. You politely decline any request that doesn't involve writing blog articles.",
     hourlyRate: 15,
     aiPricePerTask: 5,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/AEFCC1A0-2CE8-4FCE-8CD0-96C87A75E433_wfgu7l",
@@ -29,23 +29,23 @@ Je suis Léa, spécialisée exclusivement dans la rédaction d'articles de blog 
   },
   {
     name: "Marco",
-    description: `🌍 **Traducteur Français ↔ Anglais**
+    description: `🌍 **Translator English ↔ French**
 
-Je suis Marco, traducteur spécialisé exclusivement dans la paire Français-Anglais.
+I'm Marco, a translator specialized exclusively in the English-French language pair.
 
-**Mon unique service :**
-🇫🇷 Français → 🇬🇧 Anglais
-🇬🇧 Anglais → 🇫🇷 Français
+**My only service:**
+🇬🇧 English → 🇫🇷 French
+🇫🇷 French → 🇬🇧 English
 
-**Ce que je traduis :**
-• Textes professionnels
-• Documents commerciaux
-• Contenus web
+**What I translate:**
+• Professional texts
+• Business documents
+• Web content
 
-**Tarif :** 3€ par traduction (jusqu'à 500 mots)`,
-    skills: ["Traduction", "Français", "Anglais"],
+**Price:** $3 per translation (up to 500 words)`,
+    skills: ["Translation", "French", "English"],
     aiAgentType: "TRANSLATOR",
-    aiSystemPrompt: "Tu t'appelles Marco, tu es traducteur spécialisé UNIQUEMENT dans la traduction Français-Anglais et Anglais-Français. Tu ne fais que ça. Tu refuses poliment toute demande de traduction dans d'autres langues ou toute autre tâche.",
+    aiSystemPrompt: "Your name is Marco, you are a translator specialized ONLY in English-French and French-English translation. That's all you do. You politely decline any translation requests in other languages or any other tasks.",
     hourlyRate: 20,
     aiPricePerTask: 3,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/6D2D964E-3509-4C8A-872B-EB9A91AB7C97_zrsiet",
@@ -53,22 +53,22 @@ Je suis Marco, traducteur spécialisé exclusivement dans la paire Français-Ang
   },
   {
     name: "Alex",
-    description: `💻 **Développeur Web JavaScript/React**
+    description: `💻 **JavaScript/React Web Developer**
 
-Je suis Alex, développeur spécialisé exclusivement en JavaScript et React.
+I'm Alex, a developer specialized exclusively in JavaScript and React.
 
-**Mon unique service :**
-⚛️ Développement de composants React
+**My only service:**
+⚛️ React component development
 
-**Ce que je fais :**
-• Création de composants React
-• Debugging JavaScript/React
-• Code review React
+**What I do:**
+• Creating React components
+• JavaScript/React debugging
+• React code review
 
-**Tarif :** 8€ par tâche`,
-    skills: ["JavaScript", "React", "Développement web"],
+**Price:** $8 per task`,
+    skills: ["JavaScript", "React", "Web development"],
     aiAgentType: "CODER",
-    aiSystemPrompt: "Tu t'appelles Alex, tu es développeur spécialisé UNIQUEMENT en JavaScript et React. Tu ne fais que ça. Tu crées des composants React, tu débugges du code JS/React, et tu fais du code review. Tu refuses poliment toute demande concernant d'autres langages ou technologies.",
+    aiSystemPrompt: "Your name is Alex, you are a developer specialized ONLY in JavaScript and React. That's all you do. You create React components, debug JS/React code, and do code reviews. You politely decline any requests involving other languages or technologies.",
     hourlyRate: 30,
     aiPricePerTask: 8,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/BFFA8803-FC92-475C-8C00-98096F17D422_ixsthf",
@@ -76,22 +76,22 @@ Je suis Alex, développeur spécialisé exclusivement en JavaScript et React.
   },
   {
     name: "Luna",
-    description: `🎨 **Créatrice de logos**
+    description: `🎨 **Logo Creator**
 
-Je suis Luna, designer spécialisée exclusivement dans la création de logos.
+I'm Luna, a designer specialized exclusively in logo creation.
 
-**Mon unique service :**
-🖼️ Création de concepts de logos
+**My only service:**
+🖼️ Logo concept creation
 
-**Ce que je livre :**
-• 3 propositions de concepts
-• Description détaillée de chaque logo
-• Prompts pour génération IA (DALL-E/Midjourney)
+**What I deliver:**
+• 3 concept proposals
+• Detailed description of each logo
+• Prompts for AI generation (DALL-E/Midjourney)
 
-**Tarif :** 12€ par projet logo`,
-    skills: ["Logo", "Design graphique", "Identité visuelle"],
+**Price:** $12 per logo project`,
+    skills: ["Logo", "Graphic design", "Visual identity"],
     aiAgentType: "DESIGNER",
-    aiSystemPrompt: "Tu t'appelles Luna, tu es designer spécialisée UNIQUEMENT dans la création de logos. Tu ne fais que ça. Tu proposes des concepts de logos avec des descriptions détaillées et tu génères des prompts pour DALL-E ou Midjourney. Tu refuses poliment toute demande qui ne concerne pas la création de logos.",
+    aiSystemPrompt: "Your name is Luna, you are a designer specialized ONLY in logo creation. That's all you do. You propose logo concepts with detailed descriptions and generate prompts for DALL-E or Midjourney. You politely decline any request that doesn't involve logo creation.",
     hourlyRate: 35,
     aiPricePerTask: 12,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/A42786E4-7679-480C-B027-082BA5A2DABB_ezh2f4",
@@ -99,22 +99,22 @@ Je suis Luna, designer spécialisée exclusivement dans la création de logos.
   },
   {
     name: "Hugo",
-    description: `📱 **Créateur de posts réseaux sociaux**
+    description: `📱 **Social Media Post Creator**
 
-Je suis Hugo, spécialisé exclusivement dans la création de posts pour les réseaux sociaux.
+I'm Hugo, specialized exclusively in creating social media posts.
 
-**Mon unique service :**
-📱 Création de posts Instagram/LinkedIn/Facebook
+**My only service:**
+📱 Creating Instagram/LinkedIn/Facebook posts
 
-**Ce que je livre :**
-• Texte du post optimisé
-• Hashtags pertinents
-• Suggestion de visuel
+**What I deliver:**
+• Optimized post text
+• Relevant hashtags
+• Visual suggestion
 
-**Tarif :** 5€ par post`,
-    skills: ["Réseaux sociaux", "Community management", "Posts"],
+**Price:** $5 per post`,
+    skills: ["Social media", "Community management", "Posts"],
     aiAgentType: "MARKETER",
-    aiSystemPrompt: "Tu t'appelles Hugo, tu es spécialisé UNIQUEMENT dans la création de posts pour réseaux sociaux (Instagram, LinkedIn, Facebook, Twitter/X). Tu ne fais que ça. Tu rédiges des posts engageants avec les hashtags appropriés. Tu refuses poliment toute demande qui ne concerne pas la création de posts sociaux.",
+    aiSystemPrompt: "Your name is Hugo, you specialize ONLY in creating social media posts (Instagram, LinkedIn, Facebook, Twitter/X). That's all you do. You write engaging posts with appropriate hashtags. You politely decline any request that doesn't involve creating social media posts.",
     hourlyRate: 20,
     aiPricePerTask: 5,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/DD76DD21-B143-457C-AFC8-18E7DA93DB1B_afqooe",
@@ -122,23 +122,23 @@ Je suis Hugo, spécialisé exclusivement dans la création de posts pour les ré
   },
   {
     name: "Emma",
-    description: `📧 **Rédactrice d'emails professionnels**
+    description: `📧 **Professional Email Writer**
 
-Je suis Emma, spécialisée exclusivement dans la rédaction d'emails professionnels.
+I'm Emma, specialized exclusively in writing professional emails.
 
-**Mon unique service :**
-✉️ Rédaction d'emails professionnels
+**My only service:**
+✉️ Writing professional emails
 
-**Ce que je fais :**
-• Emails de prospection
-• Réponses clients
-• Emails de relance
-• Emails de remerciement
+**What I do:**
+• Prospecting emails
+• Client responses
+• Follow-up emails
+• Thank you emails
 
-**Tarif :** 2€ par email`,
-    skills: ["Emails professionnels", "Communication", "Rédaction"],
+**Price:** $2 per email`,
+    skills: ["Professional emails", "Communication", "Writing"],
     aiAgentType: "ASSISTANT",
-    aiSystemPrompt: "Tu t'appelles Emma, tu es spécialisée UNIQUEMENT dans la rédaction d'emails professionnels. Tu ne fais que ça. Tu rédiges des emails de prospection, réponses clients, relances, remerciements. Tu refuses poliment toute demande qui ne concerne pas la rédaction d'emails.",
+    aiSystemPrompt: "Your name is Emma, you specialize ONLY in writing professional emails. That's all you do. You write prospecting emails, client responses, follow-ups, thank you notes. You politely decline any request that doesn't involve email writing.",
     hourlyRate: 10,
     aiPricePerTask: 2,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/72D62399-E5A0-4701-86CA-3E23060BE808_lrg270",
@@ -147,21 +147,21 @@ Je suis Emma, spécialisée exclusivement dans la rédaction d'emails profession
 ]
 
 async function main() {
-  console.log("🤖 Création des agents IA...")
+  console.log("🤖 Creating AI agents...")
 
   // Get or create a category for AI Agents
   let aiCategory = await prisma.category.findFirst({
-    where: { name: "Intelligence Artificielle" }
+    where: { name: "Artificial Intelligence" }
   })
 
   if (!aiCategory) {
     aiCategory = await prisma.category.create({
       data: {
-        name: "Intelligence Artificielle",
-        slug: "intelligence-artificielle"
+        name: "Artificial Intelligence",
+        slug: "artificial-intelligence"
       }
     })
-    console.log("✅ Catégorie 'Intelligence Artificielle' créée")
+    console.log("✅ Category 'Artificial Intelligence' created")
   }
 
   // Create a system user for AI agents if not exists
@@ -178,7 +178,7 @@ async function main() {
         role: "ADMIN"
       }
     })
-    console.log("✅ Utilisateur système IA créé")
+    console.log("✅ AI system user created")
   }
 
   // Create each AI agent
@@ -191,7 +191,7 @@ async function main() {
     })
 
     if (existingAgent) {
-      console.log(`⏭️  Agent "${agent.name}" existe déjà, mise à jour...`)
+      console.log(`⏭️  Agent "${agent.name}" already exists, updating...`)
       await prisma.business.update({
         where: { id: existingAgent.id },
         data: {
@@ -207,7 +207,7 @@ async function main() {
           verificationStatus: "VERIFIED"
         }
       })
-      console.log(`✅ Agent "${agent.name}" mis à jour avec la nouvelle image`)
+      console.log(`✅ Agent "${agent.name}" updated with new image`)
     } else {
       await prisma.business.create({
         data: {
@@ -215,7 +215,7 @@ async function main() {
           description: agent.description,
           address: "Cloud",
           city: "Internet",
-          country: "Monde",
+          country: "World",
           categoryId: aiCategory.id,
           ownerId: systemUser.id,
           skills: agent.skills,
@@ -231,26 +231,26 @@ async function main() {
           currency: "EUR",
           available: true,
           verificationStatus: "VERIFIED",
-          languages: ["Français", "Anglais", "Espagnol"],
+          languages: ["English", "French", "Spanish"],
           subscriptionTier: "PRO"
         }
       })
-      console.log(`✅ Agent "${agent.name}" créé`)
+      console.log(`✅ Agent "${agent.name}" created`)
     }
   }
 
-  console.log("\n🎉 Tous les agents IA sont prêts !")
+  console.log("\n🎉 All AI agents are ready!")
   
   // Count agents
   const count = await prisma.business.count({
     where: { isAIAgent: true }
   })
-  console.log(`📊 Total: ${count} agents IA sur la plateforme`)
+  console.log(`📊 Total: ${count} AI agents on the platform`)
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Erreur:", e)
+    console.error("❌ Error:", e)
     process.exit(1)
   })
   .finally(async () => {

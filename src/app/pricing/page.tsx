@@ -14,66 +14,66 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
   const benefits = [
     {
       icon: TrendingUp,
-      title: "Développez votre chiffre d'affaires",
-      description: "0% de commission. Chaque euro gagné reste dans votre poche."
+      title: "Grow your revenue",
+      description: "0% commission. Every dollar you earn stays in your pocket."
     },
     {
       icon: Users,
-      title: "Attirez les bons clients",
-      description: "Visibilité prioritaire + badge Expert pour être choisi en premier."
+      title: "Attract the right clients",
+      description: "Priority visibility + Expert badge to be chosen first."
     },
     {
       icon: Clock,
-      title: "Gagnez 5h par semaine",
-      description: "Espace de travail intégré : projets, factures, temps, clients."
+      title: "Save 5 hours per week",
+      description: "Built-in workspace: projects, invoices, time tracking, clients."
     },
   ];
 
   const featureCategories = [
     {
-      title: "🚀 Visibilité & Acquisition",
+      title: "🚀 Visibility & Acquisition",
       features: [
-        "Mise en avant en tête des recherches",
-        "Apparition sur la page d'accueil locale",
-        "Badge 'Expert Recommandé' sur votre profil",
-        "Messagerie intégrée avec les clients",
-        "Photos & Vidéos illimitées",
+        "Featured at the top of search results",
+        "Appear on local homepage",
+        "'Recommended Expert' badge on your profile",
+        "Built-in messaging with clients",
+        "Unlimited photos & videos",
       ]
     },
     {
-      title: "📊 Performance & Revenus",
+      title: "📊 Performance & Revenue",
       features: [
-        "0% de commission sur toutes vos missions",
-        "Statistiques détaillées (Vues, Clics, Conversions)",
-        "Rapport de performance mensuel automatique",
-        "Publication d'offres promotionnelles",
+        "0% commission on all your projects",
+        "Detailed statistics (Views, Clicks, Conversions)",
+        "Automatic monthly performance report",
+        "Post promotional offers",
       ]
     },
     {
-      title: "🛠️ Espace de Travail Pro",
+      title: "🛠️ Pro Workspace",
       features: [
-        "Gestion de projets avec suivi budgétaire",
-        "CRM clients intégré",
-        "Time tracking & chronomètre",
-        "Facturation avec génération PDF",
-        "Calendrier & gestion des deadlines",
-        "To-do list par projet",
+        "Project management with budget tracking",
+        "Built-in client CRM",
+        "Time tracking & timer",
+        "Invoicing with PDF generation",
+        "Calendar & deadline management",
+        "To-do list per project",
       ]
     },
     {
-      title: "⭐ Support Premium",
+      title: "⭐ Premium Support",
       features: [
-        "Support prioritaire par chat",
-        "Gestion avancée des avis clients",
-        "Accompagnement personnalisé",
+        "Priority chat support",
+        "Advanced review management",
+        "Personalized guidance",
       ]
     }
   ];
 
   const testimonials = [
-    { name: "Marie L.", role: "Graphiste", text: "J'ai doublé mon CA en 6 mois grâce à la visibilité Pro." },
-    { name: "Thomas R.", role: "Développeur", text: "L'espace de travail m'a fait gagner un temps fou sur la facturation." },
-    { name: "Sophie D.", role: "Consultante", text: "Les 0% de commission, c'est vraiment game changer." },
+    { name: "Marie L.", role: "Graphic Designer", text: "I doubled my revenue in 6 months thanks to Pro visibility." },
+    { name: "Thomas R.", role: "Developer", text: "The workspace saved me so much time on invoicing." },
+    { name: "Sophie D.", role: "Consultant", text: "0% commission is really a game changer." },
   ];
 
   return (
@@ -88,27 +88,27 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   <CheckCircle2 className="h-6 w-6 text-green-400" />
                 </div>
               </div>
-              <h2 className="text-xl font-bold text-green-100 mb-1">Inscription réussie !</h2>
+              <h2 className="text-xl font-bold text-green-100 mb-1">Registration successful!</h2>
               <p className="text-green-200/80 text-sm">
-                Activez le plan Pro pour rendre votre profil visible et commencer à recevoir des missions.
+                Activate the Pro plan to make your profile visible and start receiving projects.
               </p>
             </div>
           )}
 
           <div className="inline-flex items-center gap-2 bg-[#34E0A1]/20 text-[#34E0A1] px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Zap className="w-4 h-4" />
-            Offre de lancement - Prix bloqué à vie
+            Launch offer - Price locked for life
           </div>
           
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
-            Développez votre activité.
+            Grow your business.
             <br />
-            <span className="text-[#34E0A1]">Sans limite.</span>
+            <span className="text-[#34E0A1]">Without limits.</span>
           </h1>
           
           <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-10">
-            Fivezone Pro combine visibilité maximale, zéro commission et outils de productivité 
-            pour transformer votre activité freelance.
+            Fivezone Pro combines maximum visibility, zero commission and productivity tools 
+            to transform your freelance business.
           </p>
 
           {/* Price Card */}
@@ -122,24 +122,24 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               <span className="text-6xl font-black">99€</span>
               <span className="text-slate-400 text-lg">/an</span>
             </div>
-            <p className="text-slate-400 text-sm mb-6">Soit moins de 8,25€/mois • Satisfait ou remboursé 30 jours</p>
+            <p className="text-slate-400 text-sm mb-6">Less than $8.25/month • 30-day money-back guarantee</p>
             
             <Button 
               asChild
               className="w-full h-14 rounded-full bg-[#34E0A1] hover:bg-[#2bc88d] text-slate-900 font-bold text-lg"
             >
               <Link href={`https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`} target="_blank">
-                Activer Fivezone Pro
+                Activate Fivezone Pro
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
             
             <div className="flex items-center justify-center gap-4 mt-4 text-xs text-slate-400">
               <span className="flex items-center gap-1">
-                <Shield className="w-3 h-3" /> Paiement sécurisé
+                <Shield className="w-3 h-3" /> Secure payment
               </span>
               <span>•</span>
-              <span>Annulation à tout moment</span>
+              <span>Cancel anytime</span>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       <div className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-5xl">
           <h2 className="text-3xl font-black text-center text-slate-900 mb-12">
-            Ce que Pro change pour vous
+            What Pro changes for you
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {benefits.map((benefit, i) => (
@@ -169,10 +169,10 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       <div className="py-20 px-4 bg-slate-50">
         <div className="container mx-auto max-w-5xl">
           <h2 className="text-3xl font-black text-center text-slate-900 mb-4">
-            Tout ce qui est inclus
+            Everything included
           </h2>
           <p className="text-center text-slate-600 mb-12 max-w-2xl mx-auto">
-            Une plateforme complète pour gérer et développer votre activité freelance
+            A complete platform to manage and grow your freelance business
           </p>
           
           <div className="grid md:grid-cols-2 gap-6">
@@ -197,7 +197,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       <div className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-5xl">
           <h2 className="text-3xl font-black text-center text-slate-900 mb-12">
-            Ils ont choisi Pro
+            They chose Pro
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
@@ -222,22 +222,22 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       <div className="py-20 px-4 bg-gradient-to-r from-slate-900 to-slate-800">
         <div className="container mx-auto max-w-3xl text-center">
           <h2 className="text-3xl md:text-4xl font-black text-white mb-6">
-            Prêt à passer au niveau supérieur ?
+            Ready to level up?
           </h2>
           <p className="text-slate-300 mb-8 text-lg">
-            Rejoignez les freelances qui ont choisi de développer leur activité avec les bons outils.
+            Join freelancers who chose to grow their business with the right tools.
           </p>
           <Button 
             asChild
             className="h-14 px-10 rounded-full bg-[#34E0A1] hover:bg-[#2bc88d] text-slate-900 font-bold text-lg"
           >
             <Link href={`https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`} target="_blank">
-              Activer Fivezone Pro - 99€/an
+              Activate Fivezone Pro - $99/year
               <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
           </Button>
           <p className="text-slate-400 text-sm mt-4">
-            Satisfait ou remboursé pendant 30 jours
+            30-day money-back guarantee
           </p>
         </div>
       </div>
@@ -246,29 +246,29 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
       <div className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-3xl">
           <h2 className="text-3xl font-black text-center text-slate-900 mb-12">
-            Questions fréquentes
+            Frequently Asked Questions
           </h2>
           <div className="space-y-4">
             {[
               {
-                q: "Puis-je tester avant de m'engager ?",
-                a: "Oui ! Vous avez 30 jours pour tester. Si vous n'êtes pas satisfait, nous vous remboursons intégralement, sans question."
+                q: "Can I try before committing?",
+                a: "Yes! You have 30 days to test. If you're not satisfied, we'll refund you fully, no questions asked."
               },
               {
-                q: "Y a-t-il vraiment 0% de commission ?",
-                a: "Absolument. Contrairement aux autres plateformes qui prennent 10-20% sur chaque mission, vous gardez 100% de ce que vous facturez."
+                q: "Is there really 0% commission?",
+                a: "Absolutely. Unlike other platforms that take 10-20% on each project, you keep 100% of what you bill."
               },
               {
-                q: "L'espace de travail est-il vraiment inclus ?",
-                a: "Oui, projets, clients, facturation, time tracking et calendrier sont inclus dans l'abonnement Pro. Pas de frais supplémentaires."
+                q: "Is the workspace really included?",
+                a: "Yes, projects, clients, invoicing, time tracking and calendar are all included in the Pro subscription. No extra fees."
               },
               {
-                q: "Puis-je annuler à tout moment ?",
-                a: "Oui, vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord. Votre accès reste actif jusqu'à la fin de la période payée."
+                q: "Can I cancel anytime?",
+                a: "Yes, you can cancel your subscription anytime from your dashboard. Your access remains active until the end of the paid period."
               },
               {
-                q: "Comment fonctionne la visibilité prioritaire ?",
-                a: "Votre profil apparaît en premier dans les résultats de recherche de votre catégorie et de votre zone géographique, avec un badge 'Expert Recommandé'."
+                q: "How does priority visibility work?",
+                a: "Your profile appears first in search results for your category and geographic area, with a 'Recommended Expert' badge."
               }
             ].map((faq, i) => (
               <div key={i} className="bg-slate-50 rounded-xl p-6 border border-slate-100">

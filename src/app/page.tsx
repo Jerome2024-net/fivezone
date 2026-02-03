@@ -53,13 +53,13 @@ export default async function Home() {
       {/* ERROR DEBUGGING - Only visible if there is an issue */}
       {errorLog && (
         <div className="bg-red-900 text-white p-6 text-center">
-            <h2 className="text-xl font-bold mb-2">⚠️ Diagnostic Système</h2>
+            <h2 className="text-xl font-bold mb-2">⚠️ System Diagnostic</h2>
             <p className="font-mono text-sm max-w-2xl mx-auto break-all bg-black p-4 rounded mb-4">
                 {errorLog}
             </p>
             <p className="text-sm">
-                Si vous voyez ce message, c'est que la connexion à la base de données a échoué.
-                Vérifiez que la variable <strong>DATABASE_URL</strong> est bien définie dans Railway.
+                If you see this message, the database connection failed.
+                Check that <strong>DATABASE_URL</strong> is properly set.
             </p>
         </div>
       )}
@@ -69,27 +69,27 @@ export default async function Home() {
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
-            Trouvez le travailleur indépendant idéal.
+            Find the perfect freelancer.
           </h1>
           <p className="text-slate-600 text-center mb-8 text-lg md:text-2xl font-medium max-w-2xl">
-             Experts vérifiés • Local ou à distance
+             Verified experts • Local or remote
           </p>
           
           {/* Search Container */}
           <div className="w-full mb-8">
              <SearchSection />
              <div className="mt-4 text-center text-sm text-slate-500 hidden md:block">
-                <span className="font-bold text-slate-700">Populaire :</span> Développeur WordPress, Graphiste, Community Manager, Consultant marketing
+                <span className="font-bold text-slate-700">Popular:</span> WordPress Developer, Graphic Designer, Community Manager, Marketing Consultant
              </div>
           </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mt-2">
              <Button className="h-12 px-8 text-lg font-bold rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20" asChild>
-                <Link href="/search">Trouvez un indépendant</Link>
+                <Link href="/search">Find a freelancer</Link>
              </Button>
              <Button variant="outline" className="h-12 px-8 text-lg font-bold rounded-full border-2 border-slate-900 text-slate-900 hover:bg-slate-50" asChild>
-                <Link href="/register">Je veux proposer mes services</Link>
+                <Link href="/register">I want to offer my services</Link>
              </Button>
           </div>
         </div>
@@ -99,8 +99,8 @@ export default async function Home() {
       <section className="container mx-auto px-4 -mt-8 relative z-20 mb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
             {[
-                { label: 'Développement', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop', link: '/search?category=Tech' },
-                { label: 'Design & Création', img: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?q=80&w=600&auto=format&fit=crop', link: '/search?category=Design' },
+                { label: 'Development', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop', link: '/search?category=Tech' },
+                { label: 'Design & Creative', img: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?q=80&w=600&auto=format&fit=crop', link: '/search?category=Design' },
                 { label: 'Marketing', img: 'https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=600&auto=format&fit=crop', link: '/search?category=Marketing' },
                 { label: 'Business', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=600&auto=format&fit=crop', link: '/search?category=Business' },
             ].map((item, idx) => (
@@ -124,12 +124,12 @@ export default async function Home() {
         <div className="container px-4 md:px-6 mx-auto">
             <div className="flex items-end justify-between mb-6 md:mb-8">
                 <div>
-                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Experts à la une</h2>
-                    <p className="text-slate-500 mt-2 text-base md:text-lg">Les travailleurs indépendants recommandés par la communauté.</p>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Featured Experts</h2>
+                    <p className="text-slate-500 mt-2 text-base md:text-lg">Freelancers recommended by the community.</p>
                 </div>
                 {/* Lien "Voir tout" style TripAdvisor */}
                 <Link href="/search" className="hidden md:block text-sm font-bold underline decoration-2 decoration-slate-200 hover:decoration-[#34E0A1] transition-all">
-                    Voir tout
+                    View all
                 </Link>
             </div>
             
@@ -155,11 +155,11 @@ export default async function Home() {
                 </div>
             ) : (
                 <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl bg-white">
-                    <p className="text-slate-400 font-medium">Bientôt des pépites ici...</p>
+                    <p className="text-slate-400 font-medium">Coming soon...</p>
                 </div>
             )}
              <div className="mt-8 text-center md:hidden">
-                <Link href="/search" className="text-sm font-bold text-[#34E0A1]">Voir tous les experts →</Link>
+                <Link href="/search" className="text-sm font-bold text-[#34E0A1]">View all experts →</Link>
              </div>
         </div>
       </section>
@@ -171,9 +171,9 @@ export default async function Home() {
                 href="/pricing"
                 className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex flex-col sm:flex-row items-center gap-1 md:gap-2 group px-6 py-3 rounded-xl hover:bg-slate-50 text-center"
              >
-                <span>Vous êtes travailleur indépendant ?</span>
+                <span>Are you a freelancer?</span>
                 <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
-                    Créez votre profil gratuitement
+                    Create your profile for free
                 </span>
              </Link>
           </div>

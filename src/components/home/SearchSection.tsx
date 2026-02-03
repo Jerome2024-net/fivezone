@@ -14,11 +14,11 @@ export function SearchSection() {
   const router = useRouter()
 
   const tabs = [
-    { id: 'all', label: 'Tout', icon: Search, placeholder: 'Quel service recherchez-vous ?' },
-    { id: 'tech', label: 'Tech', icon: Code, placeholder: 'Développeur React, Python...' },
-    { id: 'design', label: 'Design', icon: Palette, placeholder: 'Logo, Webdesign...' },
-    { id: 'marketing', label: 'Marketing', icon: Megaphone, placeholder: 'SEO, Rédaction...' },
-    { id: 'business', label: 'Business', icon: Briefcase, placeholder: 'Comptable, Juriste...' },
+    { id: 'all', label: 'All', icon: Search, placeholder: 'What service are you looking for?' },
+    { id: 'tech', label: 'Tech', icon: Code, placeholder: 'React Developer, Python...' },
+    { id: 'design', label: 'Design', icon: Palette, placeholder: 'Logo, Web Design...' },
+    { id: 'marketing', label: 'Marketing', icon: Megaphone, placeholder: 'SEO, Copywriting...' },
+    { id: 'business', label: 'Business', icon: Briefcase, placeholder: 'Accountant, Lawyer...' },
   ]
 
   const handleSearch = (e: React.FormEvent) => {
@@ -81,7 +81,7 @@ export function SearchSection() {
              <MapPin className="h-5 w-5 text-slate-400 ml-3 shrink-0" />
              <Input 
                 className="flex-1 border-none shadow-none focus-visible:ring-0 text-base md:text-lg placeholder:text-slate-400 h-12 md:h-14 px-3 bg-transparent outline-none ring-0 w-full truncate"
-                placeholder="Ville ou code postal"
+                placeholder="City or zip code"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
              />
@@ -92,8 +92,8 @@ export function SearchSection() {
             size="lg"
             className="rounded-[1.5rem] h-12 md:h-14 md:px-8 bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 shadow-sm hover:opacity-90 transition-all shrink-0 m-1 md:m-0 font-bold text-base"
         >
-            <span className="md:hidden">Rechercher</span>
-            <span className="hidden md:inline">Rechercher</span>
+            <span className="md:hidden">Search</span>
+            <span className="hidden md:inline">Search</span>
         </Button>
       </form>
     </div>

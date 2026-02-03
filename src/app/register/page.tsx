@@ -21,24 +21,24 @@ import Link from "next/link"
 
 const FormSchema = z.object({
   role: z.literal("OWNER"),
-  name: z.string().min(1, "Le nom complet est requis"),
-  email: z.string().min(1, "L'email est requis").email("Email invalide"),
-  password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-  businessName: z.string().min(1, "Le nom de l'entreprise est requis"),
-  category: z.string().min(1, "La catégorie est requise"),
+  name: z.string().min(1, "Full name is required"),
+  email: z.string().min(1, "Email is required").email("Invalid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  businessName: z.string().min(1, "Business name is required"),
+  category: z.string().min(1, "Category is required"),
   customCategory: z.string().optional(),
-  country: z.string().min(1, "Le pays est requis"),
-  address: z.string().min(1, "L'adresse est requise"),
-  city: z.string().min(1, "La ville est requise"),
+  country: z.string().min(1, "Country is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
-  logoUrl: z.string().min(1, "La photo de profil est requise"),
-  media: z.array(z.string()).min(1, "Ajoutez au moins une image de vos travaux"),
+  logoUrl: z.string().min(1, "Profile picture is required"),
+  media: z.array(z.string()).min(1, "Add at least one image of your work"),
 }).superRefine((data, ctx) => {
     if (data.category === "other" && !data.customCategory) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "Veuillez préciser votre catégorie",
+            message: "Please specify your category",
             path: ["customCategory"],
         })
     }
@@ -87,20 +87,20 @@ export default function RegisterPage() {
             body: JSON.stringify(payload),
         })
 
-        const data = await response.json().catch(() => ({ message: "Erreur serveur - réponse invalide" }));
+        const data = await response.json().catch(() => ({ message: "Server error - invalid response" }));
         
         console.log("Registration response:", response.status, data);
 
         if (!response.ok) {
-            throw new Error(data.message || "Une erreur est survenue")
+            throw new Error(data.message || "An error occurred")
         }
 
-        // Rediriger vers la page de paiement avec l'email pour le pré-remplissage
+        // Redirect to the payment page with the email for pre-filling
         router.push(`/pricing?registered=true&email=${encodeURIComponent(values.email)}`);
         
     } catch (err: any) {
         console.error("Registration form error:", err);
-        setError(err.message || "Une erreur inattendue s'est produite")
+        setError(err.message || "An unexpected error occurred")
     }
   }
 
@@ -108,9 +108,9 @@ export default function RegisterPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-muted/50 py-10 px-4">
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>Créer un profil Freelance</CardTitle>
+          <CardTitle>Create a Freelancer Profile</CardTitle>
           <CardDescription>
-            Rejoignez la communauté FiveZone en quelques clics.
+            Join the FiveZone community in just a few clicks.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -122,26 +122,26 @@ export default function RegisterPage() {
             )}
             
             <div className="space-y-4">
-                <h3 className="text-lg font-medium">1. Identifiants</h3>
+                <h3 className="text-lg font-medium">1. Credentials</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium" htmlFor="name">Nom complet</label>
-                      <Input id="name" {...form.register("name")} placeholder="Jean Dupont" />
+                      <label className="text-sm font-medium" htmlFor="name">Full Name</label>
+                      <Input id="name" {...form.register("name")} placeholder="John Doe" />
                       {form.formState.errors.name && (
                         <p className="text-xs text-destructive">{form.formState.errors.name.message}</p>
                       )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium" htmlFor="email">Email</label>
-                      <Input id="email" type="email" placeholder="email@exemple.com" {...form.register("email")} />
+                      <Input id="email" type="email" placeholder="email@example.com" {...form.register("email")} />
                        {form.formState.errors.email && (
                         <p className="text-xs text-destructive">{form.formState.errors.email.message}</p>
                       )}
                     </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium" htmlFor="password">Mot de passe</label>
-                  <Input id="password" type="password" {...form.register("password")} placeholder="8 caractères minimum" />
+                  <label className="text-sm font-medium" htmlFor="password">Password</label>
+                  <Input id="password" type="password" {...form.register("password")} placeholder="8 characters minimum" />
                    {form.formState.errors.password && (
                     <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
                   )}
@@ -149,50 +149,50 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-4 pt-4 border-t border-slate-200">
-                <h3 className="text-lg font-medium">2. Votre Activité</h3>
+                <h3 className="text-lg font-medium">2. Your Activity</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium" htmlFor="businessName">Titre du profil</label>
-                      <Input id="businessName" {...form.register("businessName")} placeholder="Ex: Développeur React Freelance" />
+                      <label className="text-sm font-medium" htmlFor="businessName">Profile Title</label>
+                      <Input id="businessName" {...form.register("businessName")} placeholder="Ex: Freelance React Developer" />
                        {form.formState.errors.businessName && (
                         <p className="text-xs text-destructive">{form.formState.errors.businessName.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium" htmlFor="category">Catégorie</label>
+                      <label className="text-sm font-medium" htmlFor="category">Category</label>
                       <select 
                         id="category" 
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                         {...form.register("category")}
                       >
-                        <option value="">Sélectionner...</option>
-                        <optgroup label="Tech & Développement">
-                            <option value="Développement Web">Développement Web</option>
-                            <option value="Développement Mobile">Développement Mobile</option>
-                            <option value="Data Science">Data Science & IA</option>
-                            <option value="Cybersécurité">Cybersécurité</option>
+                        <option value="">Select...</option>
+                        <optgroup label="Tech & Development">
+                            <option value="Web Development">Web Development</option>
+                            <option value="Mobile Development">Mobile Development</option>
+                            <option value="Data Science">Data Science & AI</option>
+                            <option value="Cybersecurity">Cybersecurity</option>
                         </optgroup>
-                        <optgroup label="Design & Création">
-                            <option value="Design Graphique">Design Graphique</option>
+                        <optgroup label="Design & Creation">
+                            <option value="Graphic Design">Graphic Design</option>
                             <option value="UI/UX Design">UI/UX Design</option>
-                            <option value="Montage Vidéo">Montage Vidéo</option>
-                            <option value="Photographie">Photographie</option>
+                            <option value="Video Editing">Video Editing</option>
+                            <option value="Photography">Photography</option>
                         </optgroup>
-                        <optgroup label="Marketing & Biz">
-                            <option value="Marketing Digital">Marketing Digital</option>
+                        <optgroup label="Marketing & Business">
+                            <option value="Digital Marketing">Digital Marketing</option>
                             <option value="SEO/SEA">SEO / SEA</option>
-                            <option value="Rédaction Web">Rédaction</option>
-                            <option value="Comptabilité">Comptabilité & Finance</option>
-                            <option value="Juridique">Juridique</option>
+                            <option value="Copywriting">Copywriting</option>
+                            <option value="Accounting">Accounting & Finance</option>
+                            <option value="Legal">Legal</option>
                         </optgroup>
-                        <optgroup label="Services Locaux">
-                            <option value="Bricolage">Bricolage</option>
-                            <option value="Ménage">Ménage</option>
-                            <option value="Garde d'animaux">Garde d'animaux</option>
+                        <optgroup label="Local Services">
+                            <option value="Handyman">Handyman</option>
+                            <option value="Cleaning">Cleaning</option>
+                            <option value="Pet Sitting">Pet Sitting</option>
                         </optgroup>
-                        <option value="other">Autre</option>
+                        <option value="other">Other</option>
                      </select>
                       {form.formState.errors.category && (
                         <p className="text-xs text-destructive">{form.formState.errors.category.message}</p>
@@ -202,38 +202,40 @@ export default function RegisterPage() {
 
                 {selectedCategory === "other" && (
                     <div className="space-y-2">
-                        <label className="text-sm font-medium" htmlFor="customCategory">Précisez</label>
-                        <Input id="customCategory" {...form.register("customCategory")} placeholder="Votre métier..." />
+                        <label className="text-sm font-medium" htmlFor="customCategory">Please specify</label>
+                        <Input id="customCategory" {...form.register("customCategory")} placeholder="Your profession..." />
                     </div>
                 )}
             </div>
 
             <div className="space-y-4 pt-4 border-t border-slate-200">
-                <h3 className="text-lg font-medium">3. Localisation</h3>
+                <h3 className="text-lg font-medium">3. Location</h3>
                 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium" htmlFor="country">Pays de résidence</label>
+                    <label className="text-sm font-medium" htmlFor="country">Country of residence</label>
                     <select 
                         id="country" 
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                         {...form.register("country")}
                     >
-                        <option value="">Sélectionner un pays</option>
-                        <optgroup label="Afrique">
-                            <option value="Côte d'Ivoire">Côte d'Ivoire</option>
-                            <option value="Sénégal">Sénégal</option>
-                            <option value="Cameroun">Cameroun</option>
+                        <option value="">Select a country</option>
+                        <optgroup label="Africa">
+                            <option value="Ivory Coast">Ivory Coast</option>
+                            <option value="Senegal">Senegal</option>
+                            <option value="Cameroon">Cameroon</option>
                             <option value="Togo">Togo</option>
-                            <option value="Bénin">Bénin</option>
-                            <option value="Maroc">Maroc</option>
+                            <option value="Benin">Benin</option>
+                            <option value="Morocco">Morocco</option>
                             <option value="Gabon">Gabon</option>
-                            <option value="Autre Afrique">Autre Afrique</option>
+                            <option value="Other Africa">Other Africa</option>
                         </optgroup>
-                        <optgroup label="Europe / Monde">
+                        <optgroup label="Europe / World">
                             <option value="France">France</option>
-                            <option value="Belgique">Belgique</option>
+                            <option value="Belgium">Belgium</option>
                             <option value="Canada">Canada</option>
-                            <option value="Autre">Autre</option>
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Other">Other</option>
                         </optgroup>
                     </select>
                     {form.formState.errors.country && (
@@ -243,7 +245,7 @@ export default function RegisterPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium" htmlFor="address">Adresse / Quartier</label>
+                      <label className="text-sm font-medium" htmlFor="address">Address / Neighborhood</label>
                       <AddressAutocomplete 
                         onAddressSelect={(address, city, coords) => {
                             form.setValue('address', address);
@@ -257,7 +259,7 @@ export default function RegisterPage() {
                             form.setValue('address', value);
                             if (value.length > 0) form.clearErrors('address');
                         }}
-                        placeholder="Rechercher..."
+                        placeholder="Search..."
                         defaultValue={form.getValues('address')}
                       />
                        <input type="hidden" {...form.register("address")} />
@@ -266,8 +268,8 @@ export default function RegisterPage() {
                       )}
                     </div>
                      <div className="space-y-2">
-                      <label className="text-sm font-medium" htmlFor="city">Ville</label>
-                      <Input id="city" {...form.register("city")} placeholder="Abidjan, Paris..." />
+                      <label className="text-sm font-medium" htmlFor="city">City</label>
+                      <Input id="city" {...form.register("city")} placeholder="New York, London..." />
                        {form.formState.errors.city && (
                         <p className="text-xs text-destructive">{form.formState.errors.city.message}</p>
                       )}
@@ -276,11 +278,11 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-4 pt-4 border-t border-slate-200">
-                <h3 className="text-lg font-medium">4. Visuels</h3>
+                <h3 className="text-lg font-medium">4. Visuals</h3>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div className="space-y-2">
                         <label className="text-sm font-medium flex justify-between">
-                            Photo de profil <span className="text-red-500">*</span>
+                            Profile Picture <span className="text-red-500">*</span>
                         </label>
                         <MediaUpload 
                             maxFiles={1}
@@ -299,7 +301,7 @@ export default function RegisterPage() {
                     </div>
                     <div className="space-y-2">
                         <label className="text-sm font-medium flex justify-between">
-                             Galerie / Portfolio <span className="text-red-500">* (Min 1)</span>
+                             Gallery / Portfolio <span className="text-red-500">* (Min 1)</span>
                         </label>
                         <MediaUpload 
                             multiple
@@ -317,20 +319,20 @@ export default function RegisterPage() {
             </div>
 
             <Button type="submit" className="w-full font-bold bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 h-12 text-lg" disabled={form.formState.isSubmitting}>
-               {form.formState.isSubmitting ? "Création en cours..." : "Créer mon profil Freelance"}
+               {form.formState.isSubmitting ? "Creating..." : "Create my Freelancer Profile"}
             </Button>
             
             <p className="text-xs text-center text-muted-foreground mt-4">
-                En vous inscrivant, vous acceptez nos CGU. Vous pourrez compléter vos infos (SIRET, Site web, etc.) plus tard.
+                By signing up, you agree to our Terms of Service. You can complete your information (Tax ID, Website, etc.) later.
             </p>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center border-t pt-4 mt-2">
             <p className="text-sm text-muted-foreground mr-1">
-                Déjà un compte ? 
+                Already have an account? 
             </p>
             <Link href="/login" className="text-primary hover:underline text-sm font-semibold">
-                Se connecter
+                Sign in
             </Link>
         </CardFooter>
       </Card>

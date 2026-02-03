@@ -34,14 +34,14 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
   
   const getWelcomeMessage = () => {
     const welcomeMessages: Record<string, string> = {
-      WRITER: `👋 Bonjour ! Je suis ${agentName}, rédactrice IA. Je peux écrire des articles, des posts, des descriptions produits et tout type de contenu textuel. Comment puis-je vous aider ?`,
-      TRANSLATOR: `👋 Bonjour ! Je suis ${agentName}, traducteur IA polyglotte. Je maîtrise plus de 50 langues. Quel texte souhaitez-vous traduire ?`,
-      SEO: `👋 Bonjour ! Je suis ${agentName}, experte SEO. Je peux analyser votre site, optimiser vos mots-clés et améliorer votre référencement. Quelle est votre question ?`,
-      CODER: `👋 Bonjour ! Je suis ${agentName}, développeur IA senior. Je peux vous aider avec du code, du debugging, ou créer des scripts dans de nombreux langages. Que puis-je coder pour vous ?`,
-      DESIGNER: `👋 Bonjour ! Je suis ${agentName}, designer IA créative. Je peux créer des concepts visuels, des maquettes UI/UX et vous conseiller sur le design. Quel est votre projet ?`,
-      MARKETER: `👋 Bonjour ! Je suis ${agentName}, stratège marketing IA. Je crée des stratégies, du copywriting et des campagnes qui convertissent. Quel est votre objectif ?`,
-      ANALYST: `👋 Bonjour ! Je suis ${agentName}, analyste IA. Je peux analyser vos données, créer des rapports et identifier des insights business. Quelles données souhaitez-vous analyser ?`,
-      ASSISTANT: `👋 Bonjour ! Je suis ${agentName}, votre assistante IA polyvalente. Je peux vous aider dans de nombreuses tâches. Comment puis-je vous être utile ?`,
+      WRITER: `👋 Hello! I'm ${agentName}, an AI writer. I can write articles, posts, product descriptions and all types of text content. How can I help you?`,
+      TRANSLATOR: `👋 Hello! I'm ${agentName}, a multilingual AI translator. I master over 50 languages. What text would you like to translate?`,
+      SEO: `👋 Hello! I'm ${agentName}, an SEO expert. I can analyze your website, optimize your keywords and improve your rankings. What's your question?`,
+      CODER: `👋 Hello! I'm ${agentName}, a senior AI developer. I can help you with code, debugging, or create scripts in many languages. What can I code for you?`,
+      DESIGNER: `👋 Hello! I'm ${agentName}, a creative AI designer. I can create visual concepts, UI/UX mockups and advise you on design. What's your project?`,
+      MARKETER: `👋 Hello! I'm ${agentName}, an AI marketing strategist. I create strategies, copywriting and campaigns that convert. What's your goal?`,
+      ANALYST: `👋 Hello! I'm ${agentName}, an AI analyst. I can analyze your data, create reports and identify business insights. What data would you like to analyze?`,
+      ASSISTANT: `👋 Hello! I'm ${agentName}, your versatile AI assistant. I can help you with many tasks. How can I be useful to you?`,
     }
     return welcomeMessages[agentType] || welcomeMessages.ASSISTANT
   }
@@ -82,13 +82,13 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
       } else {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          content: `❌ Désolé, une erreur s'est produite: ${data.error}. Veuillez réessayer.`
+          content: `❌ Sorry, an error occurred: ${data.error}. Please try again.`
         }])
       }
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: "❌ Erreur de connexion. Vérifiez votre connexion internet et réessayez."
+        content: "❌ Connection error. Check your internet connection and try again."
       }])
     } finally {
       setIsLoading(false)
@@ -110,7 +110,7 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
         className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white px-5 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
       >
         <Sparkles className="w-5 h-5" />
-        <span className="font-medium">Discuter avec {agentName.split(' ')[0]}</span>
+        <span className="font-medium">Chat with {agentName.split(' ')[0]}</span>
       </button>
       
       {/* Chat Modal */}
@@ -127,7 +127,7 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
                   <h3 className="font-semibold">{agentName}</h3>
                   <p className="text-xs text-white/80 flex items-center gap-1">
                     <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    En ligne • {pricePerTask ? `${pricePerTask}€/tâche` : 'Gratuit à essayer'}
+                    Online • {pricePerTask ? `$${pricePerTask}/task` : 'Free to try'}
                   </p>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
                   <div className="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                     <div className="flex items-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin text-violet-500" />
-                      <span className="text-sm text-gray-500">En train d'écrire...</span>
+                      <span className="text-sm text-gray-500">Typing...</span>
                     </div>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Écrivez votre message..."
+                  placeholder="Write your message..."
                   className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                   disabled={isLoading}
                 />
@@ -203,7 +203,7 @@ export function AIChat({ agentId, agentName, agentType, pricePerTask }: AIChatPr
                 </button>
               </div>
               <p className="text-xs text-gray-400 text-center mt-2">
-                💡 IA disponible 24h/24 • Réponse instantanée
+                💡 AI available 24/7 • Instant response
               </p>
             </div>
           </div>

@@ -100,11 +100,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { id } = await params
   const business = await getBusiness(id)
 
-  if (!business) return { title: 'Profil introuvable' }
+  if (!business) return { title: 'Profile not found' }
 
   return {
     title: `${business.name} - ${business.category.name} | FiveZone`,
-    description: business.description?.substring(0, 160) || `Découvrez les services de ${business.name} sur FiveZone.`,
+    description: business.description?.substring(0, 160) || `Discover ${business.name}'s services on FiveZone.`,
   }
 }
 
@@ -122,7 +122,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
 
   // Determine availability status display
   const isAvailable = business.available;
-  const memberSince = new Date(business.createdAt).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  const memberSince = new Date(business.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
     <div className="min-h-screen bg-white pb-20 md:pb-0">
@@ -180,10 +180,10 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                        {business.isAIAgent ? (
                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold mb-2 shadow-lg">
                                <Bot className="h-4 w-4" />
-                               <span>Agent IA</span>
+                               <span>AI Agent</span>
                                <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">
                                    <Zap className="h-3 w-3 inline mr-0.5" />
-                                   Réponse {business.aiResponseTime ? `${business.aiResponseTime}s` : 'instantanée'}
+                                   Response {business.aiResponseTime ? `${business.aiResponseTime}s` : 'instant'}
                                </span>
                            </div>
                        ) : (
@@ -192,7 +192,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                 </span>
-                               {isAvailable ? "Disponible pour missions" : "Indisponible"}
+                               {isAvailable ? "Available for work" : "Unavailable"}
                            </div>
                        )}
 
@@ -208,7 +208,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                            <MapPin className="h-4 w-4 text-slate-400" />
                            <span>{business.city}, {business.country}</span>
                            <span className="text-slate-300">•</span>
-                           <span>Membre depuis {memberSince}</span>
+                           <span>Member since {memberSince}</span>
                        </div>
                   </div>
 
@@ -230,21 +230,21 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                   <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 border border-violet-100 text-center">
                       <Zap className="h-6 w-6 text-violet-600 mx-auto mb-2" />
                       <p className="text-lg font-black text-slate-900">&lt; 1 min</p>
-                      <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Temps de réponse</p>
+                      <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Response Time</p>
                   </div>
 
                   <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-4 border border-violet-100 text-center">
                        <Clock className="h-6 w-6 text-violet-600 mx-auto mb-2" />
                        <p className="text-lg font-black text-slate-900">24/7</p>
-                       <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Disponibilité</p>
+                       <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Availability</p>
                   </div>
 
                   {business.aiPricePerTask && (
                       <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 text-center">
                           <p className="text-2xl font-black text-slate-900">
-                            {business.aiPricePerTask}€
+                            ${business.aiPricePerTask}
                           </p>
-                          <p className="text-xs font-bold text-green-600 uppercase tracking-wide">Par tâche</p>
+                          <p className="text-xs font-bold text-green-600 uppercase tracking-wide">Per Task</p>
                       </div>
                   )}
 
@@ -255,7 +255,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                           ))}
                       </div>
                       <p className="text-xs font-bold text-blue-600 uppercase tracking-wide">
-                          {business.reviewCount > 0 ? `${business.reviewCount} Avis` : "Nouveau"}
+                          {business.reviewCount > 0 ? `${business.reviewCount} Reviews` : "New"}
                       </p>
                   </div>
               </div>
@@ -271,13 +271,13 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                           </div>
                       </div>
                       <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">
-                          {business.reviewCount > 0 ? `${business.reviewCount} Avis` : "Nouveau"}
+                          {business.reviewCount > 0 ? `${business.reviewCount} Reviews` : "New"}
                       </p>
                   </div>
 
                   <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center flex flex-col items-center justify-center">
                        <ShieldCheck className="h-5 w-5 text-green-600 mb-2" />
-                       <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Identité Vérifiée</p>
+                       <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Identity Verified</p>
                   </div>
 
                   {business.hourlyRate && (
@@ -285,7 +285,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                           <p className="text-lg font-black text-slate-900">
                             {business.hourlyRate.toLocaleString()} {business.currency}
                           </p>
-                          <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Par jour</p>
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Per Day</p>
                       </div>
                   )}
               </div>
@@ -303,7 +303,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
               <section>
                   <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                       <Briefcase className="h-5 w-5 text-slate-400" />
-                      À propos
+                      About
                   </h2>
                   <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-[15px]">
                       {business.description ? (
@@ -311,7 +311,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                               <p key={i} className="mb-2">{para}</p>
                           ))
                       ) : (
-                          <p className="italic text-slate-400">Ce prestataire n&apos;a pas encore ajouté de description.</p>
+                          <p className="italic text-slate-400">This provider hasn&apos;t added a description yet.</p>
                       )}
                   </div>
               </section>
@@ -322,7 +322,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
               <section>
                   <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                        <CheckCircle2 className="h-5 w-5 text-slate-400" />
-                       Compétences & Services
+                       Skills & Services
                   </h2>
                   
                   {business.skills.length > 0 ? (
@@ -335,7 +335,7 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                       </div>
                   ) : (
                       <div className="bg-slate-50 rounded-lg p-6 text-center text-slate-500 text-sm border border-dashed border-slate-200">
-                          Aucune compétence listée spécifiquement.
+                          No specific skills listed.
                       </div>
                   )}
 
@@ -393,23 +393,23 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                   SECTION 7: PRACTICAL INFO
                  ----------------------------------------------------- */}
               <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 space-y-5 sticky top-24">
-                  <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2">Informations</h3>
+                  <h3 className="font-bold text-slate-900 border-b border-slate-100 pb-2">Information</h3>
                   
                   <div className="space-y-4 text-sm">
                       <div className="flex items-start gap-3">
                           <MapPin className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
                           <div>
-                              <p className="font-bold text-slate-700">Zone d&apos;intervention</p>
-                              <p className="text-slate-500">{business.city} et alentours</p>
+                              <p className="font-bold text-slate-700">Service Area</p>
+                              <p className="text-slate-500">{business.city} and surrounding areas</p>
                           </div>
                       </div>
 
                       <div className="flex items-start gap-3">
                           <Languages className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
                           <div>
-                              <p className="font-bold text-slate-700">Langues parlées</p>
+                              <p className="font-bold text-slate-700">Languages Spoken</p>
                               <p className="text-slate-500">
-                                  {business.languages.length > 0 ? business.languages.join(", ") : "Français"}
+                                  {business.languages.length > 0 ? business.languages.join(", ") : "English"}
                               </p>
                           </div>
                       </div>
@@ -417,15 +417,15 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                       <div className="flex items-start gap-3">
                           <Clock className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
                           <div>
-                              <p className="font-bold text-slate-700">Temps de réponse</p>
-                              <p className="text-slate-500">Moins de 24h (habituellement)</p>
+                              <p className="font-bold text-slate-700">Response Time</p>
+                              <p className="text-slate-500">Less than 24h (usually)</p>
                           </div>
                       </div>
                   </div>
 
                   <div className="pt-4 border-t border-slate-100">
                       <div className="bg-slate-50 p-3 rounded-lg text-xs text-slate-500 text-center">
-                          Membre vérifié par FiveZone
+                          Verified member by FiveZone
                       </div>
                   </div>
               </div>

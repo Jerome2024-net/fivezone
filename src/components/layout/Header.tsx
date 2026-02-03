@@ -54,13 +54,13 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1">
                 <Button asChild variant="ghost" className="rounded-full font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 h-10 px-4">
-                    <Link href="/search">Découvrir</Link>
+                    <Link href="/search">Explore</Link>
                 </Button>
                 <Button asChild variant="ghost" className="rounded-full font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 h-10 px-4">
-                     <Link href="/pricing">Tarifs</Link>
+                     <Link href="/pricing">Pricing</Link>
                 </Button>
                 <Button asChild variant="ghost" className="rounded-full font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 h-10 px-4">
-                     <Link href="/about">À propos</Link>
+                     <Link href="/about">About</Link>
                 </Button>
             </nav>
         </div>
@@ -114,21 +114,21 @@ export function Header() {
                             <Link href="/dashboard" onClick={() => setIsUserMenuOpen(false)}>
                                 <div className="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 cursor-pointer text-slate-700 hover:text-slate-900">
                                     <LayoutDashboard className="h-4 w-4" />
-                                    <span className="font-medium">Mon Espace Admin</span>
+                                    <span className="font-medium">Dashboard</span>
                                 </div>
                             </Link>
 
                             <Link href="/workspace" onClick={() => setIsUserMenuOpen(false)}>
                                 <div className="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 cursor-pointer text-slate-700 hover:text-slate-900">
                                     <Briefcase className="h-4 w-4" />
-                                    <span className="font-medium">Espace de Travail</span>
+                                    <span className="font-medium">Workspace</span>
                                 </div>
                             </Link>
 
                              <Link href="/dashboard" onClick={() => setIsUserMenuOpen(false)}>
                                 <div className="px-4 py-2 hover:bg-slate-50 flex items-center gap-3 cursor-pointer text-slate-700 hover:text-slate-900">
                                     <Settings className="h-4 w-4" />
-                                    <span className="font-medium">Paramètres</span>
+                                    <span className="font-medium">Settings</span>
                                 </div>
                             </Link>
                             
@@ -139,14 +139,14 @@ export function Header() {
                                 className="w-full text-left px-4 py-2 hover:bg-red-50 flex items-center gap-3 cursor-pointer text-red-600"
                             >
                                 <LogOut className="h-4 w-4" />
-                                <span className="font-medium">Se déconnecter</span>
+                                <span className="font-medium">Sign out</span>
                             </button>
                         </div>
                     )}
                 </div>
             ) : (
                 <Button size="lg" className="rounded-full bg-slate-900 text-white hover:bg-slate-800 font-bold h-10 px-6" asChild>
-                    <Link href="/login">Se connecter</Link>
+                    <Link href="/login">Sign in</Link>
                 </Button>
             )}
             </div>
@@ -176,13 +176,13 @@ export function Header() {
             <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col">
                 <nav className="flex flex-col gap-6 mt-4">
                     <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black tracking-tight text-slate-900 hover:text-[#34E0A1] transition-colors animate-in slide-in-from-bottom-2 fade-in duration-500 delay-100 fill-mode-both">
-                        Découvrir
+                        Explore
                     </Link>
                     <Link href="/pricing" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black tracking-tight text-slate-900 hover:text-[#34E0A1] transition-colors animate-in slide-in-from-bottom-2 fade-in duration-500 delay-150 fill-mode-both">
-                        Tarifs
+                        Pricing
                     </Link>
                     <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black tracking-tight text-slate-900 hover:text-[#34E0A1] transition-colors animate-in slide-in-from-bottom-2 fade-in duration-500 delay-200 fill-mode-both">
-                        À propos
+                        About
                     </Link>
                 </nav>
 
@@ -217,24 +217,24 @@ export function Header() {
                                 
                                 <Button variant="outline" className="h-14 text-base font-bold text-red-600 border-red-100 bg-red-50/50 hover:bg-red-50 hover:border-red-200 rounded-xl" onClick={() => signOut()}>
                                     <LogOut className="h-5 w-5 mr-2" />
-                                    Sortir
+                                    Sign out
                                 </Button>
                             </div>
                         </div>
                     ) : (
                         <div className="flex flex-col gap-4">
-                            <p className="text-slate-500 font-medium">Rejoignez la communauté Fivezone</p>
+                            <p className="text-slate-500 font-medium">Join the Fivezone community</p>
                             <Button size="lg" className="w-full h-14 rounded-2xl bg-[#34E0A1] hover:bg-[#2bc98e] text-slate-900 font-bold text-lg shadow-lg shadow-[#34E0A1]/20 transition-all hover:scale-[1.02]" asChild>
                                 <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                                    Se connecter / S'inscrire
+                                    Sign in / Sign up
                                 </Link>
                             </Button>
                         </div>
                     )}
                     
                     <div className="flex gap-6 mt-2 text-slate-400">
-                        <Link href="#" className="text-sm font-medium hover:text-slate-900">Confidentialité</Link>
-                        <Link href="#" className="text-sm font-medium hover:text-slate-900">Aide</Link>
+                        <Link href="#" className="text-sm font-medium hover:text-slate-900">Privacy</Link>
+                        <Link href="#" className="text-sm font-medium hover:text-slate-900">Help</Link>
                     </div>
                 </div>
             </div>

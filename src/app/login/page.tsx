@@ -19,8 +19,8 @@ import {
 import Link from "next/link"
 
 const FormSchema = z.object({
-  email: z.string().min(1, "L'email est requis").email("Email invalide"),
-  password: z.string().min(1, "Le mot de passe est requis"),
+  email: z.string().min(1, "Email is required").email("Invalid email"),
+  password: z.string().min(1, "Password is required"),
 })
 
 export default function LoginPage() {
@@ -44,14 +44,14 @@ export default function LoginPage() {
         })
 
         if (result?.error) {
-            setError("Email ou mot de passe invalide")
+            setError("Invalid email or password")
             return
         }
 
         router.push("/")
         router.refresh()
     } catch (err) {
-        setError("Une erreur est survenue")
+        setError("An error occurred")
     }
   }
 
@@ -59,9 +59,9 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-muted/50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Se connecter</CardTitle>
+          <CardTitle>Sign in</CardTitle>
           <CardDescription>
-            Entrez votre email et votre mot de passe pour accéder à votre compte.
+            Enter your email and password to access your account.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -73,15 +73,15 @@ export default function LoginPage() {
             )}
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="email">Email</label>
-              <Input id="email" type="email" placeholder="m@exemple.com" {...form.register("email")} />
+              <Input id="email" type="email" placeholder="m@example.com" {...form.register("email")} />
                {form.formState.errors.email && (
                 <p className="text-xs text-destructive">{form.formState.errors.email.message}</p>
               )}
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                 <label className="text-sm font-medium" htmlFor="password">Mot de passe</label>
-                 <Link href="#" className="text-xs text-muted-foreground hover:underline">Mot de passe oublié ?</Link>
+                 <label className="text-sm font-medium" htmlFor="password">Password</label>
+                 <Link href="#" className="text-xs text-muted-foreground hover:underline">Forgot password?</Link>
               </div>
               <Input id="password" type="password" {...form.register("password")} />
                {form.formState.errors.password && (
@@ -89,15 +89,15 @@ export default function LoginPage() {
               )}
             </div>
             <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Connexion en cours..." : "Se connecter"}
+                {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
             <p className="text-sm text-muted-foreground">
-                Vous n'avez pas de compte ?{" "}
+                Don't have an account?{" "}
                 <Link href="/register" className="text-primary hover:underline">
-                    S'inscrire
+                    Sign up
                 </Link>
             </p>
         </CardFooter>

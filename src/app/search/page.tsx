@@ -146,11 +146,11 @@ export default async function SearchPage({
     dbError = error instanceof Error ? error.message : "Database Connection Error";
   }
 
-  let title = 'Tous les freelances';
-  if (searchTerm && locationTerm) title = `Résultats pour "${searchTerm}" à "${locationTerm}"`;
-  else if (searchTerm) title = `Résultats pour "${searchTerm}"`;
-  else if (categoryTerm) title = `Experts en ${categoryTerm}`;
-  else if (locationTerm) title = `Experts à ${locationTerm}`;
+  let title = 'All Freelancers';
+  if (searchTerm && locationTerm) title = `Results for "${searchTerm}" in "${locationTerm}"`;
+  else if (searchTerm) title = `Results for "${searchTerm}"`;
+  else if (categoryTerm) title = `${categoryTerm} Experts`;
+  else if (locationTerm) title = `Experts in ${locationTerm}`;
 
   // Count active filters
   const activeFilterCount = [categoryTerm, minRateNum !== undefined || maxRateNum !== undefined, expNum, ratingNum, langTerm, availableOnly, aiOnly].filter(Boolean).length;
@@ -159,14 +159,14 @@ export default async function SearchPage({
     <div className="min-h-screen bg-slate-50">
       {dbError && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 m-4">
-             <p className="font-bold text-red-700">Erreur Système (Base de Données)</p>
+             <p className="font-bold text-red-700">System Error (Database)</p>
              <p className="text-sm text-red-600 font-mono mt-1">{dbError}</p>
         </div>
       )}
       <div className="bg-white border-b border-slate-200">
           <div className="container mx-auto px-4 py-8">
               <h1 className="text-3xl font-black text-slate-900">{title}</h1>
-              <p className="text-slate-500 mt-2">Affichage de {businesses.length} résultats correspondant à vos critères</p>
+              <p className="text-slate-500 mt-2">Showing {businesses.length} results matching your criteria</p>
               
               {/* Active filters pills */}
               {activeFilterCount > 0 && (
@@ -178,17 +178,17 @@ export default async function SearchPage({
                   )}
                   {(minRateNum !== undefined || maxRateNum !== undefined) && (
                     <Link href={`/search?${new URLSearchParams(Object.fromEntries(Object.entries(currentParams).filter(([k]) => k !== 'minRate' && k !== 'maxRate'))).toString()}`} className="bg-[#34E0A1]/20 text-[#34E0A1] px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-[#34E0A1]/30">
-                      TJM: {minRateNum || '0'}€ - {maxRateNum || '∞'}€ ✕
+                      Rate: ${minRateNum || '0'} - ${maxRateNum || '∞'} ✕
                     </Link>
                   )}
                   {expNum !== undefined && (
                     <Link href={buildFilterUrl(currentParams, 'exp', String(expNum))} className="bg-[#34E0A1]/20 text-[#34E0A1] px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-[#34E0A1]/30">
-                      {expNum}+ ans d'exp ✕
+                      {expNum}+ years exp ✕
                     </Link>
                   )}
                   {ratingNum !== undefined && (
                     <Link href={buildFilterUrl(currentParams, 'rating', String(ratingNum))} className="bg-[#34E0A1]/20 text-[#34E0A1] px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-[#34E0A1]/30">
-                      {ratingNum}+ étoiles ✕
+                      {ratingNum}+ stars ✕
                     </Link>
                   )}
                   {langTerm && (
@@ -198,11 +198,11 @@ export default async function SearchPage({
                   )}
                   {availableOnly && (
                     <Link href={buildFilterUrl(currentParams, 'available', 'true')} className="bg-[#34E0A1]/20 text-[#34E0A1] px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-[#34E0A1]/30">
-                      Disponible ✕
+                      Available ✕
                     </Link>
                   )}
                   <Link href="/search" className="text-slate-500 text-sm underline hover:text-slate-700">
-                    Effacer tout
+                    Clear all
                   </Link>
                 </div>
               )}
@@ -215,7 +215,7 @@ export default async function SearchPage({
           <aside className="w-full md:w-72 space-y-4">
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-bold mb-4 flex items-center justify-between text-slate-900">
-                <span className="flex items-center"><Filter className="mr-2 h-4 w-4" /> Filtres</span>
+                <span className="flex items-center"><Filter className="mr-2 h-4 w-4" /> Filters</span>
                 {activeFilterCount > 0 && (
                   <span className="bg-[#34E0A1] text-slate-900 text-xs font-bold px-2 py-0.5 rounded-full">{activeFilterCount}</span>
                 )}
@@ -225,32 +225,32 @@ export default async function SearchPage({
                 {/* Availability Toggle */}
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-yellow-500" /> Disponibilité
+                    <Zap className="h-4 w-4 text-yellow-500" /> Availability
                   </label>
                   <Link 
                     href={buildFilterUrl(currentParams, 'available', 'true')}
                     className={`block w-full py-2 px-3 text-sm font-medium rounded-lg border transition-colors ${availableOnly ? 'bg-[#34E0A1] text-slate-900 border-[#34E0A1]' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}
                   >
-                    ✓ Disponible immédiatement
+                    ✓ Available immediately
                   </Link>
                 </div>
 
                 {/* AI Agent Filter */}
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <Bot className="h-4 w-4 text-violet-500" /> Type de freelance
+                    <Bot className="h-4 w-4 text-violet-500" /> Freelancer Type
                   </label>
                   <Link 
                     href={buildFilterUrl(currentParams, 'ai', 'true')}
                     className={`block w-full py-2 px-3 text-sm font-medium rounded-lg border transition-colors ${aiOnly ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white border-violet-500' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}
                   >
-                    🤖 Agents IA uniquement
+                    🤖 AI Agents only
                   </Link>
                 </div>
 
                 {/* Category Filter */}
                 <div className="space-y-3">
-                  <label className="text-sm font-bold text-slate-900">Catégorie</label>
+                  <label className="text-sm font-bold text-slate-900">Category</label>
                   <div className="space-y-2">
                     {['Tech', 'Design', 'Marketing', 'Business', 'Redaction', 'Photo', 'Juridique', 'Finance'].map((cat) => (
                       <Link key={cat} href={buildFilterUrl(currentParams, 'category', cat.toLowerCase())} className="flex items-center space-x-2 group cursor-pointer">
@@ -265,25 +265,25 @@ export default async function SearchPage({
                 
                 {/* TJM Filter */}
                 <div className="space-y-3">
-                  <label className="text-sm font-bold text-slate-900">TJM (Taux Journalier)</label>
+                  <label className="text-sm font-bold text-slate-900">Daily Rate</label>
                   <div className="space-y-2">
                     <Link 
                       href={`/search?${new URLSearchParams({ ...currentParams, maxRate: '300' }).toString()}`}
                       className={`block py-2 px-3 text-sm rounded-lg border transition-colors ${maxRateNum === 300 && !minRateNum ? 'bg-slate-900 text-white border-slate-900' : 'border-slate-200 hover:bg-slate-50'}`}
                     >
-                      Moins de 300€/jour
+                      Less than $300/day
                     </Link>
                     <Link 
                       href={`/search?${new URLSearchParams({ ...currentParams, minRate: '300', maxRate: '600' }).toString()}`}
                       className={`block py-2 px-3 text-sm rounded-lg border transition-colors ${minRateNum === 300 && maxRateNum === 600 ? 'bg-slate-900 text-white border-slate-900' : 'border-slate-200 hover:bg-slate-50'}`}
                     >
-                      300€ - 600€/jour
+                      $300 - $600/day
                     </Link>
                     <Link 
                       href={`/search?${new URLSearchParams({ ...currentParams, minRate: '600' }).toString()}`}
                       className={`block py-2 px-3 text-sm rounded-lg border transition-colors ${minRateNum === 600 && !maxRateNum ? 'bg-slate-900 text-white border-slate-900' : 'border-slate-200 hover:bg-slate-50'}`}
                     >
-                      Plus de 600€/jour
+                      More than $600/day
                     </Link>
                   </div>
                 </div>
@@ -291,14 +291,14 @@ export default async function SearchPage({
                 {/* Experience Filter */}
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <Clock className="h-4 w-4" /> Expérience
+                    <Clock className="h-4 w-4" /> Experience
                   </label>
                   <div className="space-y-2">
                     {[
-                      { label: 'Junior (0-2 ans)', value: '0' },
-                      { label: 'Confirmé (3-5 ans)', value: '3' },
-                      { label: 'Senior (6-10 ans)', value: '6' },
-                      { label: 'Expert (10+ ans)', value: '10' },
+                      { label: 'Junior (0-2 years)', value: '0' },
+                      { label: 'Intermediate (3-5 years)', value: '3' },
+                      { label: 'Senior (6-10 years)', value: '6' },
+                      { label: 'Expert (10+ years)', value: '10' },
                     ].map((level) => (
                       <Link 
                         key={level.value} 
@@ -314,7 +314,7 @@ export default async function SearchPage({
                 {/* Rating Filter */}
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <Star className="h-4 w-4 text-yellow-500" /> Avis & Étoiles
+                    <Star className="h-4 w-4 text-yellow-500" /> Reviews & Stars
                   </label>
                   <div className="space-y-2">
                     {[5, 4, 3].map((r) => (
@@ -328,7 +328,7 @@ export default async function SearchPage({
                             <Star key={star} className={`h-3 w-3 ${star <= r ? 'fill-yellow-400 text-yellow-400' : 'text-slate-300'}`} />
                           ))}
                         </span>
-                        <span>& plus</span>
+                        <span>& up</span>
                       </Link>
                     ))}
                   </div>
@@ -337,10 +337,10 @@ export default async function SearchPage({
                 {/* Language Filter */}
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <Globe2 className="h-4 w-4" /> Langues
+                    <Globe2 className="h-4 w-4" /> Languages
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {['Français', 'Anglais', 'Espagnol', 'Arabe', 'Allemand', 'Chinois'].map((language) => (
+                    {['French', 'English', 'Spanish', 'Arabic', 'German', 'Chinese'].map((language) => (
                       <Link 
                         key={language} 
                         href={buildFilterUrl(currentParams, 'lang', language.toLowerCase())}
@@ -355,10 +355,10 @@ export default async function SearchPage({
                 {/* Location Filter */}
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <MapPin className="h-4 w-4" /> Localisation
+                    <MapPin className="h-4 w-4" /> Location
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Remote'].map((city) => (
+                    {['New York', 'London', 'Paris', 'Berlin', 'Remote'].map((city) => (
                       <Link 
                         key={city} 
                         href={buildFilterUrl(currentParams, 'loc', city.toLowerCase())}
@@ -399,10 +399,10 @@ export default async function SearchPage({
                </div>
              ) : (
                 <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
-                  <p className="text-slate-500 text-lg">Aucun expert trouvé pour cette recherche.</p>
-                  <p className="text-slate-400 text-sm mt-1">Essayez de modifier vos filtres ou d'élargir votre recherche.</p>
+                  <p className="text-slate-500 text-lg">No experts found for this search.</p>
+                  <p className="text-slate-400 text-sm mt-1">Try modifying your filters or broadening your search.</p>
                   <Button variant="link" className="text-[#34E0A1] mt-2" asChild>
-                      <Link href="/search">Effacer tous les filtres</Link>
+                      <Link href="/search">Clear all filters</Link>
                   </Button>
                 </div>
              )}

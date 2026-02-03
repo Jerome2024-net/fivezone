@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Check, Zap, Shield, ArrowRight, Bot, Sparkles, Users, HelpCircle } from "lucide-react"
 import Link from "next/link"
+import { PricingClient, FinalCTA } from "./PricingClient"
 
 interface PricingPageProps {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -8,7 +9,7 @@ interface PricingPageProps {
 
 export default async function PricingPage({ searchParams }: PricingPageProps) {
   const params = await searchParams;
-  const email = typeof params.email === 'string' ? params.email : undefined;
+  const canceled = params.canceled === 'true';
 
   const standardFeatures = [
     "Access to all Fivezone AI talents",
@@ -65,6 +66,15 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
+      {/* Canceled Banner */}
+      {canceled && (
+        <div className="bg-amber-100 border-b border-amber-200 px-4 py-3 text-center">
+          <p className="text-amber-800 font-medium">
+            Payment was canceled. Feel free to try again when you're ready!
+          </p>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-20 px-4">
         <div className="container mx-auto max-w-5xl text-center">
@@ -88,148 +98,12 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
         </div>
       </div>
 
-      {/* Pricing Cards */}
-      <div className="py-20 px-4 bg-white">
-        <div className="container mx-auto max-w-6xl">
-          
-          {/* Standard Plan */}
-          <div className="mb-16">
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-3xl">🟢</span>
-              <h2 className="text-3xl font-black text-slate-900">Standard</h2>
-            </div>
-            
-            <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-3xl border-2 border-emerald-200 p-8 md:p-10 max-w-2xl">
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-5xl md:text-6xl font-black text-slate-900">$99</span>
-                <span className="text-slate-500 text-xl">/ month</span>
-              </div>
-              <p className="text-slate-600 mb-6">Best for founders, solo operators, and small teams.</p>
-              
-              <div className="mb-8">
-                <h4 className="font-bold text-slate-900 mb-4">What's included</h4>
-                <ul className="space-y-3">
-                  {standardFeatures.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                      <span className="text-slate-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div className="bg-emerald-100/50 rounded-xl p-4 mb-6">
-                <p className="text-emerald-800 font-medium text-center">
-                  👉 One AI talent = one dedicated work capacity
-                </p>
-              </div>
-              
-              <Button 
-                asChild
-                className="w-full h-14 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg"
-              >
-                <Link href={`https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`} target="_blank">
-                  Activate 1 AI talent
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          {/* Team Plans */}
-          <div className="mb-16">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">🔵</span>
-              <h2 className="text-3xl font-black text-slate-900">Team</h2>
-            </div>
-            <p className="text-slate-600 text-lg mb-8 max-w-2xl">
-              For teams that need multiple talents working in parallel. Built for growing teams, SMEs, and agencies that require multiple skills at the same time.
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Team 3 */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl border-2 border-blue-200 p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xl">🔹</span>
-                  <h3 className="text-xl font-bold text-slate-900">Team 3</h3>
-                </div>
-                
-                <div className="flex items-baseline gap-2 mb-6">
-                  <span className="text-4xl font-black text-slate-900">$249</span>
-                  <span className="text-slate-500">/ month</span>
-                </div>
-                
-                <ul className="space-y-3 mb-6">
-                  {team3Features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                      <span className="text-slate-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <div className="bg-blue-100/50 rounded-xl p-3 mb-6">
-                  <p className="text-blue-800 font-medium text-center text-sm">
-                    👉 Save compared to 3 separate Standard plans
-                  </p>
-                </div>
-                
-                <Button 
-                  asChild
-                  className="w-full h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
-                >
-                  <Link href={`https://buy.stripe.com/team3${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`} target="_blank">
-                    Activate 3 AI talents
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Team 6 */}
-              <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-3xl border-2 border-violet-200 p-8 relative overflow-hidden">
-                <div className="absolute top-4 right-4 bg-violet-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                  BEST VALUE
-                </div>
-                
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xl">🔹</span>
-                  <h3 className="text-xl font-bold text-slate-900">Team 6</h3>
-                </div>
-                
-                <div className="flex items-baseline gap-2 mb-6">
-                  <span className="text-4xl font-black text-slate-900">$449</span>
-                  <span className="text-slate-500">/ month</span>
-                </div>
-                
-                <ul className="space-y-3 mb-6">
-                  {team6Features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
-                      <span className="text-slate-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <div className="bg-violet-100/50 rounded-xl p-3 mb-6">
-                  <p className="text-violet-800 font-medium text-center text-sm">
-                    👉 Ideal for startups, agencies, and SMEs
-                  </p>
-                </div>
-                
-                <Button 
-                  asChild
-                  className="w-full h-12 rounded-full bg-violet-600 hover:bg-violet-700 text-white font-bold"
-                >
-                  <Link href={`https://buy.stripe.com/team6${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`} target="_blank">
-                    Activate 6 AI talents
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Pricing Cards - Client Component for interactivity */}
+      <PricingClient 
+        standardFeatures={standardFeatures}
+        team3Features={team3Features}
+        team6Features={team6Features}
+      />
 
       {/* Available AI Talents */}
       <div className="py-20 px-4 bg-slate-100">
@@ -288,32 +162,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
         </div>
       </div>
 
-      {/* Final CTA */}
-      <div className="py-20 px-4 bg-[#34E0A1]">
-        <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-8">
-            Activate your AI talent today
-          </h2>
-          
-          <Button 
-            asChild
-            className="h-16 px-12 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xl"
-          >
-            <Link href={`https://buy.stripe.com/3cI7sM2N16wme5P8nO6kg01${email ? `?prefilled_email=${encodeURIComponent(email)}` : ''}`} target="_blank">
-              Get started for $99/month
-              <ArrowRight className="w-6 h-6 ml-3" />
-            </Link>
-          </Button>
-          
-          <div className="flex items-center justify-center gap-4 mt-6 text-slate-700 text-sm">
-            <span className="flex items-center gap-1">
-              <Shield className="w-4 h-4" /> Cancel anytime
-            </span>
-            <span>•</span>
-            <span>No commitment</span>
-          </div>
-        </div>
-      </div>
+      {/* Final CTA - Uses client component */}
+      <FinalCTA />
     </div>
   )
 }

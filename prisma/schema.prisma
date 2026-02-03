@@ -28,6 +28,15 @@ model User {
   role                    String           @default("USER")
   createdAt               DateTime         @default(now())
   updatedAt               DateTime         @updatedAt
+  
+  // Subscription fields for AI agents access
+  subscriptionPlan        String?          // "STANDARD", "TEAM3", "TEAM6"
+  subscriptionStatus      String           @default("INACTIVE") // "ACTIVE", "INACTIVE", "CANCELLED"
+  subscriptionStart       DateTime?
+  subscriptionEnd         DateTime?
+  stripeCustomerId        String?          @unique
+  stripeSubscriptionId    String?          @unique
+  
   bookings                Booking[]
   businesses              Business[]
   disputesFounded         Dispute[]

@@ -15,7 +15,8 @@ import {
   Languages, 
   Briefcase,
   Bot,
-  Zap
+  Zap,
+  Sparkles
 } from "lucide-react"
 
 // ISR: Revalidate every 60 seconds for fresh data
@@ -239,14 +240,11 @@ export default async function BusinessProfilePage({ params }: PageProps) {
                        <p className="text-xs font-bold text-violet-600 uppercase tracking-wide">Availability</p>
                   </div>
 
-                  {business.aiPricePerTask && (
-                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 text-center">
-                          <p className="text-2xl font-black text-slate-900">
-                            ${business.aiPricePerTask}
-                          </p>
-                          <p className="text-xs font-bold text-green-600 uppercase tracking-wide">Per Task</p>
-                      </div>
-                  )}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 text-center">
+                      <Sparkles className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                      <p className="text-lg font-black text-slate-900">$99/mo</p>
+                      <p className="text-xs font-bold text-green-600 uppercase tracking-wide">Subscription</p>
+                  </div>
 
                   <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100 text-center">
                       <div className="flex justify-center mb-2 gap-0.5">
@@ -444,7 +442,6 @@ export default async function BusinessProfilePage({ params }: PageProps) {
           agentId={business.id}
           agentName={business.name}
           agentType={business.aiAgentType}
-          pricePerTask={business.aiPricePerTask || undefined}
         />
       )}
 

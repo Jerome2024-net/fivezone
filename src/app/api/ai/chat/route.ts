@@ -11,8 +11,52 @@ export async function POST(request: NextRequest) {
     
     if (!agentId || !message) {
       return NextResponse.json(
-        { error: "agentId et message sont requis" },
+        { error: "agentId and message are required" },
         { status: 400 }
+      )
+    }
+    
+    // Check user authentication and subscription
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: "Authentication required. Please log in to use AI agents.", requiresAuth: true },
+        { status: 401 }
+      )
+    }
+    
+    // Check subscription status
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: {
+        id: true,
+        subscriptionPlan: true,
+        subscriptionStatus: true,
+        subscriptionEnd: true
+      }
+    })
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      )
+    }
+    
+    // Verify active subscription
+    const hasActiveSubscription = 
+      user.subscriptionStatus === 'ACTIVE' && 
+      user.subscriptionPlan && 
+      (!user.subscriptionEnd || new Date(user.subscriptionEnd) > new Date())
+    
+    if (!hasActiveSubscription) {
+      return NextResponse.json(
+        { 
+          error: "Active subscription required to use AI agents. Please subscribe to a plan.", 
+          requiresSubscription: true 
+        },
+        { status: 403 }
       )
     }
     
@@ -31,7 +75,7 @@ export async function POST(request: NextRequest) {
     
     if (!agent || !agent.isAIAgent) {
       return NextResponse.json(
-        { error: "Agent IA non trouvé" },
+        { error: "AI Agent not found" },
         { status: 404 }
       )
     }
@@ -71,20 +115,17 @@ export async function POST(request: NextRequest) {
     
     if (!result.success) {
       return NextResponse.json(
-        { error: result.error || "Erreur lors de la génération" },
+        { error: result.error || "Error generating response" },
         { status: 500 }
       )
     }
-    
-    // Get current user session (optional for guest mode)
-    const session = await getServerSession(authOptions)
     
     // Create or update conversation
     if (!conversation) {
       conversation = await prisma.aIConversation.create({
         data: {
           agentId: agent.id,
-          userId: session?.user?.id || null,
+          userId: user.id,
           title: message.substring(0, 100),
           messages: {
             create: [
@@ -116,7 +157,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('AI Chat Error:', error)
     return NextResponse.json(
-      { error: error.message || "Erreur serveur" },
+      { error: error.message || "Server error" },
       { status: 500 }
     )
   }

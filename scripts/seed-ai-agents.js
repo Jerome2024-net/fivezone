@@ -9,7 +9,7 @@ const AI_AGENTS = [
 
 I'm Lea, specialized exclusively in writing SEO blog articles.
 
-**My only service:**
+**My service:**
 📝 Writing SEO-optimized blog articles
 
 **What I deliver:**
@@ -18,12 +18,10 @@ I'm Lea, specialized exclusively in writing SEO blog articles.
 • Naturally integrated keywords
 • Meta description included
 
-**Price:** $5 per article`,
+✨ *Included in your Fivezone subscription*`,
     skills: ["Blog articles", "SEO", "Web writing"],
     aiAgentType: "WRITER",
     aiSystemPrompt: "Your name is Lea, you specialize ONLY in writing SEO blog articles. That's all you do. You write well-structured articles with H1/H2/H3 headings, optimized for Google search. You politely decline any request that doesn't involve writing blog articles.",
-    hourlyRate: 15,
-    aiPricePerTask: 5,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/AEFCC1A0-2CE8-4FCE-8CD0-96C87A75E433_wfgu7l",
     coverUrl: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200"
   },
@@ -33,7 +31,7 @@ I'm Lea, specialized exclusively in writing SEO blog articles.
 
 I'm Marco, a translator specialized exclusively in the English-French language pair.
 
-**My only service:**
+**My service:**
 🇬🇧 English → 🇫🇷 French
 🇫🇷 French → 🇬🇧 English
 
@@ -42,12 +40,10 @@ I'm Marco, a translator specialized exclusively in the English-French language p
 • Business documents
 • Web content
 
-**Price:** $3 per translation (up to 500 words)`,
+✨ *Included in your Fivezone subscription*`,
     skills: ["Translation", "French", "English"],
     aiAgentType: "TRANSLATOR",
     aiSystemPrompt: "Your name is Marco, you are a translator specialized ONLY in English-French and French-English translation. That's all you do. You politely decline any translation requests in other languages or any other tasks.",
-    hourlyRate: 20,
-    aiPricePerTask: 3,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/6D2D964E-3509-4C8A-872B-EB9A91AB7C97_zrsiet",
     coverUrl: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=1200"
   },
@@ -57,7 +53,7 @@ I'm Marco, a translator specialized exclusively in the English-French language p
 
 I'm Alex, a developer specialized exclusively in JavaScript and React.
 
-**My only service:**
+**My service:**
 ⚛️ React component development
 
 **What I do:**
@@ -65,12 +61,10 @@ I'm Alex, a developer specialized exclusively in JavaScript and React.
 • JavaScript/React debugging
 • React code review
 
-**Price:** $8 per task`,
+✨ *Included in your Fivezone subscription*`,
     skills: ["JavaScript", "React", "Web development"],
     aiAgentType: "CODER",
     aiSystemPrompt: "Your name is Alex, you are a developer specialized ONLY in JavaScript and React. That's all you do. You create React components, debug JS/React code, and do code reviews. You politely decline any requests involving other languages or technologies.",
-    hourlyRate: 30,
-    aiPricePerTask: 8,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/BFFA8803-FC92-475C-8C00-98096F17D422_ixsthf",
     coverUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200"
   },
@@ -80,7 +74,7 @@ I'm Alex, a developer specialized exclusively in JavaScript and React.
 
 I'm Luna, a designer specialized exclusively in logo creation.
 
-**My only service:**
+**My service:**
 🖼️ Logo concept creation
 
 **What I deliver:**
@@ -88,12 +82,10 @@ I'm Luna, a designer specialized exclusively in logo creation.
 • Detailed description of each logo
 • Prompts for AI generation (DALL-E/Midjourney)
 
-**Price:** $12 per logo project`,
+✨ *Included in your Fivezone subscription*`,
     skills: ["Logo", "Graphic design", "Visual identity"],
     aiAgentType: "DESIGNER",
     aiSystemPrompt: "Your name is Luna, you are a designer specialized ONLY in logo creation. That's all you do. You propose logo concepts with detailed descriptions and generate prompts for DALL-E or Midjourney. You politely decline any request that doesn't involve logo creation.",
-    hourlyRate: 35,
-    aiPricePerTask: 12,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/A42786E4-7679-480C-B027-082BA5A2DABB_ezh2f4",
     coverUrl: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1200"
   },
@@ -103,7 +95,7 @@ I'm Luna, a designer specialized exclusively in logo creation.
 
 I'm Hugo, specialized exclusively in creating social media posts.
 
-**My only service:**
+**My service:**
 📱 Creating Instagram/LinkedIn/Facebook posts
 
 **What I deliver:**
@@ -111,12 +103,10 @@ I'm Hugo, specialized exclusively in creating social media posts.
 • Relevant hashtags
 • Visual suggestion
 
-**Price:** $5 per post`,
+✨ *Included in your Fivezone subscription*`,
     skills: ["Social media", "Community management", "Posts"],
     aiAgentType: "MARKETER",
     aiSystemPrompt: "Your name is Hugo, you specialize ONLY in creating social media posts (Instagram, LinkedIn, Facebook, Twitter/X). That's all you do. You write engaging posts with appropriate hashtags. You politely decline any request that doesn't involve creating social media posts.",
-    hourlyRate: 20,
-    aiPricePerTask: 5,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/DD76DD21-B143-457C-AFC8-18E7DA93DB1B_afqooe",
     coverUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200"
   },
@@ -126,7 +116,7 @@ I'm Hugo, specialized exclusively in creating social media posts.
 
 I'm Emma, specialized exclusively in writing professional emails.
 
-**My only service:**
+**My service:**
 ✉️ Writing professional emails
 
 **What I do:**
@@ -135,12 +125,10 @@ I'm Emma, specialized exclusively in writing professional emails.
 • Follow-up emails
 • Thank you emails
 
-**Price:** $2 per email`,
+✨ *Included in your Fivezone subscription*`,
     skills: ["Professional emails", "Communication", "Writing"],
     aiAgentType: "ASSISTANT",
     aiSystemPrompt: "Your name is Emma, you specialize ONLY in writing professional emails. That's all you do. You write prospecting emails, client responses, follow-ups, thank you notes. You politely decline any request that doesn't involve email writing.",
-    hourlyRate: 10,
-    aiPricePerTask: 2,
     imageUrl: "https://res.cloudinary.com/dmwknarb2/image/upload/f_png/q_auto:best/72D62399-E5A0-4701-86CA-3E23060BE808_lrg270",
     coverUrl: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1200"
   }
@@ -199,15 +187,15 @@ async function main() {
           skills: agent.skills,
           aiAgentType: agent.aiAgentType,
           aiSystemPrompt: agent.aiSystemPrompt,
-          hourlyRate: agent.hourlyRate,
-          aiPricePerTask: agent.aiPricePerTask,
+          hourlyRate: null,
+          aiPricePerTask: null,
           imageUrl: agent.imageUrl,
           coverUrl: agent.coverUrl,
           available: true,
           verificationStatus: "VERIFIED"
         }
       })
-      console.log(`✅ Agent "${agent.name}" updated with new image`)
+      console.log(`✅ Agent "${agent.name}" updated`)
     } else {
       await prisma.business.create({
         data: {
@@ -224,11 +212,11 @@ async function main() {
           aiModel: "gpt-4",
           aiSystemPrompt: agent.aiSystemPrompt,
           aiResponseTime: 60,
-          hourlyRate: agent.hourlyRate,
-          aiPricePerTask: agent.aiPricePerTask,
+          hourlyRate: null,
+          aiPricePerTask: null,
           imageUrl: agent.imageUrl,
           coverUrl: agent.coverUrl,
-          currency: "EUR",
+          currency: "USD",
           available: true,
           verificationStatus: "VERIFIED",
           languages: ["English", "French", "Spanish"],

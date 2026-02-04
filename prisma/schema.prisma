@@ -8,18 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ========== AI AGENT TYPES ==========
-enum AIAgentType {
-  WRITER        // Rédacteur - Articles, contenu
-  TRANSLATOR    // Traducteur multi-langues
-  SEO           // Expert SEO
-  CODER         // Assistant développement
-  DESIGNER      // Génération d'images
-  ASSISTANT     // Assistant général
-  ANALYST       // Analyse de données
-  MARKETER      // Marketing & copywriting
-}
-
 model User {
   id                      String           @id @default(cuid())
   name                    String?
@@ -28,14 +16,7 @@ model User {
   role                    String           @default("USER")
   createdAt               DateTime         @default(now())
   updatedAt               DateTime         @updatedAt
-  
-  // Subscription fields for AI agents access
-  subscriptionPlan        String?          // "STANDARD", "TEAM3", "TEAM6"
-  subscriptionStatus      String           @default("INACTIVE") // "ACTIVE", "INACTIVE", "CANCELLED"
-  subscriptionStart       DateTime?
-  subscriptionEnd         DateTime?
   stripeCustomerId        String?          @unique
-  stripeSubscriptionId    String?          @unique
   
   bookings                Booking[]
   businesses              Business[]
@@ -54,9 +35,6 @@ model User {
   invoices                Invoice[]        @relation("InvoiceOwner")
   documents               Document[]       @relation("DocumentOwner")
   calendarEvents          CalendarEvent[]  @relation("EventOwner")
-  
-  // AI Conversations
-  aiConversations         AIConversation[] @relation("UserAIConversations")
 }
 
 model Business {
@@ -98,14 +76,6 @@ model Business {
   ctaAction                String?            @default("none")
   ctaUrl                   String?
   
-  // AI Agent fields
-  isAIAgent                Boolean            @default(false)
-  aiAgentType              AIAgentType?
-  aiModel                  String?            @default("gpt-4")
-  aiSystemPrompt           String?
-  aiResponseTime           Int?               @default(60) // seconds
-  aiPricePerTask           Float?
-  
   bookings                 Booking[]
   category                 Category           @relation(fields: [categoryId], references: [id])
   owner                    User?              @relation(fields: [ownerId], references: [id])
@@ -114,9 +84,6 @@ model Business {
   promotions               Promotion[]
   reviews                  Review[]
   services                 Service[]
-  
-  // AI Conversations
-  aiConversations          AIConversation[] @relation("AIAgentConversations")
 }
 
 model Service {
@@ -513,28 +480,4 @@ enum DocumentType {
   BRIEF
   DELIVERABLE
   OTHER
-}
-
-// ========== AI CONVERSATION MODELS ==========
-model AIConversation {
-  id         String      @id @default(cuid())
-  title      String?
-  agentId    String
-  userId     String?     // Optional for guest users
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  
-  agent      Business    @relation("AIAgentConversations", fields: [agentId], references: [id])
-  user       User?       @relation("UserAIConversations", fields: [userId], references: [id])
-  messages   AIMessage[]
-}
-
-model AIMessage {
-  id             String         @id @default(cuid())
-  role           String         // 'user' | 'assistant'
-  content        String
-  conversationId String
-  createdAt      DateTime       @default(now())
-  
-  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }

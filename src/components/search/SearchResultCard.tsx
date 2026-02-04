@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link"
-import { Heart, MapPin, Zap, Clock, Bot } from "lucide-react"
+import { Heart, MapPin, Zap, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface SearchResultCardProps {
@@ -16,8 +16,6 @@ interface SearchResultCardProps {
     currency?: string
     available?: boolean
     yearsOfExperience?: number
-    isAIAgent?: boolean
-    aiPricePerTask?: number
 }
 
 export function SearchResultCard({ 
@@ -27,13 +25,11 @@ export function SearchResultCard({
     rating = 0,
     reviewCount = 0,
     imageUrl,
-    city = "Non spécifié",
+    city = "Not specified",
     hourlyRate,
     currency = "EUR",
     available = true,
     yearsOfExperience,
-    isAIAgent = false,
-    aiPricePerTask
 }: SearchResultCardProps) {
     const currencySymbol = currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'XOF' ? 'FCFA' : '€';
     
@@ -59,13 +55,9 @@ export function SearchResultCard({
                             <Heart className="h-4 w-4" />
                         </button>
                     </div>
-                    {/* AI Badge or Availability badge */}
+                    {/* Availability badge */}
                     <div className="absolute top-3 left-3 z-10">
-                        {isAIAgent ? (
-                            <span className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
-                                <Bot className="h-3.5 w-3.5" /> AI Agent
-                            </span>
-                        ) : available && (
+                        {available && (
                             <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
                                 <Zap className="h-3 w-3" /> Available
                             </span>
@@ -89,14 +81,7 @@ export function SearchResultCard({
                                 ))}
                             </div>
                             <span className="text-sm text-slate-500 font-medium">{reviewCount} reviews</span>
-                            {isAIAgent ? (
-                                <>
-                                    <span className="text-slate-300">•</span>
-                                    <span className="text-sm text-violet-600 font-semibold flex items-center gap-1">
-                                        <Zap className="h-3 w-3" /> Instant response
-                                    </span>
-                                </>
-                            ) : yearsOfExperience && (
+                            {yearsOfExperience && (
                                 <>
                                     <span className="text-slate-300">•</span>
                                     <span className="text-sm text-slate-500 font-medium flex items-center gap-1">
@@ -107,12 +92,8 @@ export function SearchResultCard({
                         </div>
                         
                         <div className="text-sm text-slate-600 space-y-1">
-                            <p>{category} • {isAIAgent ? '🌍 Available worldwide' : city}</p>
-                            {isAIAgent ? (
-                                <p className="font-bold text-slate-900 mt-1">
-                                    <span className="text-violet-600">Included in subscription</span>
-                                </p>
-                            ) : hourlyRate && (
+                            <p>{category} • {city}</p>
+                            {hourlyRate && (
                                 <p className="font-bold text-slate-900 mt-1">
                                     {hourlyRate} {currencySymbol} <span className="text-slate-500 font-normal">/ day</span>
                                 </p>

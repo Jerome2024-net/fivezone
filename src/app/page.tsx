@@ -32,11 +32,8 @@ export default async function Home() {
          viewCount: b.viewCount,
          rating: b.rating,
          reviewCount: b.reviewCount,
-         isAIAgent: b.isAIAgent,
-         imageUrl: b.isAIAgent ? (b.imageUrl || b.coverUrl || undefined) : (b.coverUrl || b.imageUrl || undefined),
-         images: b.isAIAgent 
-           ? [b.imageUrl, b.coverUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[]
-           : [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
+         imageUrl: b.coverUrl || b.imageUrl || undefined,
+         images: [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
          hourlyRate: b.hourlyRate || undefined,
          currency: b.currency || 'EUR',
          city: b.city
@@ -64,14 +61,14 @@ export default async function Home() {
         </div>
       )}
 
-      {/* 1. HERO SECTION UPDATED - AI Focus */}
+      {/* 1. HERO SECTION - Freelancer Focus */}
       <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
         <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
-            Activate The Perfect AI Talent.
+            Find The Perfect Freelancer.
           </h1>
           <p className="text-slate-600 text-center mb-8 text-lg md:text-2xl font-medium max-w-2xl">
-             Specialized AI agents. Ready to work.
+             Skilled professionals. Ready to help your business grow.
           </p>
           
           {/* Search Container */}

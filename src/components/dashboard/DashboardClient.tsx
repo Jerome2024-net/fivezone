@@ -227,7 +227,7 @@ export function DashboardClient({
                              {/* UPSell to become Freelancer */}
                              <div className="bg-slate-900 rounded-xl p-6 text-white flex flex-col md:flex-row items-center justify-between shadow-lg">
                                  <div className="mb-4 md:mb-0">
-                                     <h3 className="font-bold text-lg mb-1">Vous êtes aussi un professionnel ? 🚀</h3>
+                                     <h3 className="font-bold text-lg mb-1">Vous êtes aussi un professionnel ?</h3>
                                      <p className="text-slate-300 text-sm">Créez votre profil prestataire gratuitement et trouvez des clients.</p>
                                  </div>
                                  <Link href="/register">
@@ -757,7 +757,7 @@ export function DashboardClient({
                          {!isPro && (
                              <div className="bg-slate-900 rounded-xl p-6 text-white flex items-center justify-between shadow-lg">
                                  <div>
-                                     <h3 className="font-bold text-lg mb-1">Passer au niveau supérieur 🚀</h3>
+                                     <h3 className="font-bold text-lg mb-1">Passer au niveau supérieur</h3>
                                      <p className="text-slate-300 text-sm">Obtenez le badge vérifié et boostez votre visibilité.</p>
                                  </div>
                                  <Link href="/pricing">

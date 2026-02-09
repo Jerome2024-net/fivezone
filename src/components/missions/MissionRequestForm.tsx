@@ -147,7 +147,7 @@ export function MissionRequestForm({
                         </div>
 
                         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
-                            Demande envoyée ! 🎉
+                            Demande envoyée !
                         </h2>
                         
                         <p className="text-slate-600 text-lg mb-8 max-w-[280px] mx-auto">

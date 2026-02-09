@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
-import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe } from "lucide-react"
+import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe, Monitor, Pen, BarChart3, Building2, Droplets, Landmark, Search, Send, Rocket, FolderSearch } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
@@ -48,18 +48,18 @@ export default async function Home() {
   }
 
   const categories = [
-    { label: 'Development', icon: '💻', desc: 'Web, Mobile, Backend', link: '/search?category=Tech', color: 'from-blue-500/10 to-indigo-500/10 border-blue-200/50' },
-    { label: 'Design', icon: '🎨', desc: 'UI/UX, Logo, Branding', link: '/search?category=Design', color: 'from-pink-500/10 to-rose-500/10 border-pink-200/50' },
-    { label: 'Marketing', icon: '📈', desc: 'SEO, Ads, Content', link: '/search?category=Marketing', color: 'from-orange-500/10 to-amber-500/10 border-orange-200/50' },
-    { label: 'Business', icon: '💼', desc: 'Legal, Finance, Consulting', link: '/search?category=Business', color: 'from-emerald-500/10 to-teal-500/10 border-emerald-200/50' },
-    { label: 'Cleaning', icon: '🧹', desc: 'Office, Residential', link: '/search?category=Nettoyage', color: 'from-cyan-500/10 to-sky-500/10 border-cyan-200/50' },
-    { label: 'Legal', icon: '⚖️', desc: 'Lawyers, Notaries', link: '/search?category=Juridique', color: 'from-violet-500/10 to-purple-500/10 border-violet-200/50' },
+    { label: 'Development', Icon: Monitor, desc: 'Web, Mobile, Backend', link: '/search?category=Tech', color: 'from-blue-600/10 to-indigo-600/10 border-blue-300/40', iconColor: 'text-blue-600', iconBg: 'bg-blue-100' },
+    { label: 'Design', Icon: Pen, desc: 'UI/UX, Logo, Branding', link: '/search?category=Design', color: 'from-pink-600/10 to-rose-600/10 border-pink-300/40', iconColor: 'text-pink-600', iconBg: 'bg-pink-100' },
+    { label: 'Marketing', Icon: BarChart3, desc: 'SEO, Ads, Content', link: '/search?category=Marketing', color: 'from-orange-600/10 to-amber-600/10 border-orange-300/40', iconColor: 'text-orange-600', iconBg: 'bg-orange-100' },
+    { label: 'Business', Icon: Building2, desc: 'Finance, Strategy, Consulting', link: '/search?category=Business', color: 'from-emerald-600/10 to-teal-600/10 border-emerald-300/40', iconColor: 'text-emerald-600', iconBg: 'bg-emerald-100' },
+    { label: 'Cleaning', Icon: Droplets, desc: 'Office, Residential', link: '/search?category=Nettoyage', color: 'from-cyan-600/10 to-sky-600/10 border-cyan-300/40', iconColor: 'text-cyan-600', iconBg: 'bg-cyan-100' },
+    { label: 'Legal', Icon: Landmark, desc: 'Lawyers, Notaries', link: '/search?category=Juridique', color: 'from-violet-600/10 to-purple-600/10 border-violet-300/40', iconColor: 'text-violet-600', iconBg: 'bg-violet-100' },
   ]
 
   const howItWorks = [
-    { step: '01', title: 'Search', desc: 'Tell us what you need. Browse experts by skill, location, or budget.', icon: '🔍' },
-    { step: '02', title: 'Connect', desc: 'Send a mission request directly to the freelancer of your choice.', icon: '🤝' },
-    { step: '03', title: 'Get it done', desc: 'Work together with secure payments and direct messaging.', icon: '🚀' },
+    { step: '01', title: 'Search', desc: 'Tell us what you need. Browse experts by skill, location, or budget.', Icon: Search, iconColor: 'text-blue-500 bg-blue-50' },
+    { step: '02', title: 'Connect', desc: 'Send a mission request directly to the freelancer of your choice.', Icon: Send, iconColor: 'text-emerald-500 bg-emerald-50' },
+    { step: '03', title: 'Get it done', desc: 'Work together with secure payments and direct messaging.', Icon: Rocket, iconColor: 'text-violet-500 bg-violet-50' },
   ]
 
   return (
@@ -154,7 +154,9 @@ export default async function Home() {
                 key={idx}
                 className={`group relative p-5 md:p-6 rounded-2xl border bg-gradient-to-br ${cat.color} hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
               >
-                <span className="text-3xl md:text-4xl block mb-3">{cat.icon}</span>
+                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl ${cat.iconBg} flex items-center justify-center mb-3 group-hover:shadow-md group-hover:scale-110 transition-all duration-300`}>
+                  <cat.Icon className={`h-6 w-6 md:h-7 md:w-7 ${cat.iconColor}`} strokeWidth={1.8} />
+                </div>
                 <h3 className="font-bold text-slate-900 text-sm md:text-base mb-1">{cat.label}</h3>
                 <p className="text-xs text-slate-500">{cat.desc}</p>
                 <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#34E0A1] group-hover:translate-x-1 transition-all absolute top-4 right-4 opacity-0 group-hover:opacity-100" />
@@ -205,7 +207,9 @@ export default async function Home() {
             </div>
           ) : (
             <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-white">
-              <p className="text-5xl mb-4">🔍</p>
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-4">
+                <FolderSearch className="h-8 w-8 text-slate-400" />
+              </div>
               <p className="text-slate-500 font-medium text-lg mb-2">No experts yet</p>
               <p className="text-slate-400 text-sm mb-6">Be the first to join the platform!</p>
               <Button asChild className="rounded-full bg-[#34E0A1] text-slate-900 font-bold hover:bg-[#2cbe89]">
@@ -240,8 +244,8 @@ export default async function Home() {
                 {i < howItWorks.length - 1 && (
                   <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-slate-200" />
                 )}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 mb-5 text-3xl group-hover:scale-110 group-hover:border-[#34E0A1]/30 group-hover:bg-[#34E0A1]/5 transition-all duration-300">
-                  {item.icon}
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl border border-slate-200 mb-5 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300 ${item.iconColor}`}>
+                  <item.Icon className="h-7 w-7" />
                 </div>
                 <div className="text-xs font-bold text-[#34E0A1] uppercase tracking-widest mb-2">Step {item.step}</div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
@@ -287,10 +291,10 @@ export default async function Home() {
               </h2>
               <div className="space-y-5">
                 {[
-                  { title: '0% commission on missions', desc: 'Unlike other platforms, we don\'t take a cut on your transactions.' },
                   { title: 'Verified professionals', desc: 'Every freelancer goes through a verification process.' },
                   { title: 'Secure escrow payments', desc: 'Your payment is held securely until the work is delivered.' },
                   { title: 'Direct messaging', desc: 'Communicate directly with freelancers — no middleman.' },
+                  { title: 'Fast & reliable', desc: 'Find the right expert and get your project done in record time.' },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4">
                     <CheckCircle2 className="h-6 w-6 text-[#34E0A1] flex-shrink-0 mt-0.5" />

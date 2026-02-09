@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Check, Zap, Shield, ArrowRight, Users, HelpCircle, Star, Briefcase, Eye, Crown } from "lucide-react"
+import { Check, Zap, Shield, ArrowRight, Users, HelpCircle, Star, Briefcase, Eye, Crown, Gift, UserPlus, Banknote, Search as SearchIcon } from "lucide-react"
 import Link from "next/link"
 
 export default async function PricingPage() {
@@ -10,6 +10,7 @@ export default async function PricingPage() {
     "Receive mission requests",
     "Basic visibility in search",
     "Direct contact with clients",
+    "0% commission — always",
   ];
 
   const proFeatures = [
@@ -19,7 +20,7 @@ export default async function PricingPage() {
     "Featured on homepage",
     "Analytics & insights dashboard",
     "Priority support",
-    "No commission on first 3 missions",
+    "0% commission — always",
   ];
 
   const faqs = [
@@ -28,12 +29,12 @@ export default async function PricingPage() {
       a: "Clients search for freelancers by skill, location, and category. Your profile appears in results based on your subscription tier and ratings."
     },
     {
-      q: "What commission does Fivezone take?",
-      a: "We take a small 10% commission on completed missions. Pro members get their first 3 missions commission-free."
+      q: "Does Fivezone take any commission?",
+      a: "No. Fivezone takes 0% commission on all missions. You keep 100% of what you earn. We make money through Pro subscriptions, not by taking a cut from your work."
     },
     {
       q: "Can I cancel anytime?",
-      a: "Yes. All plans are cancel anytime, no commitment."
+      a: "The Pro plan is billed annually. You can cancel before your renewal date and you'll keep access until the end of your billing period."
     },
     {
       q: "How do I get paid?",
@@ -61,9 +62,10 @@ export default async function PricingPage() {
           <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-4">
             Join thousands of independent professionals who find clients on Fivezone.
           </p>
-          <p className="text-2xl font-bold text-white max-w-2xl mx-auto">
-            👉 Get discovered. Get hired. Get paid.
-          </p>
+          <div className="flex items-center justify-center gap-3 text-2xl font-bold text-white max-w-2xl mx-auto">
+            <ArrowRight className="w-6 h-6 text-[#34E0A1] shrink-0" />
+            <p>Get discovered. Get hired. Get paid.</p>
+          </div>
         </div>
       </div>
 
@@ -75,15 +77,17 @@ export default async function PricingPage() {
             {/* Free Plan */}
             <div className="bg-white rounded-3xl border-2 border-slate-200 p-8 md:p-10">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🆓</span>
+                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+                  <Gift className="w-6 h-6 text-slate-600" />
+                </div>
                 <h2 className="text-2xl font-black text-slate-900">Free</h2>
               </div>
               
               <div className="flex items-baseline gap-2 mb-2">
                 <span className="text-5xl font-black text-slate-900">$0</span>
-                <span className="text-slate-500 text-xl">/ month</span>
+                <span className="text-slate-500 text-xl">/ forever</span>
               </div>
-              <p className="text-slate-600 mb-6">Perfect for getting started as a freelancer.</p>
+              <p className="text-slate-600 mb-6">Perfect for getting started. No credit card required.</p>
               
               <div className="mb-8">
                 <h4 className="font-bold text-slate-900 mb-4">What's included</h4>
@@ -121,10 +125,11 @@ export default async function PricingPage() {
               </div>
               
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-5xl font-black text-slate-900">$29</span>
-                <span className="text-slate-500 text-xl">/ month</span>
+                <span className="text-5xl font-black text-slate-900">$99</span>
+                <span className="text-slate-500 text-xl">/ year</span>
               </div>
-              <p className="text-slate-600 mb-6">For freelancers serious about growing their business.</p>
+              <p className="text-slate-600 mb-1">For freelancers serious about growing their business.</p>
+              <p className="text-emerald-600 text-sm font-semibold mb-6">That&apos;s only $8.25/month</p>
               
               <div className="mb-8">
                 <h4 className="font-bold text-slate-900 mb-4">What's included</h4>
@@ -139,9 +144,10 @@ export default async function PricingPage() {
               </div>
               
               <div className="bg-emerald-100/50 rounded-xl p-4 mb-6">
-                <p className="text-emerald-800 font-medium text-center">
-                  👉 Get 5x more visibility in search results
-                </p>
+                <div className="flex items-center justify-center gap-2 text-emerald-800 font-medium">
+                  <Eye className="w-5 h-5 shrink-0" />
+                  <p>Get 5x more visibility in search results</p>
+                </div>
               </div>
               
               <Button 
@@ -168,24 +174,24 @@ export default async function PricingPage() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-2xl p-6 border border-slate-200 text-center">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">1️⃣</span>
+              <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-100">
+                <UserPlus className="w-7 h-7 text-blue-600" />
               </div>
               <h3 className="font-bold text-slate-900 text-lg mb-2">Create Your Profile</h3>
               <p className="text-slate-600">Showcase your skills, experience, and portfolio. Set your daily rate.</p>
             </div>
             
             <div className="bg-white rounded-2xl p-6 border border-slate-200 text-center">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">2️⃣</span>
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-100">
+                <SearchIcon className="w-7 h-7 text-emerald-600" />
               </div>
               <h3 className="font-bold text-slate-900 text-lg mb-2">Get Discovered</h3>
               <p className="text-slate-600">Clients search and find you based on skills, location, and availability.</p>
             </div>
             
             <div className="bg-white rounded-2xl p-6 border border-slate-200 text-center">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">3️⃣</span>
+              <div className="w-16 h-16 bg-violet-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-violet-100">
+                <Banknote className="w-7 h-7 text-violet-600" />
               </div>
               <h3 className="font-bold text-slate-900 text-lg mb-2">Get Paid</h3>
               <p className="text-slate-600">Complete missions, get paid securely. Build your reputation with reviews.</p>
@@ -234,6 +240,8 @@ export default async function PricingPage() {
             <span className="flex items-center gap-1">
               <Shield className="w-4 h-4" /> Free to start
             </span>
+            <span>•</span>
+            <span>0% commission</span>
             <span>•</span>
             <span>No credit card required</span>
           </div>

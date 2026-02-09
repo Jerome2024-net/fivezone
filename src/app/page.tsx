@@ -1,179 +1,376 @@
 import { Button } from "@/components/ui/button"
 import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
-import { MapPin, Utensils, ShoppingBag, Bed, Briefcase, Car, Sparkles, Hammer, Ticket } from "lucide-react"
+import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
-export const revalidate = 300 // Revalidate every 5 minutes
+export const revalidate = 300
 
 export default async function Home() {
-  let featuredBusinesses = [];
-  let errorLog = null;
-  
+  let featuredBusinesses: any[] = [];
+  let totalFreelancers = 0;
+  let totalCategories = 0;
+
   try {
-     const businesses = await prisma.business.findMany({
-         take: 8,
-         orderBy: { createdAt: 'desc' },
-         include: { 
-            category: true,
-            media: {
-                take: 3,
-                select: { url: true }
-            }
+    const [businesses, freelancerCount, categoryCount] = await Promise.all([
+      prisma.business.findMany({
+        take: 8,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          category: true,
+          media: { take: 3, select: { url: true } }
         }
-     });
+      }),
+      prisma.business.count(),
+      prisma.category.count(),
+    ]);
 
-     featuredBusinesses = businesses.map(b => ({
-         id: b.id,
-         name: b.name,
-         category: { name: b.category.name },
-         subscriptionTier: b.subscriptionTier,
-         viewCount: b.viewCount,
-         rating: b.rating,
-         reviewCount: b.reviewCount,
-         imageUrl: b.coverUrl || b.imageUrl || undefined,
-         images: [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
-         hourlyRate: b.hourlyRate || undefined,
-         currency: b.currency || 'EUR',
-         city: b.city
-     }));
+    totalFreelancers = freelancerCount;
+    totalCategories = categoryCount;
 
+    featuredBusinesses = businesses.map(b => ({
+      id: b.id,
+      name: b.name,
+      category: { name: b.category.name },
+      subscriptionTier: b.subscriptionTier,
+      viewCount: b.viewCount,
+      rating: b.rating,
+      reviewCount: b.reviewCount,
+      imageUrl: b.coverUrl || b.imageUrl || undefined,
+      images: [b.coverUrl, b.imageUrl, ...b.media.map(m => m.url)].filter(Boolean) as string[],
+      hourlyRate: b.hourlyRate || undefined,
+      currency: b.currency || 'EUR',
+      city: b.city
+    }));
   } catch (error: any) {
     console.error("Prisma fetch error:", error);
-    errorLog = error.message || JSON.stringify(error);
   }
+
+  const categories = [
+    { label: 'Development', icon: '💻', desc: 'Web, Mobile, Backend', link: '/search?category=Tech', color: 'from-blue-500/10 to-indigo-500/10 border-blue-200/50' },
+    { label: 'Design', icon: '🎨', desc: 'UI/UX, Logo, Branding', link: '/search?category=Design', color: 'from-pink-500/10 to-rose-500/10 border-pink-200/50' },
+    { label: 'Marketing', icon: '📈', desc: 'SEO, Ads, Content', link: '/search?category=Marketing', color: 'from-orange-500/10 to-amber-500/10 border-orange-200/50' },
+    { label: 'Business', icon: '💼', desc: 'Legal, Finance, Consulting', link: '/search?category=Business', color: 'from-emerald-500/10 to-teal-500/10 border-emerald-200/50' },
+    { label: 'Cleaning', icon: '🧹', desc: 'Office, Residential', link: '/search?category=Nettoyage', color: 'from-cyan-500/10 to-sky-500/10 border-cyan-200/50' },
+    { label: 'Legal', icon: '⚖️', desc: 'Lawyers, Notaries', link: '/search?category=Juridique', color: 'from-violet-500/10 to-purple-500/10 border-violet-200/50' },
+  ]
+
+  const howItWorks = [
+    { step: '01', title: 'Search', desc: 'Tell us what you need. Browse experts by skill, location, or budget.', icon: '🔍' },
+    { step: '02', title: 'Connect', desc: 'Send a mission request directly to the freelancer of your choice.', icon: '🤝' },
+    { step: '03', title: 'Get it done', desc: 'Work together with secure payments and direct messaging.', icon: '🚀' },
+  ]
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans">
-      
-      {/* ERROR DEBUGGING - Only visible if there is an issue */}
-      {errorLog && (
-        <div className="bg-red-900 text-white p-6 text-center">
-            <h2 className="text-xl font-bold mb-2">⚠️ System Diagnostic</h2>
-            <p className="font-mono text-sm max-w-2xl mx-auto break-all bg-black p-4 rounded mb-4">
-                {errorLog}
-            </p>
-            <p className="text-sm">
-                If you see this message, the database connection failed.
-                Check that <strong>DATABASE_URL</strong> is properly set.
-            </p>
-        </div>
-      )}
 
-      {/* 1. HERO SECTION - Freelancer Focus */}
-      <section className="relative w-full pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col items-center justify-center bg-[#34E0A1]/10 px-4">
-        <div className="container mx-auto w-full max-w-4xl flex flex-col items-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-6 tracking-tight text-slate-900 leading-[1.1]">
-            Find The Perfect Freelancer.
-          </h1>
-          <p className="text-slate-600 text-center mb-8 text-lg md:text-2xl font-medium max-w-2xl">
-             Skilled professionals. Ready to help your business grow.
-          </p>
-          
-          {/* Search Container */}
-          <div className="w-full mb-8">
-             <SearchSection />
-             <div className="mt-4 text-center text-sm text-slate-500 hidden md:block">
-                <span className="font-bold text-slate-700">Popular:</span> WordPress Developer, Graphic Designer, Community Manager, Marketing Consultant
-             </div>
-          </div>
+      {/* ═══════════ HERO ═══════════ */}
+      <section className="relative w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30" />
+        <div className="absolute top-20 right-0 w-96 h-96 bg-[#34E0A1]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mt-2">
-             <Button className="h-12 px-8 text-lg font-bold rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20" asChild>
-                <Link href="/search">Find a freelancer</Link>
-             </Button>
-             <Button variant="outline" className="h-12 px-8 text-lg font-bold rounded-full border-2 border-slate-900 text-slate-900 hover:bg-slate-50" asChild>
-                <Link href="/register">I want to offer my services</Link>
-             </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* VISUAL CATEGORIES - "Envie de quoi ?" (Inspiration Style) */}
-      <section className="container mx-auto px-4 -mt-8 relative z-20 mb-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-            {[
-                { label: 'Development', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop', link: '/search?category=Tech' },
-                { label: 'Design & Creative', img: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?q=80&w=600&auto=format&fit=crop', link: '/search?category=Design' },
-                { label: 'Marketing', img: 'https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=600&auto=format&fit=crop', link: '/search?category=Marketing' },
-                { label: 'Business', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=600&auto=format&fit=crop', link: '/search?category=Business' },
-            ].map((item, idx) => (
-                <Link href={item.link} key={idx} className="group relative h-32 md:h-48 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all block">
-                    <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/10 transition-colors z-10" />
-                    <img 
-                        src={item.img} 
-                        alt={item.label} 
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 z-20 bg-gradient-to-t from-black/80 to-transparent">
-                        <span className="text-white font-bold text-sm md:text-lg">{item.label}</span>
-                    </div>
-                </Link>
-            ))}
-        </div>
-      </section>
-
-      {/* 3. FEATURED SECTION - Plus aérée + Horizontal Scroll Mobile */}
-      <section className="w-full py-12 md:py-16 bg-slate-50/50">
-        <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex items-end justify-between mb-6 md:mb-8">
-                <div>
-                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Featured Experts</h2>
-                    <p className="text-slate-500 mt-2 text-base md:text-lg">Freelancers recommended by the community.</p>
-                </div>
-                {/* Lien "Voir tout" style TripAdvisor */}
-                <Link href="/search" className="hidden md:block text-sm font-bold underline decoration-2 decoration-slate-200 hover:decoration-[#34E0A1] transition-all">
-                    View all
-                </Link>
+        <div className="relative container mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200/50 rounded-full text-sm font-medium text-emerald-700 mb-8">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              {totalFreelancers > 0 ? `${totalFreelancers}+ freelancers available` : 'Platform live'}
             </div>
-            
-            {featuredBusinesses.length > 0 ? (
-                <div className="flex -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible md:grid md:grid-cols-4 gap-4 md:gap-6 scrollbar-hide snap-x snap-mandatory">
-                     {featuredBusinesses.map((business) => (
-                        <div key={business.id} className="min-w-[280px] md:min-w-0 snap-center">
-                            <BusinessCard 
-                                id={business.id}
-                                name={business.name}
-                                category={business.category.name}
-                                promoted={business.subscriptionTier === 'PRO'}
-                                imageUrl={business.imageUrl}
-                                images={business.images}
-                                rating={business.rating}
-                                reviewCount={business.reviewCount}
-                                hourlyRate={business.hourlyRate}
-                                currency={business.currency}
-                                city={business.city}
-                            />
-                        </div>
-                     ))}
-                </div>
-            ) : (
-                <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl bg-white">
-                    <p className="text-slate-400 font-medium">Coming soon...</p>
-                </div>
-            )}
-             <div className="mt-8 text-center md:hidden">
-                <Link href="/search" className="text-sm font-bold text-[#34E0A1]">View all experts →</Link>
-             </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.08] mb-6">
+              Find the expert
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">
+                your project needs.
+              </span>
+            </h1>
+
+            <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+              Connect with skilled professionals — designers, developers, marketers, lawyers — ready to help your business grow.
+            </p>
+
+            <div className="w-full max-w-3xl mx-auto mb-6">
+              <SearchSection />
+            </div>
+
+            <p className="text-sm text-slate-400 mt-4">
+              <span className="font-semibold text-slate-500">Popular:</span>{' '}
+              <Link href="/search?q=developer" className="hover:text-[#34E0A1] transition-colors">Web Developer</Link>
+              {' · '}
+              <Link href="/search?q=designer" className="hover:text-[#34E0A1] transition-colors">Graphic Designer</Link>
+              {' · '}
+              <Link href="/search?q=marketing" className="hover:text-[#34E0A1] transition-colors">Marketing</Link>
+              {' · '}
+              <Link href="/search?q=lawyer" className="hover:text-[#34E0A1] transition-colors">Lawyer</Link>
+            </p>
+          </div>
         </div>
       </section>
 
-       {/* Banner / CTA Section - Google Style Link */}
-       <section className="w-full py-8 md:py-12 bg-white border-t border-slate-100/50">
-          <div className="container px-4 mx-auto flex justify-center">
-             <Link 
-                href="/pricing"
-                className="text-sm md:text-base font-medium text-slate-500 hover:text-slate-900 transition-colors flex flex-col sm:flex-row items-center gap-1 md:gap-2 group px-6 py-3 rounded-xl hover:bg-slate-50 text-center"
-             >
-                <span>Are you a freelancer?</span>
-                <span className="text-[#34E0A1] font-bold group-hover:underline decoration-[#34E0A1] underline-offset-4">
-                    Create your profile for free
-                </span>
-             </Link>
+      {/* ═══════════ TRUST BADGES ═══════════ */}
+      <section className="w-full border-y border-slate-100 bg-slate-50/50">
+        <div className="container mx-auto px-4 py-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            {[
+              { icon: Shield, label: 'Secure payments', sub: 'Stripe escrow' },
+              { icon: Zap, label: 'Fast matching', sub: 'Under 24h response' },
+              { icon: Users, label: `${totalFreelancers || '50'}+ experts`, sub: 'Verified profiles' },
+              { icon: Globe, label: `${totalCategories || '6'} categories`, sub: 'All industries' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                  <item.icon className="h-5 w-5 text-[#34E0A1]" />
+                </div>
+                <div>
+                  <p className="font-bold text-sm text-slate-900">{item.label}</p>
+                  <p className="text-xs text-slate-500">{item.sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
-       </section>
+        </div>
+      </section>
+
+      {/* ═══════════ CATEGORIES ═══════════ */}
+      <section className="w-full py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-3">
+              Browse by category
+            </h2>
+            <p className="text-slate-500 text-base md:text-lg max-w-lg mx-auto">
+              Whatever you need, we have the right expert for you.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            {categories.map((cat, idx) => (
+              <Link
+                href={cat.link}
+                key={idx}
+                className={`group relative p-5 md:p-6 rounded-2xl border bg-gradient-to-br ${cat.color} hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
+              >
+                <span className="text-3xl md:text-4xl block mb-3">{cat.icon}</span>
+                <h3 className="font-bold text-slate-900 text-sm md:text-base mb-1">{cat.label}</h3>
+                <p className="text-xs text-slate-500">{cat.desc}</p>
+                <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#34E0A1] group-hover:translate-x-1 transition-all absolute top-4 right-4 opacity-0 group-hover:opacity-100" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FEATURED EXPERTS ═══════════ */}
+      <section className="w-full py-16 md:py-20 bg-slate-50/50">
+        <div className="container px-4 mx-auto">
+          <div className="flex items-end justify-between mb-8 md:mb-10">
+            <div>
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-2">
+                Featured Experts
+              </h2>
+              <p className="text-slate-500 text-base md:text-lg">Top-rated freelancers recommended by the community.</p>
+            </div>
+            <Link
+              href="/search"
+              className="hidden md:flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#34E0A1] transition-colors group"
+            >
+              View all
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          {featuredBusinesses.length > 0 ? (
+            <div className="flex -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible md:grid md:grid-cols-4 gap-4 md:gap-6 scrollbar-hide snap-x snap-mandatory">
+              {featuredBusinesses.map((business) => (
+                <div key={business.id} className="min-w-[280px] md:min-w-0 snap-center">
+                  <BusinessCard
+                    id={business.id}
+                    name={business.name}
+                    category={business.category.name}
+                    promoted={business.subscriptionTier === 'PRO'}
+                    imageUrl={business.imageUrl}
+                    images={business.images}
+                    rating={business.rating}
+                    reviewCount={business.reviewCount}
+                    hourlyRate={business.hourlyRate}
+                    currency={business.currency}
+                    city={business.city}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-white">
+              <p className="text-5xl mb-4">🔍</p>
+              <p className="text-slate-500 font-medium text-lg mb-2">No experts yet</p>
+              <p className="text-slate-400 text-sm mb-6">Be the first to join the platform!</p>
+              <Button asChild className="rounded-full bg-[#34E0A1] text-slate-900 font-bold hover:bg-[#2cbe89]">
+                <Link href="/register">Create your profile</Link>
+              </Button>
+            </div>
+          )}
+
+          <div className="mt-8 text-center md:hidden">
+            <Link href="/search" className="inline-flex items-center gap-2 text-sm font-bold text-[#34E0A1]">
+              View all experts <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ HOW IT WORKS ═══════════ */}
+      <section className="w-full py-16 md:py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-3">
+              How it works
+            </h2>
+            <p className="text-slate-500 text-base md:text-lg max-w-lg mx-auto">
+              Find and hire a freelancer in 3 simple steps.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 md:gap-10 max-w-4xl mx-auto">
+            {howItWorks.map((item, i) => (
+              <div key={i} className="relative text-center md:text-left group">
+                {i < howItWorks.length - 1 && (
+                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-slate-200" />
+                )}
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 mb-5 text-3xl group-hover:scale-110 group-hover:border-[#34E0A1]/30 group-hover:bg-[#34E0A1]/5 transition-all duration-300">
+                  {item.icon}
+                </div>
+                <div className="text-xs font-bold text-[#34E0A1] uppercase tracking-widest mb-2">Step {item.step}</div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ SOCIAL PROOF ═══════════ */}
+      <section className="w-full py-16 md:py-20 bg-slate-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-1 mb-6">
+              {[1, 2, 3, 4, 5].map(i => (
+                <Star key={i} className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+            <blockquote className="text-xl md:text-2xl font-medium leading-relaxed mb-8 text-white/90">
+              &ldquo;FiveZone helped me find a developer in under 48 hours. The process was smooth, the payment was secure, and the quality was exceptional. I&apos;ll definitely use it again.&rdquo;
+            </blockquote>
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-slate-700 flex items-center justify-center text-lg font-bold">
+                AK
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-white">Amina K.</p>
+                <p className="text-sm text-slate-400">CEO, TechStart Abidjan</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ ADVANTAGES ═══════════ */}
+      <section className="w-full py-16 md:py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center max-w-5xl mx-auto">
+            <div>
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-6 leading-tight">
+                Why clients choose FiveZone
+              </h2>
+              <div className="space-y-5">
+                {[
+                  { title: '0% commission on missions', desc: 'Unlike other platforms, we don\'t take a cut on your transactions.' },
+                  { title: 'Verified professionals', desc: 'Every freelancer goes through a verification process.' },
+                  { title: 'Secure escrow payments', desc: 'Your payment is held securely until the work is delivered.' },
+                  { title: 'Direct messaging', desc: 'Communicate directly with freelancers — no middleman.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4">
+                    <CheckCircle2 className="h-6 w-6 text-[#34E0A1] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-bold text-slate-900 mb-1">{item.title}</h4>
+                      <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 md:p-10 border border-emerald-100">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                    <div className="w-12 h-12 rounded-xl bg-[#34E0A1]/10 flex items-center justify-center">
+                      <TrendingUp className="h-6 w-6 text-[#34E0A1]" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-slate-900">98%</p>
+                      <p className="text-xs text-slate-500">Satisfaction rate</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                      <Zap className="h-6 w-6 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-slate-900">&lt; 24h</p>
+                      <p className="text-xs text-slate-500">Average response time</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                    <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-violet-500" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-slate-900">100%</p>
+                      <p className="text-xs text-slate-500">Secure transactions</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FINAL CTA ═══════════ */}
+      <section className="w-full py-16 md:py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-6 leading-tight">
+              Ready to get started?
+            </h2>
+            <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed">
+              Whether you&apos;re looking for an expert or offering your services, FiveZone is the place to be.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="h-14 px-10 text-lg font-bold rounded-full bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 shadow-lg shadow-[#34E0A1]/20 hover:shadow-xl transition-all hover:scale-105"
+                asChild
+              >
+                <Link href="/search">Find a freelancer</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-14 px-10 text-lg font-bold rounded-full border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 transition-all"
+                asChild
+              >
+                <Link href="/register">Become a freelancer</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

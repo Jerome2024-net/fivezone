@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { Providers } from "./providers";
 
 const geistSans = Geist({
@@ -20,15 +21,15 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "FiveZone - Travailleurs Indépendants & Services Locaux",
-  description: "Accédez aux meilleurs travailleurs indépendants, experts et services locaux. Développeurs, Créatifs, Artisans, Consultants.",
+  title: "FiveZone - Find Expert Freelancers & Professionals",
+  description: "Connect with top freelancers — developers, designers, marketers, lawyers. Secure payments, verified profiles, zero commission.",
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "FiveZone - Travailleurs Indépendants & Services Locaux",
-    description: "Trouvez les meilleurs travailleurs indépendants et experts pour vos projets en quelques clics.",
+    title: "FiveZone - Find Expert Freelancers & Professionals",
+    description: "Connect with top freelancers for your projects — fast, secure, zero commission.",
     siteName: "FiveZone",
     images: [
       {
@@ -43,8 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FiveZone - Les meilleures adresses locales",
-    description: "Artisans • Commerces • Services • Restaurants",
+    title: "FiveZone - Find Expert Freelancers",
+    description: "Developers • Designers • Marketers • Consultants",
     images: ["/icon.svg"],
   },
 };
@@ -63,6 +64,7 @@ export default function RootLayout({
             <div className="relative flex min-h-screen flex-col">
                 <Header />
                 <main className="flex-1">{children}</main>
+                <Footer />
             </div>
         </Providers>
       </body>

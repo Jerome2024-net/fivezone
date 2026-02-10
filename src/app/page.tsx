@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
-import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe, Monitor, Pen, BarChart3, Building2, Droplets, Landmark, Search, Send, Rocket, FolderSearch } from "lucide-react"
+import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe, Monitor, Pen, BarChart3, Building2, Droplets, Landmark, Search, Send, Rocket, FolderSearch, Camera, GraduationCap, Heart, Truck, Scissors, Music, Utensils, Hammer, Leaf, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
@@ -52,8 +52,18 @@ export default async function Home() {
     { label: 'Design', Icon: Pen, desc: 'UI/UX, Logo, Branding', link: '/search?category=Design', color: 'from-pink-600/10 to-rose-600/10 border-pink-300/40', iconColor: 'text-pink-600', iconBg: 'bg-pink-100' },
     { label: 'Marketing', Icon: BarChart3, desc: 'SEO, Ads, Content', link: '/search?category=Marketing', color: 'from-orange-600/10 to-amber-600/10 border-orange-300/40', iconColor: 'text-orange-600', iconBg: 'bg-orange-100' },
     { label: 'Business', Icon: Building2, desc: 'Finance, Strategy, Consulting', link: '/search?category=Business', color: 'from-emerald-600/10 to-teal-600/10 border-emerald-300/40', iconColor: 'text-emerald-600', iconBg: 'bg-emerald-100' },
-    { label: 'Cleaning', Icon: Droplets, desc: 'Office, Residential', link: '/search?category=Nettoyage', color: 'from-cyan-600/10 to-sky-600/10 border-cyan-300/40', iconColor: 'text-cyan-600', iconBg: 'bg-cyan-100' },
     { label: 'Legal', Icon: Landmark, desc: 'Lawyers, Notaries', link: '/search?category=Juridique', color: 'from-violet-600/10 to-purple-600/10 border-violet-300/40', iconColor: 'text-violet-600', iconBg: 'bg-violet-100' },
+    { label: 'Photo & Video', Icon: Camera, desc: 'Shootings, Editing', link: '/search?category=Photo', color: 'from-rose-600/10 to-red-600/10 border-rose-300/40', iconColor: 'text-rose-600', iconBg: 'bg-rose-100' },
+    { label: 'Education', Icon: GraduationCap, desc: 'Tutoring, Coaching', link: '/search?category=Education', color: 'from-amber-600/10 to-yellow-600/10 border-amber-300/40', iconColor: 'text-amber-600', iconBg: 'bg-amber-100' },
+    { label: 'Health', Icon: Heart, desc: 'Wellness, Nutrition', link: '/search?category=Health', color: 'from-red-600/10 to-pink-600/10 border-red-300/40', iconColor: 'text-red-600', iconBg: 'bg-red-100' },
+    { label: 'Transport', Icon: Truck, desc: 'Delivery, Logistics', link: '/search?category=Transport', color: 'from-slate-600/10 to-gray-600/10 border-slate-300/40', iconColor: 'text-slate-600', iconBg: 'bg-slate-200' },
+    { label: 'Beauty', Icon: Scissors, desc: 'Hair, Makeup, Spa', link: '/search?category=Beauty', color: 'from-fuchsia-600/10 to-pink-600/10 border-fuchsia-300/40', iconColor: 'text-fuchsia-600', iconBg: 'bg-fuchsia-100' },
+    { label: 'Music & Arts', Icon: Music, desc: 'Musicians, Performers', link: '/search?category=Music', color: 'from-purple-600/10 to-indigo-600/10 border-purple-300/40', iconColor: 'text-purple-600', iconBg: 'bg-purple-100' },
+    { label: 'Food & Catering', Icon: Utensils, desc: 'Chefs, Catering', link: '/search?category=Food', color: 'from-orange-600/10 to-red-600/10 border-orange-300/40', iconColor: 'text-orange-500', iconBg: 'bg-orange-100' },
+    { label: 'Cleaning', Icon: Droplets, desc: 'Office, Residential', link: '/search?category=Nettoyage', color: 'from-cyan-600/10 to-sky-600/10 border-cyan-300/40', iconColor: 'text-cyan-600', iconBg: 'bg-cyan-100' },
+    { label: 'Handyman', Icon: Hammer, desc: 'Repair, Renovation', link: '/search?category=Handyman', color: 'from-yellow-600/10 to-amber-600/10 border-yellow-300/40', iconColor: 'text-yellow-600', iconBg: 'bg-yellow-100' },
+    { label: 'Agriculture', Icon: Leaf, desc: 'Farming, Gardening', link: '/search?category=Agriculture', color: 'from-green-600/10 to-lime-600/10 border-green-300/40', iconColor: 'text-green-600', iconBg: 'bg-green-100' },
+    { label: 'Writing', Icon: Pen, desc: 'Content, Translation', link: '/search?category=Writing', color: 'from-teal-600/10 to-cyan-600/10 border-teal-300/40', iconColor: 'text-teal-600', iconBg: 'bg-teal-100' },
   ]
 
   const howItWorks = [
@@ -90,7 +100,7 @@ export default async function Home() {
             </h1>
 
             <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-              Connect with skilled professionals — designers, developers, marketers, lawyers — ready to help your business grow.
+              Connect with skilled professionals — developers, designers, chefs, tutors, handymen, and more — ready to help you get things done.
             </p>
 
             <div className="w-full max-w-3xl mx-auto mb-6">
@@ -99,13 +109,19 @@ export default async function Home() {
 
             <p className="text-sm text-slate-400 mt-4">
               <span className="font-semibold text-slate-500">Popular:</span>{' '}
-              <Link href="/search?q=developer" className="hover:text-[#34E0A1] transition-colors">Web Developer</Link>
+              <Link href="/search?q=developer" className="hover:text-[#34E0A1] transition-colors">Developer</Link>
               {' · '}
-              <Link href="/search?q=designer" className="hover:text-[#34E0A1] transition-colors">Graphic Designer</Link>
+              <Link href="/search?q=designer" className="hover:text-[#34E0A1] transition-colors">Designer</Link>
               {' · '}
               <Link href="/search?q=marketing" className="hover:text-[#34E0A1] transition-colors">Marketing</Link>
               {' · '}
               <Link href="/search?q=lawyer" className="hover:text-[#34E0A1] transition-colors">Lawyer</Link>
+              {' · '}
+              <Link href="/search?q=photographer" className="hover:text-[#34E0A1] transition-colors">Photographer</Link>
+              {' · '}
+              <Link href="/search?q=tutor" className="hover:text-[#34E0A1] transition-colors">Tutor</Link>
+              {' · '}
+              <Link href="/search?q=chef" className="hover:text-[#34E0A1] transition-colors">Chef</Link>
             </p>
           </div>
         </div>
@@ -147,7 +163,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-4">
             {categories.map((cat, idx) => (
               <Link
                 href={cat.link}
@@ -162,6 +178,12 @@ export default async function Home() {
                 <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#34E0A1] group-hover:translate-x-1 transition-all absolute top-4 right-4 opacity-0 group-hover:opacity-100" />
               </Link>
             ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/categories" className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#34E0A1] transition-colors group">
+              View all categories <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </section>

@@ -173,26 +173,64 @@ export default function RegisterPage() {
                             <option value="Mobile Development">Mobile Development</option>
                             <option value="Data Science">Data Science & AI</option>
                             <option value="Cybersecurity">Cybersecurity</option>
+                            <option value="IT Support">IT Support</option>
                         </optgroup>
                         <optgroup label="Design & Creation">
                             <option value="Graphic Design">Graphic Design</option>
                             <option value="UI/UX Design">UI/UX Design</option>
                             <option value="Video Editing">Video Editing</option>
                             <option value="Photography">Photography</option>
+                            <option value="Animation">Animation & Motion</option>
                         </optgroup>
                         <optgroup label="Marketing & Business">
                             <option value="Digital Marketing">Digital Marketing</option>
                             <option value="SEO/SEA">SEO / SEA</option>
-                            <option value="Copywriting">Copywriting</option>
+                            <option value="Copywriting">Copywriting & Content</option>
                             <option value="Accounting">Accounting & Finance</option>
-                            <option value="Legal">Legal</option>
+                            <option value="Legal">Legal Services</option>
+                            <option value="Business Consulting">Business Consulting</option>
+                            <option value="Real Estate">Real Estate</option>
                         </optgroup>
-                        <optgroup label="Local Services">
-                            <option value="Handyman">Handyman</option>
-                            <option value="Cleaning">Cleaning</option>
-                            <option value="Pet Sitting">Pet Sitting</option>
+                        <optgroup label="Education & Coaching">
+                            <option value="Tutoring">Tutoring & Teaching</option>
+                            <option value="Life Coaching">Life Coaching</option>
+                            <option value="Language Teaching">Language Teaching</option>
+                            <option value="Fitness Training">Fitness & Sports Training</option>
                         </optgroup>
-                        <option value="other">Other</option>
+                        <optgroup label="Health & Wellness">
+                            <option value="Nutrition">Nutrition & Dietetics</option>
+                            <option value="Wellness">Wellness & Therapy</option>
+                            <option value="Beauty">Beauty & Personal Care</option>
+                            <option value="Massage">Massage Therapy</option>
+                        </optgroup>
+                        <optgroup label="Food & Hospitality">
+                            <option value="Catering">Catering & Cooking</option>
+                            <option value="Pastry">Pastry & Baking</option>
+                            <option value="Event Planning">Event Planning</option>
+                        </optgroup>
+                        <optgroup label="Arts & Entertainment">
+                            <option value="Music">Music & Performance</option>
+                            <option value="Fashion">Fashion & Styling</option>
+                            <option value="Writing">Writing & Translation</option>
+                        </optgroup>
+                        <optgroup label="Local & Manual Services">
+                            <option value="Handyman">Handyman & Renovation</option>
+                            <option value="Cleaning">Cleaning Services</option>
+                            <option value="Gardening">Gardening & Landscaping</option>
+                            <option value="Transport">Transport & Delivery</option>
+                            <option value="Moving">Moving Services</option>
+                        </optgroup>
+                        <optgroup label="Care Services">
+                            <option value="Childcare">Childcare & Babysitting</option>
+                            <option value="Pet Sitting">Pet Sitting & Dog Walking</option>
+                            <option value="Elderly Care">Elderly Care</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="Agriculture">Agriculture & Farming</option>
+                            <option value="Customer Support">Customer Support</option>
+                            <option value="Travel">Travel & Tourism</option>
+                            <option value="other">Other (specify below)</option>
+                        </optgroup>
                      </select>
                       {form.formState.errors.category && (
                         <p className="text-xs text-destructive">{form.formState.errors.category.message}</p>

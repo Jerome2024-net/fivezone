@@ -232,7 +232,7 @@ export default async function SearchPage({
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-900">Category</label>
                   <div className="space-y-2">
-                    {['Tech', 'Design', 'Marketing', 'Business', 'Redaction', 'Photo', 'Juridique', 'Finance'].map((cat) => (
+                    {['Tech', 'Design', 'Marketing', 'Business', 'Legal', 'Photo', 'Education', 'Health', 'Beauty', 'Music', 'Food', 'Cleaning', 'Handyman', 'Transport', 'Fitness', 'Writing', 'Childcare', 'Pet Sitting', 'Agriculture', 'Fashion'].map((cat) => (
                       <Link key={cat} href={buildFilterUrl(currentParams, 'category', cat.toLowerCase())} className="flex items-center space-x-2 group cursor-pointer">
                         <div className={`w-4 h-4 rounded border flex items-center justify-center ${categoryTerm === cat.toLowerCase() ? 'bg-[#34E0A1] border-[#34E0A1]' : 'border-slate-300'}`}>
                            {categoryTerm === cat.toLowerCase() && <div className="w-2 h-2 bg-white rounded-full" />}

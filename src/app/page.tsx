@@ -70,12 +70,12 @@ export default async function Home() {
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30" />
-        <div className="absolute top-20 right-0 w-96 h-96 bg-[#34E0A1]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 right-0 w-96 h-96 bg-[#34E0A1]/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl animate-float delay-300" style={{ animationDuration: '8s' }} />
 
         <div className="relative container mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200/50 rounded-full text-sm font-medium text-emerald-700 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200/50 rounded-full text-sm font-medium text-emerald-700 mb-8 animate-fade-up">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -83,7 +83,7 @@ export default async function Home() {
               {totalFreelancers > 0 ? `${totalFreelancers}+ freelancers available` : 'Platform live'}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.08] mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.08] mb-6 animate-fade-up delay-100">
               Find the expert
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">
@@ -91,15 +91,15 @@ export default async function Home() {
               </span>
             </h1>
 
-            <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-up delay-200">
               Connect with skilled professionals — developers, designers, chefs, tutors, handymen, and more — ready to help you get things done.
             </p>
 
-            <div className="w-full max-w-3xl mx-auto mb-6">
+            <div className="w-full max-w-3xl mx-auto mb-6 animate-scale-in delay-300 animate-pulse-glow" style={{ borderRadius: '9999px' }}>
               <SearchSection />
             </div>
 
-            <p className="text-sm text-slate-400 mt-4">
+            <p className="text-sm text-slate-400 mt-4 animate-fade-in delay-500">
               <span className="font-semibold text-slate-500">Popular:</span>{' '}
               <Link href="/search?q=developer" className="hover:text-[#34E0A1] transition-colors">Developer</Link>
               {' · '}
@@ -129,7 +129,7 @@ export default async function Home() {
               { icon: Users, label: `${totalFreelancers || '50'}+ experts`, sub: 'Verified profiles' },
               { icon: Globe, label: `${totalCategories || '6'} categories`, sub: 'All industries' },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3">
+              <div key={i} className={`flex items-center gap-3 animate-fade-up delay-${i * 100 + 100}`}>
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                   <item.icon className="h-5 w-5 text-[#34E0A1]" />
                 </div>
@@ -147,10 +147,10 @@ export default async function Home() {
       <section className="w-full py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-3">
+            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-3 animate-fade-up">
               Browse by category
             </h2>
-            <p className="text-slate-500 text-base md:text-lg max-w-lg mx-auto">
+            <p className="text-slate-500 text-base md:text-lg max-w-lg mx-auto animate-fade-up delay-100">
               Whatever you need, we have the right expert for you.
             </p>
           </div>
@@ -160,7 +160,8 @@ export default async function Home() {
               <Link
                 href={cat.link}
                 key={idx}
-                className={`group relative p-5 md:p-6 rounded-2xl border bg-gradient-to-br ${cat.color} hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
+                className={`group relative p-5 md:p-6 rounded-2xl border bg-gradient-to-br ${cat.color} hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fade-up`}
+                style={{ animationDelay: `${idx * 80 + 200}ms` }}
               >
                 <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl ${cat.iconBg} flex items-center justify-center mb-3 group-hover:shadow-md group-hover:scale-110 transition-all duration-300`}>
                   <cat.Icon className={`h-6 w-6 md:h-7 md:w-7 ${cat.iconColor}`} strokeWidth={1.8} />
@@ -244,17 +245,17 @@ export default async function Home() {
       <section className="w-full py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-3">
+            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-3 animate-fade-up">
               How it works
             </h2>
-            <p className="text-slate-500 text-base md:text-lg max-w-lg mx-auto">
+            <p className="text-slate-500 text-base md:text-lg max-w-lg mx-auto animate-fade-up delay-100">
               Find and hire a freelancer in 3 simple steps.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 md:gap-10 max-w-4xl mx-auto">
             {howItWorks.map((item, i) => (
-              <div key={i} className="relative text-center md:text-left group">
+              <div key={i} className="relative text-center md:text-left group animate-fade-up" style={{ animationDelay: `${i * 150 + 200}ms` }}>
                 {i < howItWorks.length - 1 && (
                   <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-slate-200" />
                 )}
@@ -273,7 +274,7 @@ export default async function Home() {
       {/* ═══════════ SOCIAL PROOF ═══════════ */}
       <section className="w-full py-16 md:py-20 bg-slate-900 text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-3xl mx-auto text-center animate-fade-up">
             <div className="flex items-center justify-center gap-1 mb-6">
               {[1, 2, 3, 4, 5].map(i => (
                 <Star key={i} className="h-6 w-6 fill-yellow-400 text-yellow-400" />
@@ -300,7 +301,7 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center max-w-5xl mx-auto">
             <div>
-              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-6 leading-tight">
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-6 leading-tight animate-slide-left">
                 Why clients choose FiveZone
               </h2>
               <div className="space-y-5">
@@ -310,7 +311,7 @@ export default async function Home() {
                   { title: 'Direct messaging', desc: 'Communicate directly with freelancers — no middleman.' },
                   { title: 'Fast & reliable', desc: 'Find the right expert and get your project done in record time.' },
                 ].map((item, i) => (
-                  <div key={i} className="flex gap-4">
+                  <div key={i} className="flex gap-4 animate-slide-left" style={{ animationDelay: `${i * 120 + 200}ms` }}>
                     <CheckCircle2 className="h-6 w-6 text-[#34E0A1] flex-shrink-0 mt-0.5" />
                     <div>
                       <h4 className="font-bold text-slate-900 mb-1">{item.title}</h4>
@@ -322,9 +323,9 @@ export default async function Home() {
             </div>
 
             <div className="relative">
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 md:p-10 border border-emerald-100">
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 md:p-10 border border-emerald-100 animate-slide-right">
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 animate-count-up delay-200 hover:scale-105 transition-transform">
                     <div className="w-12 h-12 rounded-xl bg-[#34E0A1]/10 flex items-center justify-center">
                       <TrendingUp className="h-6 w-6 text-[#34E0A1]" />
                     </div>
@@ -333,7 +334,7 @@ export default async function Home() {
                       <p className="text-xs text-slate-500">Satisfaction rate</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 animate-count-up delay-400 hover:scale-105 transition-transform">
                     <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
                       <Zap className="h-6 w-6 text-blue-500" />
                     </div>
@@ -342,7 +343,7 @@ export default async function Home() {
                       <p className="text-xs text-slate-500">Average response time</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-100 animate-count-up delay-600 hover:scale-105 transition-transform">
                     <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
                       <Shield className="h-6 w-6 text-violet-500" />
                     </div>
@@ -362,10 +363,10 @@ export default async function Home() {
       <section className="w-full py-16 md:py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-6 leading-tight">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-6 leading-tight animate-fade-up">
               Ready to get started?
             </h2>
-            <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed animate-fade-up delay-100">
               Whether you&apos;re looking for an expert or offering your services, FiveZone is the place to be.
             </p>
 

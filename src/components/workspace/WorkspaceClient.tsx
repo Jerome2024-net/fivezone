@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   LayoutDashboard, 
   FolderKanban, 
@@ -16,7 +16,14 @@ import {
   Target,
   Timer,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Monitor,
+  Pen,
+  Landmark,
+  BarChart3,
+  Droplets,
+  Building2,
+  Wrench
 } from 'lucide-react';
 import ProjectsModule from './modules/ProjectsModule';
 import ClientsModule from './modules/ClientsModule';
@@ -25,8 +32,14 @@ import TimeTrackingModule from './modules/TimeTrackingModule';
 import InvoicesModule from './modules/InvoicesModule';
 import CalendarModule from './modules/CalendarModule';
 import DashboardModule from './modules/DashboardModule';
+import DevToolsModule from './modules/DevToolsModule';
+import DesignToolsModule from './modules/DesignToolsModule';
+import LegalToolsModule from './modules/LegalToolsModule';
+import MarketingToolsModule from './modules/MarketingToolsModule';
+import CleaningToolsModule from './modules/CleaningToolsModule';
+import BusinessToolsModule from './modules/BusinessToolsModule';
 
-type ModuleType = 'dashboard' | 'projects' | 'clients' | 'tasks' | 'time' | 'invoices' | 'calendar' | 'documents';
+type ModuleType = 'dashboard' | 'projects' | 'clients' | 'tasks' | 'time' | 'invoices' | 'calendar' | 'documents' | 'pro-tools';
 
 interface WorkspaceClientProps {
   projects: any[];
@@ -46,9 +59,24 @@ interface WorkspaceClientProps {
     totalClients: number;
   };
   userId: string;
+  userCategory: string | null;
 }
 
-const modules = [
+const CATEGORY_TOOLS: Record<string, { label: string; icon: any }> = {
+  'Tech': { label: 'Outils Dev', icon: Monitor },
+  'Développement': { label: 'Outils Dev', icon: Monitor },
+  'Development': { label: 'Dev Tools', icon: Monitor },
+  'Design': { label: 'Outils Design', icon: Pen },
+  'Juridique': { label: 'Outils Juridiques', icon: Landmark },
+  'Legal': { label: 'Legal Tools', icon: Landmark },
+  'Marketing': { label: 'Outils Marketing', icon: BarChart3 },
+  'Nettoyage': { label: 'Outils Nettoyage', icon: Droplets },
+  'Cleaning': { label: 'Cleaning Tools', icon: Droplets },
+  'Business': { label: 'Outils Business', icon: Building2 },
+  'Consulting': { label: 'Business Tools', icon: Building2 },
+};
+
+const baseModules = [
   { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
   { id: 'projects', label: 'Projets', icon: FolderKanban },
   { id: 'clients', label: 'Clients', icon: Users },
@@ -69,9 +97,40 @@ export default function WorkspaceClient({
   recentMissions,
   stats,
   userId,
+  userCategory,
 }: WorkspaceClientProps) {
   const [activeModule, setActiveModule] = useState<ModuleType>('dashboard');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const modules = useMemo(() => {
+    const list = [...baseModules];
+    if (userCategory && CATEGORY_TOOLS[userCategory]) {
+      const tool = CATEGORY_TOOLS[userCategory];
+      // Insert pro-tools right after dashboard
+      list.splice(1, 0, { id: 'pro-tools', label: tool.label, icon: tool.icon });
+    } else if (userCategory) {
+      // Unknown category → show generic "Pro Tools" entry
+      list.splice(1, 0, { id: 'pro-tools', label: 'Outils Pro', icon: Wrench });
+    }
+    return list;
+  }, [userCategory]);
+
+  const renderProTools = () => {
+    const cat = userCategory?.toLowerCase() || '';
+    if (cat.includes('tech') || cat.includes('dev') || cat.includes('développement')) return <DevToolsModule />;
+    if (cat.includes('design')) return <DesignToolsModule />;
+    if (cat.includes('juridique') || cat.includes('legal') || cat.includes('droit')) return <LegalToolsModule />;
+    if (cat.includes('marketing') || cat.includes('communication')) return <MarketingToolsModule />;
+    if (cat.includes('nettoyage') || cat.includes('cleaning') || cat.includes('entretien')) return <CleaningToolsModule />;
+    if (cat.includes('business') || cat.includes('consulting') || cat.includes('conseil')) return <BusinessToolsModule />;
+    return (
+      <div className="flex flex-col items-center justify-center h-96 text-gray-500">
+        <Wrench className="w-16 h-16 mb-4 opacity-50" />
+        <p className="text-lg font-medium">Outils Professionnels</p>
+        <p className="text-sm">Outils spécialisés pour votre métier</p>
+      </div>
+    );
+  };
 
   const renderModule = () => {
     switch (activeModule) {
@@ -107,6 +166,8 @@ export default function WorkspaceClient({
             <p className="text-sm">Bientôt disponible</p>
           </div>
         );
+      case 'pro-tools':
+        return renderProTools();
       default:
         return null;
     }

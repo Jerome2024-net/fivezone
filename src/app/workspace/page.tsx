@@ -17,7 +17,7 @@ export default async function WorkspacePage() {
   }
 
   // Fetch all workspace data
-  const [projects, clients, tasks, timeEntries, invoices, events, recentActivity] = await Promise.all([
+  const [projects, clients, tasks, timeEntries, invoices, events, recentActivity, userBusiness] = await Promise.all([
     prisma.project.findMany({
       where: { ownerId: session.user.id },
       include: { client: true, _count: { select: { tasks: true, timeEntries: true } } },
@@ -55,6 +55,11 @@ export default async function WorkspacePage() {
       take: 5,
       include: { business: true },
     }),
+    // User's business category
+    prisma.business.findFirst({
+      where: { ownerId: session.user.id },
+      include: { category: true },
+    }),
   ]);
 
   // Calculate stats
@@ -83,6 +88,7 @@ export default async function WorkspacePage() {
       recentMissions={recentActivity}
       stats={stats}
       userId={session.user.id}
+      userCategory={userBusiness?.category?.name || null}
     />
   );
 }

@@ -1,23 +1,19 @@
 import { Button } from "@/components/ui/button"
-import { Check, Zap, Shield, ArrowRight, Users, HelpCircle, Star, Briefcase, Eye, Crown, Gift, UserPlus, Banknote, Search as SearchIcon } from "lucide-react"
+import { Check, Zap, Shield, ArrowRight, Users, HelpCircle, Star, Briefcase, Eye, Crown, Gift, UserPlus, Banknote, Search as SearchIcon, AlertCircle } from "lucide-react"
 import Link from "next/link"
+import { ProCheckoutButton } from "@/components/pricing/ProCheckoutButton"
 
 export default async function PricingPage() {
 
-  const freeFeatures = [
+  const proFeatures = [
     "Create your freelancer profile",
     "Get listed on Fivezone",
     "Receive mission requests",
-    "Basic visibility in search",
-    "Direct contact with clients",
-    "0% commission — always",
-  ];
-
-  const proFeatures = [
-    "Everything in Free",
     "Priority listing in search results",
     "Verified badge on your profile",
     "Featured on homepage",
+    "Direct contact with clients",
+    "Pro workspace (invoicing, calendar, projects)",
     "Analytics & insights dashboard",
     "Priority support",
     "0% commission — always",
@@ -69,97 +65,52 @@ export default async function PricingPage() {
         </div>
       </div>
 
-      {/* Pricing Cards */}
+      {/* Pricing Card */}
       <div className="py-20 px-4 bg-white">
-        <div className="container mx-auto max-w-5xl">
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Free Plan */}
-            <div className="bg-white rounded-3xl border-2 border-slate-200 p-8 md:p-10">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-                  <Gift className="w-6 h-6 text-slate-600" />
-                </div>
-                <h2 className="text-2xl font-black text-slate-900">Free</h2>
-              </div>
-              
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-5xl font-black text-slate-900">$0</span>
-                <span className="text-slate-500 text-xl">/ forever</span>
-              </div>
-              <p className="text-slate-600 mb-6">Perfect for getting started. No credit card required.</p>
-              
-              <div className="mb-8">
-                <h4 className="font-bold text-slate-900 mb-4">What's included</h4>
-                <ul className="space-y-3">
-                  {freeFeatures.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <Button 
-                asChild
-                variant="outline"
-                className="w-full h-14 rounded-full font-bold text-lg border-2"
-              >
-                <Link href="/register">
-                  Create Free Profile
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
-            </div>
+        <div className="container mx-auto max-w-2xl">
 
-            {/* Pro Plan */}
-            <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-3xl border-2 border-emerald-200 p-8 md:p-10 relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-[#34E0A1] text-slate-900 text-xs font-bold px-3 py-1 rounded-full">
-                RECOMMENDED
-              </div>
-              
-              <div className="flex items-center gap-3 mb-4">
-                <Crown className="w-8 h-8 text-[#34E0A1]" />
-                <h2 className="text-2xl font-black text-slate-900">Pro</h2>
-              </div>
-              
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-5xl font-black text-slate-900">$99</span>
-                <span className="text-slate-500 text-xl">/ year</span>
-              </div>
-              <p className="text-slate-600 mb-1">For freelancers serious about growing their business.</p>
-              <p className="text-emerald-600 text-sm font-semibold mb-6">That&apos;s only $8.25/month</p>
-              
-              <div className="mb-8">
-                <h4 className="font-bold text-slate-900 mb-4">What's included</h4>
-                <ul className="space-y-3">
-                  {proFeatures.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                      <span className="text-slate-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div className="bg-emerald-100/50 rounded-xl p-4 mb-6">
-                <div className="flex items-center justify-center gap-2 text-emerald-800 font-medium">
-                  <Eye className="w-5 h-5 shrink-0" />
-                  <p>Get 5x more visibility in search results</p>
-                </div>
-              </div>
-              
-              <Button 
-                asChild
-                className="w-full h-14 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg"
-              >
-                <Link href="/register?plan=pro">
-                  Upgrade to Pro
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
+          {/* Pro Plan - Single Card */}
+          <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-3xl border-2 border-emerald-200 p-8 md:p-10 relative overflow-hidden">
+            <div className="absolute top-4 right-4 bg-[#34E0A1] text-slate-900 text-xs font-bold px-3 py-1 rounded-full">
+              REQUIRED TO JOIN
             </div>
+            
+            <div className="flex items-center gap-3 mb-4">
+              <Crown className="w-8 h-8 text-[#34E0A1]" />
+              <h2 className="text-2xl font-black text-slate-900">Pro Subscription</h2>
+            </div>
+            
+            <div className="flex items-baseline gap-2 mb-2">
+              <span className="text-5xl font-black text-slate-900">$99</span>
+              <span className="text-slate-500 text-xl">/ year</span>
+            </div>
+            <p className="text-slate-600 mb-1">Access the full FiveZone platform and start getting clients.</p>
+            <p className="text-emerald-600 text-sm font-semibold mb-6">That&apos;s only $8.25/month — 0% commission on all your earnings</p>
+            
+            <div className="mb-8">
+              <h4 className="font-bold text-slate-900 mb-4">Everything included</h4>
+              <ul className="space-y-3">
+                {proFeatures.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                    <span className="text-slate-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="bg-emerald-100/50 rounded-xl p-4 mb-6">
+              <div className="flex items-center justify-center gap-2 text-emerald-800 font-medium">
+                <Eye className="w-5 h-5 shrink-0" />
+                <p>Unlike other platforms, we take 0% commission. The $99/year is all you pay.</p>
+              </div>
+            </div>
+            
+            <ProCheckoutButton />
+            
+            <p className="text-xs text-center text-slate-400 mt-4">
+              Cancel anytime before renewal. Secure payment via Stripe.
+            </p>
           </div>
         </div>
       </div>

@@ -576,6 +576,65 @@ export function DashboardClient({
                      </button>
                  </div>
 
+                 {/* Onboarding Checklist */}
+                 {(() => {
+                     const checklist = [
+                         { key: 'description', label: 'Add a description', done: !!business.description && business.description.length > 10 },
+                         { key: 'logoUrl', label: 'Upload a profile picture', done: !!business.logoUrl },
+                         { key: 'coverUrl', label: 'Upload a cover image', done: !!business.coverUrl },
+                         { key: 'skills', label: 'Add your skills', done: business.skills && business.skills.length > 0 },
+                         { key: 'hourlyRate', label: 'Set your daily rate', done: !!business.hourlyRate },
+                         { key: 'phone', label: 'Add your phone number', done: !!business.phone },
+                     ];
+                     const completedCount = checklist.filter(c => c.done).length;
+                     const total = checklist.length;
+                     const progressPct = Math.round((completedCount / total) * 100);
+                     
+                     if (completedCount >= total) return null;
+                     
+                     return (
+                         <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-6">
+                             <div className="flex items-center justify-between mb-3">
+                                 <div>
+                                     <h3 className="font-bold text-slate-900 text-lg">Complete your profile</h3>
+                                     <p className="text-sm text-slate-500">Complete profiles get <span className="font-bold text-blue-600">5x more views</span>.</p>
+                                 </div>
+                                 <div className="text-right">
+                                     <span className="text-2xl font-black text-slate-900">{progressPct}%</span>
+                                 </div>
+                             </div>
+                             
+                             <div className="w-full bg-blue-100 rounded-full h-2.5 mb-4">
+                                 <div 
+                                     className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2.5 rounded-full transition-all duration-500"
+                                     style={{ width: `${progressPct}%` }}
+                                 />
+                             </div>
+                             
+                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                 {checklist.map((item) => (
+                                     <button
+                                         key={item.key}
+                                         onClick={() => !item.done && setIsEditing(true)}
+                                         className={`flex items-center gap-3 p-3 rounded-xl text-left text-sm transition-all ${
+                                             item.done 
+                                                 ? 'bg-white/60 text-slate-400 cursor-default' 
+                                                 : 'bg-white hover:shadow-md hover:-translate-y-0.5 cursor-pointer text-slate-700 border border-slate-100'
+                                         }`}
+                                     >
+                                         <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                             item.done ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'
+                                         }`}>
+                                             {item.done ? <Check className="h-3.5 w-3.5" /> : <span className="w-2 h-2 rounded-full bg-slate-300" />}
+                                         </div>
+                                         <span className={item.done ? 'line-through' : 'font-medium'}>{item.label}</span>
+                                     </button>
+                                 ))}
+                             </div>
+                         </div>
+                     );
+                 })()}
+
                  {/* Tab Content */}
                  {activeTab === 'missions' ? (
                      <MissionsDashboard type="freelancer" />

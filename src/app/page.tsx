@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { SearchSection } from "@/components/home/SearchSection"
 import { BusinessCard } from "@/components/home/BusinessCard"
-import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe, Monitor, Pen, BarChart3, Building2, Droplets, Landmark, Search, Send, Rocket, FolderSearch, Camera, GraduationCap, Hammer, Scissors, ChevronRight } from "lucide-react"
+import { ArrowRight, Shield, Zap, Users, Star, CheckCircle2, TrendingUp, Globe, Monitor, Pen, BarChart3, Building2, Droplets, Landmark, Search, Send, Rocket, FolderSearch, Camera, GraduationCap, Hammer, Scissors, ChevronRight, DollarSign, Briefcase, BarChart, Eye } from "lucide-react"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 
@@ -354,6 +354,79 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FOR FREELANCERS ═══════════ */}
+      <section className="w-full py-16 md:py-20 bg-gradient-to-br from-emerald-50 via-teal-50/50 to-white overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12 animate-fade-up">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-emerald-200 rounded-full text-sm font-bold text-emerald-700 mb-6">
+                <Briefcase className="h-4 w-4" />
+                For Freelancers
+              </div>
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 mb-4 leading-tight">
+                Grow your freelance business
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#34E0A1] to-[#10b981]">with zero commission.</span>
+              </h2>
+              <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto">
+                Join FiveZone and get a professional profile, free workspace tools, and direct access to clients — all at no cost to start.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              {[
+                { 
+                  icon: DollarSign, 
+                  title: '0% commission', 
+                  desc: 'Unlike other platforms that take 10-20%, you keep every cent you earn. Your work, your money.',
+                  color: 'from-yellow-500/10 to-amber-500/10 border-yellow-200',
+                  iconColor: 'text-yellow-600 bg-yellow-100'
+                },
+                { 
+                  icon: Eye, 
+                  title: 'Get discovered instantly', 
+                  desc: 'Your profile is visible to clients searching by skill, location, and budget. No waiting, no bidding wars.',
+                  color: 'from-blue-500/10 to-indigo-500/10 border-blue-200',
+                  iconColor: 'text-blue-600 bg-blue-100'
+                },
+                { 
+                  icon: Briefcase, 
+                  title: 'Free pro workspace', 
+                  desc: 'Invoicing, project tracking, calendar, client management — all included for free with your profile.',
+                  color: 'from-violet-500/10 to-purple-500/10 border-violet-200',
+                  iconColor: 'text-violet-600 bg-violet-100'
+                },
+              ].map((item, i) => (
+                <div 
+                  key={i} 
+                  className={`relative p-6 rounded-2xl border bg-gradient-to-br ${item.color} hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fade-up`}
+                  style={{ animationDelay: `${i * 120 + 200}ms` }}
+                >
+                  <div className={`w-14 h-14 rounded-2xl ${item.iconColor} flex items-center justify-center mb-4`}>
+                    <item.icon className="h-7 w-7" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-600">
+              <Button
+                size="lg"
+                className="h-14 px-10 text-lg font-bold rounded-full bg-[#34E0A1] hover:bg-[#2cbe89] text-slate-900 shadow-lg shadow-[#34E0A1]/20 hover:shadow-xl transition-all hover:scale-105"
+                asChild
+              >
+                <Link href="/register">Create my free profile <ArrowRight className="h-5 w-5 ml-2" /></Link>
+              </Button>
+              <p className="text-sm text-slate-500">
+                Free forever · No credit card · 2 min setup
+              </p>
             </div>
           </div>
         </div>

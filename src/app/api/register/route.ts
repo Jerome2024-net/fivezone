@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { sendMetaEvent } from "@/lib/meta"
 import { headers } from "next/headers"
+import { stripe } from "@/lib/stripe"
 
 const registrationSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
@@ -123,13 +124,58 @@ export async function POST(req: Request) {
         }
     });
 
+    // Create Stripe Customer + Checkout Session for mandatory Pro subscription
+    let checkoutUrl: string | null = null;
+    try {
+      const business = newUser.businesses[0];
+      const customer = await stripe.customers.create({
+        email: newUser.email,
+        name: newUser.name || undefined,
+        metadata: {
+          userId: newUser.id,
+          businessId: business.id,
+        },
+      });
+
+      await prisma.user.update({
+        where: { id: newUser.id },
+        data: { stripeCustomerId: customer.id },
+      });
+
+      const priceId = process.env.STRIPE_PRICE_STANDARD;
+      if (priceId) {
+        const checkoutSession = await stripe.checkout.sessions.create({
+          customer: customer.id,
+          mode: 'subscription',
+          payment_method_types: ['card'],
+          line_items: [{ price: priceId, quantity: 1 }],
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/login?subscription=success`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?subscription=cancelled&email=${encodeURIComponent(newUser.email)}`,
+          metadata: {
+            userId: newUser.id,
+            businessId: business.id,
+          },
+          subscription_data: {
+            metadata: {
+              userId: newUser.id,
+              businessId: business.id,
+            },
+          },
+        });
+        checkoutUrl = checkoutSession.url;
+      }
+    } catch (stripeError: any) {
+      console.error("Stripe checkout creation error (non-blocking):", stripeError.message);
+    }
+
     return NextResponse.json({ 
         user: { 
             name: newUser.name, 
             email: newUser.email,
             businessId: newUser.businesses[0]?.id
         }, 
-        message: "Compte créé avec succès" 
+        message: "Compte créé avec succès",
+        checkoutUrl
     }, { status: 201 })
     
   } catch(error: any) {

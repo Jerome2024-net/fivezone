@@ -31,6 +31,11 @@ export default async function DashboardPage() {
   const userType = business ? 'freelancer' : 'client';
   const isPro = business?.subscriptionTier === 'PRO' || business?.subscriptionTier === 'ENTERPRISE' || false
 
+  // Paywall: Freelancers MUST have an active Pro subscription
+  if (userType === 'freelancer' && !isPro) {
+    redirect('/pricing?require=subscription')
+  }
+
   // Get mission counts
   let pendingMissions = 0;
 

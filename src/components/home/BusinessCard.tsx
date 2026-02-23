@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from "next/link"
 import Image from "next/image"
-import { Heart, BadgeCheck, Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
+import { Heart, BadgeCheck, Star, MapPin, ChevronLeft, ChevronRight, Share2 } from "lucide-react"
 
 interface BusinessCardProps {
     id: string
@@ -95,6 +95,26 @@ export function BusinessCard({ id, name, category, imageUrl, images, promoted = 
                              <BadgeCheck className="h-3 w-3 text-[#34E0A1]" /> Recommandé
                          </div>
                     )}
+
+                    {/* Share Button */}
+                    <button 
+                        className="absolute top-3 right-12 p-2 rounded-full bg-white/90 backdrop-blur-md hover:bg-white transition-colors z-10 shadow-sm" 
+                        onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            const url = `${window.location.origin}/business/${id}`;
+                            const text = `Check out ${name} on FiveZone`;
+                            if (navigator.share) {
+                                navigator.share({ title: text, url }).catch(() => {});
+                            } else {
+                                navigator.clipboard.writeText(url).then(() => {
+                                    alert('Link copied!');
+                                }).catch(() => {});
+                            }
+                        }}
+                    >
+                        <Share2 className="h-4 w-4 text-slate-400 hover:text-[#34E0A1] transition-colors" />
+                    </button>
 
                     {/* Heart Button */}
                     <button 

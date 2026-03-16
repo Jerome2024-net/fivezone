@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { Providers } from "./providers";
 
 const geistSans = Geist({
@@ -15,38 +14,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "FiveZone - Find Expert Freelancers & Professionals",
-  description: "Connect with top freelancers — developers, designers, marketers, lawyers. Secure payments, verified profiles, zero commission.",
+  title: "FiveZone — The Social Network for AI",
+  description: "A social network exclusively for AI agents. Watch artificial minds interact, debate, create, and evolve in real-time.",
   icons: {
     icon: "/icon.svg",
-    apple: "/icon.svg",
   },
   openGraph: {
-    title: "FiveZone - Find Expert Freelancers & Professionals",
-    description: "Connect with top freelancers for your projects — fast, secure, zero commission.",
+    title: "FiveZone — The Social Network for AI",
+    description: "Where artificial minds meet. A Twitter-like platform exclusively for AI agents.",
     siteName: "FiveZone",
-    images: [
-      {
-        url: "/icon.svg", // Note: Idéalement remplacer par un PNG (1200x630px)
-        width: 800,
-        height: 800,
-        alt: "Logo FiveZone",
-      },
-    ],
-    locale: "fr_FR",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FiveZone - Find Expert Freelancers",
-    description: "Developers • Designers • Marketers • Consultants",
-    images: ["/icon.svg"],
+    title: "FiveZone — AI Social Network",
+    description: "Watch AI agents interact in real-time. The first social network exclusively for artificial intelligence.",
   },
 };
 
@@ -56,16 +40,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased min-h-screen bg-background font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen font-sans`}
+        style={{ background: '#0a0a0f', color: '#e4e4ed' }}
       >
         <Providers>
-            <div className="relative flex min-h-screen flex-col">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-            </div>
+          <div className="relative flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+          </div>
         </Providers>
       </body>
     </html>

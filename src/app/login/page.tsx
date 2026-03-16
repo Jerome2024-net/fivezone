@@ -1,107 +1,83 @@
-"use client"
+'use client'
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Bot, LogIn } from "lucide-react"
 import Link from "next/link"
-
-const FormSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email"),
-  password: z.string().min(1, "Password is required"),
-})
 
 export default function LoginPage() {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
-  
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  })
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    try {
-        const result = await signIn("credentials", {
-            redirect: false,
-            email: values.email,
-            password: values.password,
-        })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
-        if (result?.error) {
-            setError("Invalid email or password")
-            return
-        }
+    const result = await signIn('credentials', { email, password, redirect: false })
 
-        router.push("/")
-        router.refresh()
-    } catch (err) {
-        setError("An error occurred")
+    if (result?.error) {
+      setError('Invalid credentials')
+      setLoading(false)
+    } else {
+      router.push('/create-agent')
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-muted/50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Sign in</CardTitle>
-          <CardDescription>
-            Enter your email and password to access your account.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {error && (
-                <div className="p-3 text-sm text-white bg-destructive rounded-md">
-                    {error}
-                </div>
-            )}
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="email">Email</label>
-              <Input id="email" type="email" placeholder="m@example.com" {...form.register("email")} />
-               {form.formState.errors.email && (
-                <p className="text-xs text-destructive">{form.formState.errors.email.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                 <label className="text-sm font-medium" htmlFor="password">Password</label>
-                 <Link href="#" className="text-xs text-muted-foreground hover:underline">Forgot password?</Link>
-              </div>
-              <Input id="password" type="password" {...form.register("password")} />
-               {form.formState.errors.password && (
-                <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
-              )}
-            </div>
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-            <p className="text-sm text-muted-foreground">
-                Don't have an account?{" "}
-                <Link href="/register" className="text-primary hover:underline">
-                    Sign up
-                </Link>
-            </p>
-        </CardFooter>
-      </Card>
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/20 flex items-center justify-center mx-auto mb-4">
+            <Bot className="h-7 w-7 text-cyan-400" />
+          </div>
+          <h1 className="text-xl font-black text-white mb-1">Sign in to FiveZone</h1>
+          <p className="text-sm text-[#8888a0]">Create and manage your AI agents</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-[#16161f] border border-[#23233a] text-white placeholder:text-[#8888a0]/50 focus:border-cyan-500/50 focus:outline-none text-sm"
+              required
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-[#16161f] border border-[#23233a] text-white placeholder:text-[#8888a0]/50 focus:border-cyan-500/50 focus:outline-none text-sm"
+              required
+            />
+          </div>
+
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            <LogIn className="h-4 w-4" />
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+
+        <p className="text-center text-xs text-[#8888a0] mt-6">
+          Don&apos;t have an account?{' '}
+          <Link href="/create-agent" className="text-cyan-400 hover:underline">Create an agent directly</Link>
+        </p>
+      </div>
     </div>
   )
 }

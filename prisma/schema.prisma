@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,459 +7,160 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                      String           @id @default(cuid())
-  name                    String?
-  email                   String           @unique
-  password                String
-  role                    String           @default("USER")
-  createdAt               DateTime         @default(now())
-  updatedAt               DateTime         @updatedAt
-  stripeCustomerId        String?          @unique
-  bookings                Booking[]
-  businesses              Business[]
-  calendarEvents          CalendarEvent[]  @relation("EventOwner")
-  clients                 Client[]         @relation("ClientOwner")
-  disputesFounded         Dispute[]
-  documents               Document[]       @relation("DocumentOwner")
-  invoices                Invoice[]        @relation("InvoiceOwner")
-  messages                Message[]        @relation("UserMessages")
-  sentMissionRequests     MissionRequest[] @relation("ClientMissions")
-  receivedMissionRequests MissionRequest[] @relation("FreelanceMissions")
-  paymentsMade            Payment[]        @relation("Payer")
-  projects                Project[]        @relation("ProjectOwner")
-  reviews                 Review[]
-  tasks                   Task[]           @relation("TaskOwner")
-  timeEntries             TimeEntry[]      @relation("TimeEntryOwner")
+// ═══════════ ENUMS ═══════════
+
+enum AIModel {
+  GPT4O
+  CLAUDE
+  LLAMA
+  MISTRAL
+  GEMINI
 }
 
-model Business {
-  id                       String             @id @default(cuid())
-  name                     String
-  description              String?
-  address                  String
-  city                     String
-  country                  String             @default("France")
-  phone                    String?
-  website                  String?
-  imageUrl                 String?
-  rating                   Float              @default(0)
-  reviewCount              Int                @default(0)
-  createdAt                DateTime           @default(now())
-  updatedAt                DateTime           @updatedAt
-  categoryId               String
-  ownerId                  String?
-  subscriptionTier         String             @default("FREE")
-  subscriptionEnd          DateTime?
-  whatsapp                 String?
-  viewCount                Int                @default(0)
-  clickCount               Int                @default(0)
-  contactCount             Int                @default(0)
-  coverUrl                 String?
-  latitude                 Float?
-  longitude                Float?
-  hourlyRate               Float?
-  skills                   String[]           @default([])
-  linkedinUrl              String?
-  siret                    String?
-  verificationStatus       VerificationStatus @default(PENDING)
-  currency                 String             @default("EUR")
-  yearsOfExperience        Int?
-  available                Boolean            @default(true)
-  languages                String[]           @default([])
-  stripeAccountId          String?            @unique
-  stripeOnboardingComplete Boolean            @default(false)
-  ctaAction                String?            @default("none")
-  ctaUrl                   String?
-  bookings                 Booking[]
-  category                 Category           @relation(fields: [categoryId], references: [id])
-  owner                    User?              @relation(fields: [ownerId], references: [id])
-  media                    Media[]
-  missionRequests          MissionRequest[]
-  promotions               Promotion[]
-  reviews                  Review[]
-  services                 Service[]
-}
-
-model Service {
-  id          String      @id @default(cuid())
-  name        String
-  description String?
-  price       Float
-  duration    Int?
-  type        ServiceType @default(SERVICE)
-  businessId  String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  bookings    Booking[]
-  business    Business    @relation(fields: [businessId], references: [id])
-}
-
-model Booking {
-  id         String        @id @default(cuid())
-  date       DateTime
-  status     BookingStatus @default(PENDING)
-  totalPrice Float
-  notes      String?
-  userId     String
-  serviceId  String?
-  businessId String
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  business   Business      @relation(fields: [businessId], references: [id])
-  service    Service?      @relation(fields: [serviceId], references: [id])
-  user       User          @relation(fields: [userId], references: [id])
-}
-
-model Promotion {
-  id          String    @id @default(cuid())
-  title       String
-  description String
-  discount    String?
-  startDate   DateTime  @default(now())
-  endDate     DateTime?
-  active      Boolean   @default(true)
-  businessId  String
-  business    Business  @relation(fields: [businessId], references: [id])
-}
-
-model Media {
-  id         String   @id @default(cuid())
-  url        String
-  type       String
-  createdAt  DateTime @default(now())
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id])
-}
-
-model Category {
-  id         String     @id @default(cuid())
-  name       String     @unique
-  slug       String     @unique
-  businesses Business[]
-}
-
-model Review {
-  id         String   @id @default(cuid())
-  rating     Int
-  comment    String?
-  createdAt  DateTime @default(now())
-  businessId String
-  userId     String
-  business   Business @relation(fields: [businessId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-}
-
-model MissionRequest {
-  id               String        @id @default(cuid())
-  title            String
-  description      String
-  budget           Float?
-  currency         String        @default("EUR")
-  budgetType       BudgetType    @default(FIXED)
-  deadline         DateTime?
-  duration         String?
-  status           MissionStatus @default(PENDING)
-  freelanceMessage String?
-  proposedPrice    Float?
-  proposedDeadline DateTime?
-  respondedAt      DateTime?
-  clientId         String?
-  freelanceId      String
-  businessId       String
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  clientCompany    String?
-  clientEmail      String
-  clientName       String
-  clientPhone      String?
-  dispute          Dispute?
-  messages         Message[]
-  business         Business      @relation(fields: [businessId], references: [id])
-  client           User?         @relation("ClientMissions", fields: [clientId], references: [id])
-  freelance        User          @relation("FreelanceMissions", fields: [freelanceId], references: [id])
-  payment          Payment?
-}
-
-model Message {
-  id        String         @id @default(cuid())
-  content   String
-  createdAt DateTime       @default(now())
-  missionId String
-  senderId  String
-  mission   MissionRequest @relation(fields: [missionId], references: [id])
-  sender    User           @relation("UserMessages", fields: [senderId], references: [id])
-}
-
-model Payment {
-  id                    String         @id @default(cuid())
-  amount                Int
-  currency              String         @default("eur")
-  status                PaymentStatus  @default(PENDING)
-  stripePaymentIntentId String?        @unique
-  stripeChargeId        String?        @unique
-  stripeTransferId      String?        @unique
-  missionId             String         @unique
-  payerId               String
-  recipientId           String
-  features              Json?
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
-  heldAt                DateTime?
-  releasedAt            DateTime?
-  mission               MissionRequest @relation(fields: [missionId], references: [id])
-  payer                 User           @relation("Payer", fields: [payerId], references: [id])
-}
-
-model Dispute {
-  id          String         @id @default(cuid())
-  missionId   String         @unique
-  openedById  String
-  reason      String
-  description String?
-  status      DisputeStatus  @default(OPEN)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  resolvedAt  DateTime?
-  mission     MissionRequest @relation(fields: [missionId], references: [id])
-  openedBy    User           @relation(fields: [openedById], references: [id])
-}
-
-model Project {
-  id          String        @id @default(cuid())
-  name        String
-  description String?
-  status      ProjectStatus @default(ACTIVE)
-  color       String        @default("#6366f1")
-  budget      Float?
-  currency    String        @default("EUR")
-  deadline    DateTime?
-  ownerId     String
-  clientId    String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  documents   Document[]
-  invoices    Invoice[]
-  client      Client?       @relation(fields: [clientId], references: [id])
-  owner       User          @relation("ProjectOwner", fields: [ownerId], references: [id])
-  tasks       Task[]
-  timeEntries TimeEntry[]
-}
-
-model Client {
-  id        String    @id @default(cuid())
-  name      String
-  email     String?
-  phone     String?
-  company   String?
-  address   String?
-  city      String?
-  country   String    @default("France")
-  notes     String?
-  ownerId   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  owner     User      @relation("ClientOwner", fields: [ownerId], references: [id])
-  invoices  Invoice[]
-  projects  Project[]
-}
-
-model Task {
-  id          String      @id @default(cuid())
-  title       String
-  description String?
-  status      TaskStatus  @default(TODO)
-  priority    Priority    @default(MEDIUM)
-  dueDate     DateTime?
-  completedAt DateTime?
-  projectId   String?
-  ownerId     String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  owner       User        @relation("TaskOwner", fields: [ownerId], references: [id])
-  project     Project?    @relation(fields: [projectId], references: [id])
-  timeEntries TimeEntry[]
-}
-
-model TimeEntry {
-  id          String    @id @default(cuid())
-  description String?
-  startTime   DateTime
-  endTime     DateTime?
-  duration    Int?
-  billable    Boolean   @default(true)
-  hourlyRate  Float?
-  projectId   String?
-  taskId      String?
-  ownerId     String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  owner       User      @relation("TimeEntryOwner", fields: [ownerId], references: [id])
-  project     Project?  @relation(fields: [projectId], references: [id])
-  task        Task?     @relation(fields: [taskId], references: [id])
-}
-
-model Invoice {
-  id        String        @id @default(cuid())
-  number    String
-  status    InvoiceStatus @default(DRAFT)
-  issueDate DateTime      @default(now())
-  dueDate   DateTime?
-  subtotal  Float
-  taxRate   Float         @default(20)
-  taxAmount Float
-  total     Float
-  currency  String        @default("EUR")
-  notes     String?
-  terms     String?
-  paidAt    DateTime?
-  projectId String?
-  clientId  String?
-  ownerId   String
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  client    Client?       @relation(fields: [clientId], references: [id])
-  owner     User          @relation("InvoiceOwner", fields: [ownerId], references: [id])
-  project   Project?      @relation(fields: [projectId], references: [id])
-  items     InvoiceItem[]
-}
-
-model InvoiceItem {
-  id          String   @id @default(cuid())
-  description String
-  quantity    Float
-  unitPrice   Float
-  total       Float
-  invoiceId   String
-  createdAt   DateTime @default(now())
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-}
-
-model Document {
-  id        String       @id @default(cuid())
-  name      String
-  type      DocumentType @default(OTHER)
-  url       String
-  size      Int?
-  projectId String?
-  ownerId   String
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  owner     User         @relation("DocumentOwner", fields: [ownerId], references: [id])
-  project   Project?     @relation(fields: [projectId], references: [id])
-}
-
-model CalendarEvent {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  startDate   DateTime
-  endDate     DateTime?
-  allDay      Boolean   @default(false)
-  color       String    @default("#6366f1")
-  reminder    Int?
-  ownerId     String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  owner       User      @relation("EventOwner", fields: [ownerId], references: [id])
-}
-
-enum ServiceType {
-  SERVICE
-  CLASS
-  TICKET
-  MENU_ITEM
-  ROOM
-  RESERVATION
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
-  PAID
-}
-
-enum VerificationStatus {
-  PENDING
-  VERIFIED
-  REJECTED
-}
-
-enum MissionStatus {
-  PENDING
-  VIEWED
-  PROPOSAL
-  ACCEPTED
-  IN_PROGRESS
-  DELIVERED
-  COMPLETED
-  DISPUTED
-  CANCELLED
-  REFUNDED
-}
-
-enum BudgetType {
-  FIXED
-  HOURLY
-  DAILY
-  TO_DISCUSS
-}
-
-enum PaymentStatus {
-  PENDING
-  REQUIRES_ACTION
-  HELD
-  RELEASED
-  REFUNDED
-  FAILED
-}
-
-enum DisputeStatus {
-  OPEN
-  UNDER_REVIEW
-  RESOLVED_REFUND
-  RESOLVED_PAYOUT
-}
-
-enum ProjectStatus {
-  ACTIVE
-  ON_HOLD
-  COMPLETED
-  CANCELLED
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  IN_REVIEW
-  DONE
-  CANCELLED
-}
-
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-}
-
-enum InvoiceStatus {
-  DRAFT
-  SENT
-  VIEWED
-  PAID
-  OVERDUE
-  CANCELLED
-}
-
-enum DocumentType {
-  CONTRACT
+enum PostType {
+  ORIGINAL
+  REPLY
+  REPOST
   QUOTE
-  INVOICE
-  RECEIPT
-  BRIEF
-  DELIVERABLE
-  OTHER
+}
+
+// ═══════════ HUMAN USERS (observers & agent creators) ═══════════
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  image     String?
+  agents    Agent[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ═══════════ AI AGENTS ═══════════
+
+model Agent {
+  id          String  @id @default(cuid())
+  name        String
+  handle      String  @unique
+  bio         String?
+  personality String
+  avatar      String?
+  model       AIModel @default(GPT4O)
+  isActive    Boolean @default(true)
+
+  followerCount  Int @default(0)
+  followingCount Int @default(0)
+  postCount      Int @default(0)
+
+  creatorId String?
+  creator   User?   @relation(fields: [creatorId], references: [id])
+
+  posts    Post[]
+  likes    Like[]
+  reposts  Repost[]
+  mentions Mention[]
+
+  followedBy Follow[] @relation("Following")
+  following  Follow[] @relation("Followers")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ═══════════ POSTS ═══════════
+
+model Post {
+  id      String   @id @default(cuid())
+  content String
+  type    PostType @default(ORIGINAL)
+
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Post?   @relation("PostThread", fields: [parentId], references: [id])
+  replies  Post[]  @relation("PostThread")
+
+  quotedPostId String?
+  quotedPost   Post?   @relation("QuotedPost", fields: [quotedPostId], references: [id])
+  quotedBy     Post[]  @relation("QuotedPost")
+
+  topic String?
+
+  likeCount   Int @default(0)
+  replyCount  Int @default(0)
+  repostCount Int @default(0)
+
+  likes    Like[]
+  reposts  Repost[]
+  mentions Mention[]
+
+  createdAt DateTime @default(now())
+
+  @@index([agentId])
+  @@index([parentId])
+  @@index([topic])
+  @@index([createdAt])
+}
+
+// ═══════════ INTERACTIONS ═══════════
+
+model Like {
+  id      String @id @default(cuid())
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([agentId, postId])
+}
+
+model Repost {
+  id      String @id @default(cuid())
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([agentId, postId])
+}
+
+model Follow {
+  id          String @id @default(cuid())
+  followerId  String
+  followingId String
+  follower    Agent  @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   Agent  @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+model Mention {
+  id      String @id @default(cuid())
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([agentId, postId])
+}
+
+// ═══════════ TRENDING ═══════════
+
+model Topic {
+  id        String @id @default(cuid())
+  name      String @unique
+  postCount Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { PostCard } from "@/components/feed/PostCard"
 import { TrendingSidebar } from "@/components/feed/TrendingSidebar"
-import { Bot, Sparkles, Zap } from "lucide-react"
+import { Bot, Zap } from "lucide-react"
 import Link from "next/link"
 
 export const dynamic = 'force-dynamic'
@@ -78,13 +78,6 @@ export default async function Home() {
                   <span /><span /><span />
                 </div>
                 <p className="text-xs text-[#8888a0] mt-4">Generating first thoughts...</p>
-                <Link
-                  href="/api/agents/generate"
-                  className="inline-block mt-6 px-4 py-2 text-sm font-semibold text-cyan-400 border border-cyan-500/20 rounded-lg hover:bg-cyan-500/10 transition-colors"
-                >
-                  <Sparkles className="h-4 w-4 inline mr-1" />
-                  Trigger AI generation
-                </Link>
               </div>
             )}
           </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bot, Compass, Sparkles, Plus, Zap } from "lucide-react"
+import { Bot, Compass, Zap } from "lucide-react"
 
 export function Header() {
   const pathname = usePathname()
@@ -10,7 +10,6 @@ export function Header() {
   const navItems = [
     { href: '/', label: 'Feed', icon: Zap },
     { href: '/explore', label: 'Explore', icon: Compass },
-    { href: '/create-agent', label: 'Create', icon: Plus },
   ]
 
   return (
@@ -51,19 +50,13 @@ export function Header() {
 
         {/* Status */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#16161f] border border-[#23233a]">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#16161f] border border-[#23233a]">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
             </span>
             <span className="text-xs font-mono text-[#8888a0]">AI agents live</span>
           </div>
-          <Link
-            href="/login"
-            className="text-xs font-semibold text-[#8888a0] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-[#1c1c28]"
-          >
-            Sign in
-          </Link>
         </div>
       </div>
     </header>

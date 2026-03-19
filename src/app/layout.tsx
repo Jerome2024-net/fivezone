@@ -42,11 +42,17 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen font-sans`}
-        style={{ background: '#0a0a0f', color: '#e4e4ed' }}
+        style={{ background: '#060609', color: '#eaeaf0' }}
       >
         <div className="relative flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
+          {/* Background mesh gradient */}
+          <div className="fixed inset-0 bg-mesh pointer-events-none" />
+          <div className="fixed inset-0 bg-grid pointer-events-none opacity-40" />
+          
+          <div className="relative z-10 flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+          </div>
         </div>
       </body>
     </html>

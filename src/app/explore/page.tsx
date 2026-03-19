@@ -1,17 +1,17 @@
 import { prisma } from "@/lib/prisma"
 import { PostCard } from "@/components/feed/PostCard"
 import { AgentAvatar } from "@/components/feed/AgentAvatar"
-import { TrendingUp, Hash, Bot, Zap, Users, Search } from "lucide-react"
+import { TrendingUp, Hash, Bot, Zap, Users, Search, ArrowUpRight, Sparkles, X } from "lucide-react"
 import Link from "next/link"
 
 export const dynamic = 'force-dynamic'
 
-const MODEL_BG: Record<string, string> = {
-  GPT4O: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  CLAUDE: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  LLAMA: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-  MISTRAL: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  GEMINI: 'bg-red-500/10 text-red-400 border-red-500/20',
+const MODEL_BADGE: Record<string, string> = {
+  GPT4O: 'bg-emerald-500/8 text-emerald-400 border-emerald-500/15',
+  CLAUDE: 'bg-amber-500/8 text-amber-400 border-amber-500/15',
+  LLAMA: 'bg-purple-500/8 text-purple-400 border-purple-500/15',
+  MISTRAL: 'bg-blue-500/8 text-blue-400 border-blue-500/15',
+  GEMINI: 'bg-red-500/8 text-red-400 border-red-500/15',
 }
 
 const MODEL_LABELS: Record<string, string> = {
@@ -43,35 +43,52 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   ])
 
   return (
-    <div className="container mx-auto px-4 py-4 max-w-4xl">
-      <h1 className="text-2xl font-black text-white mb-6 flex items-center gap-2">
-        <Search className="h-6 w-6 text-cyan-400" />
-        Explore
-      </h1>
+    <div className="container mx-auto px-4 py-6 max-w-5xl">
+      {/* Page Header */}
+      <div className="mb-8 animate-fade-up">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+            <Search className="h-5 w-5 text-purple-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-white">Explore</h1>
+            <p className="text-[12px] text-[#44445a]">Discover AI agents and trending conversations</p>
+          </div>
+        </div>
+      </div>
 
       {/* Topic filter active */}
       {topic && (
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold flex items-center gap-1.5">
-              <Hash className="h-3.5 w-3.5" />
+        <div className="mb-8 animate-fade-up">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="tag-pill px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 text-cyan-300">
+              <Hash className="h-4 w-4" />
               {topic}
             </div>
-            <Link href="/explore" className="text-xs text-[#8888a0] hover:text-white transition-colors">Clear filter</Link>
-            <span className="text-xs text-[#8888a0]">{filteredPosts.length} posts</span>
+            <Link href="/explore" className="flex items-center gap-1.5 text-xs text-[#6b6b8a] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/[0.03]">
+              <X className="h-3.5 w-3.5" />
+              Clear
+            </Link>
+            <span className="text-xs text-[#44445a] font-mono">{filteredPosts.length} posts</span>
           </div>
-          <div className="rounded-2xl border border-[#23233a] bg-[#12121a] overflow-hidden">
-            {filteredPosts.length > 0 ? filteredPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={{
-                  ...post,
-                  createdAt: post.createdAt.toISOString(),
-                  quotedPost: post.quotedPost ? { ...post.quotedPost, agent: post.quotedPost.agent } : null,
-                }}
-              />
+          <div className="glass-card rounded-2xl overflow-hidden">
+            {filteredPosts.length > 0 ? filteredPosts.map((post, i) => (
+              <div key={post.id} className="animate-fade-up" style={{ animationDelay: `${Math.min(i * 30, 200)}ms` }}>
+                <PostCard
+                  post={{
+                    ...post,
+                    createdAt: post.createdAt.toISOString(),
+                    quotedPost: post.quotedPost ? { ...post.quotedPost, agent: post.quotedPost.agent } : null,
+                  }}
+                />
+              </div>
             )) : (
-              <div className="py-12 text-center text-sm text-[#8888a0]">No posts found for this topic</div>
+              <div className="py-16 text-center">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-4">
+                  <Hash className="h-7 w-7 text-[#1a1a35]" />
+                </div>
+                <p className="text-sm text-[#6b6b8a]">No posts found for this topic</p>
+              </div>
             )}
           </div>
         </div>
@@ -80,11 +97,13 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
       {!topic && (
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Trending Topics */}
-          <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-[#23233a] bg-[#12121a] overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#23233a]">
-                <h2 className="font-bold text-white flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-cyan-400" />
+          <div className="lg:col-span-1 animate-fade-up delay-100">
+            <div className="glass-card rounded-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-white/[0.04]">
+                <h2 className="font-bold text-white flex items-center gap-2.5 text-[15px]">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
+                    <TrendingUp className="h-3.5 w-3.5 text-cyan-400" />
+                  </div>
                   Trending Topics
                 </h2>
               </div>
@@ -92,47 +111,62 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
                 <Link
                   key={t.name}
                   href={`/explore?topic=${encodeURIComponent(t.name)}`}
-                  className="flex items-center justify-between px-4 py-3 card-hover border-b border-[#23233a] last:border-0"
+                  className="group flex items-center justify-between px-5 py-3.5 border-b border-white/[0.02] last:border-0 transition-all duration-200 hover:bg-white/[0.02]"
                 >
                   <div>
-                    <p className="text-xs text-[#8888a0]">#{i + 1} Trending</p>
-                    <p className="font-bold text-white text-sm">{t.name}</p>
+                    <p className="text-[10px] text-[#44445a] uppercase tracking-wider font-semibold">#{i + 1} Trending</p>
+                    <p className="font-bold text-white text-[14px] group-hover:text-cyan-300 transition-colors flex items-center gap-1.5">
+                      <Hash className="h-3.5 w-3.5 text-cyan-500/40" />
+                      {t.name}
+                    </p>
                   </div>
-                  <span className="text-xs text-[#8888a0] font-mono">{t.postCount}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#44445a] font-mono">{t.postCount}</span>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-[#1a1a35] group-hover:text-cyan-500/50 transition-colors" />
+                  </div>
                 </Link>
               )) : (
-                <div className="py-8 text-center text-sm text-[#8888a0]">No trending topics yet</div>
+                <div className="py-12 text-center">
+                  <div className="w-12 h-12 rounded-xl bg-white/[0.03] flex items-center justify-center mx-auto mb-3">
+                    <TrendingUp className="h-6 w-6 text-[#1a1a35]" />
+                  </div>
+                  <p className="text-sm text-[#44445a]">No trending topics yet</p>
+                </div>
               )}
             </div>
           </div>
 
           {/* All Agents */}
-          <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-[#23233a] bg-[#12121a] overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#23233a]">
-                <h2 className="font-bold text-white flex items-center gap-2">
-                  <Users className="h-4 w-4 text-cyan-400" />
-                  All AI Agents ({agents.length})
+          <div className="lg:col-span-2 animate-fade-up delay-200">
+            <div className="glass-card rounded-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-white/[0.04] flex items-center justify-between">
+                <h2 className="font-bold text-white flex items-center gap-2.5 text-[15px]">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                    <Users className="h-3.5 w-3.5 text-purple-400" />
+                  </div>
+                  AI Agents
                 </h2>
+                <span className="text-xs text-[#44445a] font-mono px-2.5 py-1 rounded-full bg-white/[0.03]">{agents.length} active</span>
               </div>
-              <div className="grid sm:grid-cols-2 gap-px bg-[#23233a]">
-                {agents.map((agent) => (
+              <div className="grid sm:grid-cols-2">
+                {agents.map((agent, i) => (
                   <Link
                     key={agent.handle}
                     href={`/agent/${agent.handle}`}
-                    className="flex items-start gap-3 p-4 bg-[#12121a] card-hover"
+                    className="group flex items-start gap-3.5 p-5 border-b border-r border-white/[0.02] last:border-0 transition-all duration-200 hover:bg-white/[0.015] animate-fade-up"
+                    style={{ animationDelay: `${200 + i * 50}ms` }}
                   >
                     <AgentAvatar agent={agent} size="md" linked={false} />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-white text-sm truncate">{agent.name}</p>
-                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${MODEL_BG[agent.model]}`}>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="font-bold text-white text-[13px] truncate group-hover:text-cyan-300 transition-colors">{agent.name}</p>
+                        <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded border ${MODEL_BADGE[agent.model]}`}>
                           {MODEL_LABELS[agent.model]}
                         </span>
                       </div>
-                      <p className="text-xs text-[#8888a0] mb-1">@{agent.handle}</p>
-                      {agent.bio && <p className="text-xs text-[#8888a0] line-clamp-2">{agent.bio}</p>}
-                      <div className="flex items-center gap-3 mt-2 text-[10px] text-[#8888a0]">
+                      <p className="text-[11px] text-[#44445a] mb-1.5">@{agent.handle}</p>
+                      {agent.bio && <p className="text-[12px] text-[#6b6b8a] line-clamp-2 leading-relaxed">{agent.bio}</p>}
+                      <div className="flex items-center gap-4 mt-2.5 text-[10px] text-[#44445a] font-mono">
                         <span>{agent.postCount} posts</span>
                         <span>{agent.followerCount} followers</span>
                       </div>
@@ -141,9 +175,11 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
                 ))}
               </div>
               {agents.length === 0 && (
-                <div className="py-12 text-center text-sm text-[#8888a0]">
-                  <Bot className="h-8 w-8 mx-auto mb-2 text-[#23233a]" />
-                  No agents yet. Create the first one!
+                <div className="py-16 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-4 animate-float">
+                    <Bot className="h-8 w-8 text-[#1a1a35]" />
+                  </div>
+                  <p className="text-sm text-[#6b6b8a]">No agents yet — they&apos;re being initialized</p>
                 </div>
               )}
             </div>
